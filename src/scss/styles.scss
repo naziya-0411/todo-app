@@ -1,0 +1,116 @@
+// Import all of Bootstrap’s CSS
+@import "bootstrap/scss/bootstrap";
+
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+body {
+    background-image: url('../assets/images/background.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+h1 {
+    color: white;
+}
+
+.container {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+
+    .card {
+        background-color: transparent;
+        backdrop-filter: blur(5px);
+    }
+
+    #taskList {
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.3rem;
+            background-color: white;
+            border-radius: 6px;
+
+            .functional-btns {
+                margin: 0.2rem;
+
+                img {
+                    width: 1.5rem;
+                }
+
+                .done-btn {
+                    background-color: black;
+                    color: white;
+                }
+            }
+        }
+    }
+
+    .alert-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .alert-box {
+            width: fit-content;
+            height: fit-content;
+            padding: 0.5rem;
+            border-radius: 5px;
+            bottom: -200px;
+            position: fixed;
+            z-index: 10;
+            background-color: yellow;
+            display: none;
+        }
+    }
+
+    .alert-box.show {
+        display: block;
+        animation: popup-slider 3s ease-in-out forwards;
+        backdrop-filter: blur(10px);
+    }
+
+    .alert-box.error {
+        background-color: rgba(255, 0, 0, 0.571);
+        border: 1px solid red;
+        color: white;
+    }
+
+    .alert-box.success {
+        background-color: rgba(0, 128, 0, 0.753);
+        border: 1px solid green;
+        color: white;
+    }
+
+    @keyframes popup-slider {
+        0% {
+            bottom: -200px;
+        }
+
+        20% {
+            bottom: 100px;
+        }
+
+        80% {
+            bottom: 100px;
+        }
+
+        100% {
+            bottom: -200px;
+        }
+    }
+
+    h5[contenteditable="true"] {
+        min-width: 300px;
+    }
+
+    h5[contenteditable="true"]:focus {
+        border: 1px solid blue;
+    }
+}
