@@ -1,0 +1,363 @@
+// Import all of Bootstrap’s CSS
+@import "bootstrap/scss/bootstrap";
+@import url('https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&display=swap');
+
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: "Fuzzy Bubbles", sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    font-style: normal;
+}
+
+body {
+    .head-font {
+        font-size: 2rem;
+    }
+
+    min-height: 100vh;
+    background: linear-gradient(135deg, #682d92, #04294f, #FF69B4);
+
+
+    h1 {
+        color: white;
+        font-weight: bolder;
+    }
+
+    h3 {
+        color: white;
+        font-size: 22px;
+        font-weight: 900;
+    }
+
+    .purple-btn {
+        background: linear-gradient(135deg, #9b5de5, #6a0dad);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(22, 1, 37, 0.4);
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #5B0EE2, #9B5DE5);
+    }
+
+    .purple-btn:hover {
+        background: linear-gradient(135deg, #b47bff, #7a1fc0);
+        box-shadow: 0 6px 14px rgba(122, 31, 192, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .purple-btn:active {
+        background: linear-gradient(135deg, #6a0dad, #5a0ba0);
+        box-shadow: 0 2px 6px rgba(90, 11, 160, 0.4);
+        transform: translateY(1px);
+    }
+
+    .container {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+
+            .analytic-box {
+                text-align: center;
+                color: white;
+                border-radius: 20px;
+                box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.759);
+                transition: 0.3s transform cubic-bezier(0.075, 0.82, 0.165, 1);
+
+                .analytic-body {
+                    font-size: 2rem;
+                    font-weight: 700;
+                }
+            }
+
+            .analytic-box:hover {
+                transform: scale(1.11);
+                transition: 0.3s transform cubic-bezier(0.075, 0.82, 0.165, 1);
+                box-shadow: 2px 2px 15px rgba(10, 9, 9, 0.478);
+            }
+
+            .total-tasks {
+                background: linear-gradient(135deg, #410898, #6D28D9);
+            }
+
+            .completed-tasks {
+                background: linear-gradient(135deg, #7C3AED, #A78BFA);
+            }
+
+            .pending-tasks {
+                background: linear-gradient(135deg, #A78BFA, #D8B4F8);
+            }
+        }
+
+        .input-container {
+            border-radius: 15px;
+            padding: 13px;
+            box-shadow: 1px 1px 15px rgba(19, 16, 16, 0.379);
+        }
+
+        #taskList {
+            padding: 5px;
+            max-height: 550px;
+            overflow-y: auto;
+
+            li {
+                margin: 0.3rem;
+                box-shadow: 1px 1px 15px rgba(19, 16, 16, 0.379);
+                padding: 0.2rem;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+                list-style: none;
+                background: rgb(255, 255, 255);
+                backdrop-filter: blur(8px);
+                border-radius: 14px;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                border-left: 7px solid #9B5DE5;
+                margin-bottom: 1rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.08);
+                
+                .preference-container {
+                    color: white;
+                    font-weight: 400;
+                    cursor: pointer;
+                    box-shadow: 0 4px 8px rgba(22, 1, 37, 0.4);
+                }
+
+                .time-container {
+                    background-color: #b47bff;
+                    color: white;
+                }
+
+                .btn-container {
+                    display: flex;
+                    align-items: center;
+                    font-size: 14px;
+
+                    .done-btn {
+                        // background-color: black;
+                        background-color: #b47bff;
+                        color: white;
+                        border-radius: 20px;
+                    }
+                    .done-btn:hover{
+                        background-color: #8b4ae0;
+                    }
+
+                    .functional-btns {
+                        margin: 0.2rem;
+
+                        img {
+                            width: 1.5rem;
+                        }
+
+                    }
+                }
+            }
+
+            li:hover{
+                transform: translateY(-3px);
+                box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+            }
+        }
+
+
+        .preference-container {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 3px 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .data-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .text-container {
+            align-items: center;
+        }
+
+        .alert-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .alert-box {
+                width: fit-content;
+                height: fit-content;
+                padding: 0.5rem;
+                border-radius: 5px;
+                bottom: -200px;
+                position: fixed;
+                z-index: 10;
+                background-color: yellow;
+                display: none;
+            }
+        }
+
+        .alert-box.show {
+            display: block;
+            animation: popup-slider 3s ease-in-out forwards;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-box.error {
+            background-color: rgba(255, 0, 0, 0.571);
+            border: 1px solid red;
+            color: white;
+        }
+
+        .alert-box.success {
+            background-color: rgba(0, 128, 0, 0.753);
+            border: 1px solid green;
+            color: white;
+        }
+
+        .confirm-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+
+            .confirm-box {
+                width: fit-content;
+                height: fit-content;
+                color: white;
+                background-color: #550eabdd;
+                backdrop-filter: blur(10px);
+                border-radius: 10px;
+                bottom: -200px;
+                position: fixed;
+                display: none;
+            }
+
+            .confirm-box.up {
+                display: block;
+                animation: confirm-popup 0.5s ease-in-out forwards;
+            }
+
+            .confirm-box.down {
+                display: block;
+                animation: confirm-popdown 0.5s ease-in-out forwards;
+            }
+        }
+
+        @keyframes confirm-popup {
+            0% {
+                bottom: -200px;
+            }
+
+            100% {
+                bottom: 50vh;
+            }
+        }
+
+        @keyframes confirm-popdown {
+            0% {
+                bottom: 50vh;
+            }
+
+            100% {
+                bottom: -200px;
+            }
+        }
+
+        @keyframes popup-slider {
+            0% {
+                bottom: -200px;
+            }
+
+            20% {
+                bottom: 100px;
+            }
+
+            80% {
+                bottom: 100px;
+            }
+
+            100% {
+                bottom: -200px;
+            }
+        }
+    }
+}
+
+
+@media (min-width: 576px) {
+    * {
+        font-size: 16px;
+    }
+
+    .input-container {
+        margin-top: 2rem;
+    }
+
+    .head-font {
+        font-size: 2.3rem;
+    }
+}
+
+@media (min-width: 768px) {
+}
+
+@media (min-width: 992px) {
+    * {
+        font-size: 18px;
+    }
+
+    .head-font {
+        font-size: 2.5rem;
+    }
+
+    .task-font {
+        font-size: 19px;
+    }
+         #taskList{
+        li{
+            width: 48%;
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+    * {
+        font-size: 19px;
+    }
+
+    .head-font {
+        font-size: 2.8rem;
+    }
+
+    .task-font {
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 1400px) {
+    * {
+        font-size: 20px;
+    }
+
+    .head-font {
+        font-size: 3.2rem;
+    }
+
+    .task-font {
+        font-size: 22px;
+    }
+}
