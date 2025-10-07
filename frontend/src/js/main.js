@@ -25,6 +25,10 @@ const sortInput = document.querySelector("#sortInput");
 const alertBox = document.querySelector(".alert-box");
 const messageBox = document.querySelector(".message");
 const searchBox = document.querySelector('#searchInput');
+const searchSelect = document.querySelector('#search-select');
+
+console.log(searchSelect);
+console.log(searchBox);
 
 
 //🟢loading data in the local Storage.
@@ -38,6 +42,25 @@ window.onload = async function () {
     showAlert("Could not load tasks from server.", "error");
   }
 };
+
+
+searchSelect.addEventListener('change', async () => {
+  try {
+    const searchText = searchBox.value.trim();
+    const filterValue = searchSelect.value; 
+
+    console.log(searchText, filterValue);
+
+    const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
+    if(!res.ok) throw new Error("can't search");
+    const tasks = await res.json();
+    console.log(tasks);
+    displayTask(tasks);
+  } catch (e) {
+    console.error(e);
+  }
+});
+
 
 //🟢extracting taskList from database.
 async function getTaskList() {
@@ -253,15 +276,14 @@ async function createFunctionalBtns() {
 
 //🟢searching.
 searchBox.addEventListener("input", async () => {
-  const searchValue = searchBox.value.toLowerCase(); // make case-insensitive
-  const tasks = await getTaskList(); // fetch all tasks
+  try{
+      const searchText = searchBox.value.trim();
+      const filterValue = searchBox.value;
 
-  // filter tasks whose `task` contains searchValue
-  const filteredTasks = tasks.filter(t =>
-    t.task.toLowerCase().includes(searchValue)
-  );
-
-  displayTask(filteredTasks); // show only matching tasks
+      if(filterValue === "")throw new Error("Please select filter!");
+  } catch(e) {
+    showAlert('Please select filter!', 'error');
+  }
 });
 
 //🟢emptying all the boxes after adding input.
@@ -406,26 +428,6 @@ async function updateCompletionStatus(id) {
   }
 }
 
-// //🟢Updating entire tasks list(sorted order)
-// async function updateSortedTasks(sortedTasks) {
-//   try {
-//     const res = await fetch('http://localhost:8000/sort', {
-//       method: 'PUT',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({ sortedTasks }),
-//     });
-
-//     if (!res.ok) {
-//       throw new Error('Failed to save sorted tasks');
-//     }
-//     return;
-//   } catch (e) {
-//     console.error('Error saving sorted tasks:', e);
-//   }
-// }
-
 //sorting on the basis of Time.
 function sortByTime(tasks) {
   tasks.sort((a, b) => {
@@ -452,25 +454,17 @@ function sortByPreference(tasks) {
   return tasks;
 }
 
-// no sorting applied.
-// function sortByIndex(tasks) {
-//   tasks.sort((a, b) => {
-//     return Number(a.id) - Number(b.id);
-//   });
-//   return tasks;
-// }
-
 function sorting(tasks) {
-    const sortValue = sortInput.value;
+  const sortValue = sortInput.value;
 
-    if (sortValue === "time") {
-      tasks = sortByTime(tasks);
-    } else if (sortValue === "preference") {
-      tasks = sortByPreference(tasks);
-    } 
+  if (sortValue === "time") {
+    tasks = sortByTime(tasks);
+  } else if (sortValue === "preference") {
+    tasks = sortByPreference(tasks);
+  }
 
-    //display tasks.
-    displayTask(tasks);
+  //display tasks.
+  displayTask(tasks);
 }
 
 sortInput.addEventListener("change", async () => {

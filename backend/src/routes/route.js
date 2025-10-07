@@ -5,6 +5,7 @@ import {
     updateCompletionStatus,
     updateTask,
     deleteTask,
+    searchTask,
 } from '../controllers/controller.js';
 import { dataValidation } from '../validations/validator.js';
 // import { dataValidation } from '../validations/validator.js';
@@ -16,5 +17,6 @@ todoRouter.post('/', addNewTask);//adding middleware for data validation.
 todoRouter.patch('/:id', updateCompletionStatus);
 todoRouter.put('/:id', updateTask);//adding middleware for data validation.
 todoRouter.delete('/:id', deleteTask);
+todoRouter.get('/search', searchTask);
 
 export default todoRouter;

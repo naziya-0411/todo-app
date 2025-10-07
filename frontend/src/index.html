@@ -69,15 +69,23 @@
 
 
         <div class="row py-3 g-2">
-          <div class="sort-box col-md-6">
+          <div class="sort-box col-md-2">
             <select id="sortInput" class="form-select">
               <option value="" disabled selected>Sort By</option>
               <option value="time">Time</option>
               <option value="preference">Preference</option>
             </select>
           </div>
-          <div class="search-container col-md-6 d-flex">
+          <div class="search-container col-md-10 d-flex">
             <input type="search" class="form-control me-2" id="searchInput" placeholder="Search...">
+
+            <select id="search-select" class="form-select">
+              <option value="" disabled selected>Search by</option>
+              <option value="tags">Tags</option>
+              <option value="title">Title</option>
+              <option value="preference">Preference</option>
+            </select>
+
             <button class="btn btn-primary purple-btn">Search</button>
           </div>
         </div>

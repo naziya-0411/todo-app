@@ -136,4 +136,36 @@ const deleteTask = async (req, res) => {
   }
 }
 
-export { getAllTasks, addNewTask, updateCompletionStatus, updateTask, deleteTask };
+const searchTask = async (req, res) => {
+  try {
+    const { text, filter } = req.query;
+    let tasks = await readTask();
+
+    // 🔍 Search by tags
+    if (filter === "tags") {
+      tasks = tasks.filter(task =>
+        Array.isArray(task.tags) &&
+        task.tags.some(tag => tag.toLowerCase().includes(text))
+      );
+    }
+    // 🔍 Search by title (task name)
+    else if (filter === "title") {
+      tasks = tasks.filter(task =>
+        task.task && task.task.toLowerCase().includes(text)
+      );
+    }
+    // 🔍 Search by preference
+    else if (filter === "preference") {
+      tasks = tasks.filter(task =>
+        task.preference && task.preference.toLowerCase().includes(text)
+      );
+    }
+    return res.status(200).json(tasks);
+    
+  } catch (e) {
+    console.error("Search error:", e);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+export { getAllTasks, addNewTask, updateCompletionStatus, updateTask, deleteTask, searchTask };
