@@ -6,9 +6,7 @@ import {
     updateTask,
     deleteTask,
     searchTask,
-} from '../controllers/controller.js';
-import { dataValidation } from '../validations/validator.js';
-// import { dataValidation } from '../validations/validator.js';
+} from '../controllers/control.js';
 
 const todoRouter = express.Router();
 

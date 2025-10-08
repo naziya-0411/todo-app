@@ -7,11 +7,17 @@ const __filename = fileURLToPath(import.meta.url); //getting full path of curren
 const __dirname = path.dirname(__filename)//extracting current module.
 const DB_PATH = path.join(__dirname, '../../database/db.json') //building path to JSON DB file.
 
+import { taskCreateSchema, taskUpdateSchema } from '../schema/schema.js';
+import { validateRequest } from '../validators/validator.js';
+
+
 //returning task.
 async function readTask() {
   try {
+    console.log("read task");
     const data = await readFile(DB_PATH, 'utf-8');
     const parsed = JSON.parse(data);
+    console.log("Inside read tasks", parsed.tasks);
     return parsed.tasks;
   } catch (e) {
     console.error('Error reading tasks file:', e);
@@ -46,6 +52,10 @@ const getAllTasks = async (req, res) => {
 
 const addNewTask = async (req, res) => {
   try {
+    console.log(req.body);
+    const validatedData = await validateRequest(taskCreateSchema, req.body.taskData);
+    if (!validatedData) throw new Error("validation line 53 error found");
+
     const { taskData } = req.body;
 
     const newTask = {
@@ -94,6 +104,9 @@ const updateCompletionStatus = async (req, res) => {
 const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
+    const validatedData = await validateRequest(taskUpdateSchema, req.body);
+    if (!validatedData) return;
+
     const tasks = await readTask();
     let isFound = false;
 
@@ -138,30 +151,32 @@ const deleteTask = async (req, res) => {
 
 const searchTask = async (req, res) => {
   try {
-    const { text, filter } = req.query;
-    let tasks = await readTask();
+    let { text, filter } = req.query;
+    text = text.toLowerCase();
 
-    // 🔍 Search by tags
+    let tasks = await readTask();
+    let filteredTasks = tasks;
+
     if (filter === "tags") {
-      tasks = tasks.filter(task =>
-        Array.isArray(task.tags) &&
-        task.tags.some(tag => tag.toLowerCase().includes(text))
+      filteredTasks = tasks.filter(t =>
+        Array.isArray(t.tags) &&
+        t.tags.some(tag => tag.toLowerCase().includes(text))
       );
     }
-    // 🔍 Search by title (task name)
     else if (filter === "title") {
-      tasks = tasks.filter(task =>
-        task.task && task.task.toLowerCase().includes(text)
+      filteredTasks = tasks.filter(t =>
+        t.task && t.task.toLowerCase().includes(text)
       );
     }
-    // 🔍 Search by preference
     else if (filter === "preference") {
-      tasks = tasks.filter(task =>
-        task.preference && task.preference.toLowerCase().includes(text)
+      filteredTasks = tasks.filter(t =>
+        t.preference && t.preference.toLowerCase().includes(text)
       );
     }
-    return res.status(200).json(tasks);
-    
+
+    console.log("Filtered tasks:", filteredTasks);
+    return res.status(200).json(filteredTasks);
+
   } catch (e) {
     console.error("Search error:", e);
     return res.status(500).json({ error: "Internal Server Error" });

@@ -27,9 +27,6 @@ const messageBox = document.querySelector(".message");
 const searchBox = document.querySelector('#searchInput');
 const searchSelect = document.querySelector('#search-select');
 
-console.log(searchSelect);
-console.log(searchBox);
-
 
 //🟢loading data in the local Storage.
 window.onload = async function () {
@@ -44,22 +41,23 @@ window.onload = async function () {
 };
 
 
-searchSelect.addEventListener('change', async () => {
-  try {
-    const searchText = searchBox.value.trim();
-    const filterValue = searchSelect.value; 
+// searchSelect.addEventListener('change', async () => {
+//   try {
+//     console.log("search select invoked");
+//     const searchText = searchBox.value.trim();
+//     const filterValue = searchSelect.value; 
 
-    console.log(searchText, filterValue);
+//     console.log(searchText, filterValue);
 
-    const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
-    if(!res.ok) throw new Error("can't search");
-    const tasks = await res.json();
-    console.log(tasks);
-    displayTask(tasks);
-  } catch (e) {
-    console.error(e);
-  }
-});
+//     const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
+//     if(!res.ok) throw new Error("can't search");
+//     const {tasks} = await res.json();
+//     console.log(tasks);
+//     displayTask(tasks);
+//   } catch (e) {
+//     console.error(e);
+//   }
+// });
 
 
 //🟢extracting taskList from database.
@@ -276,15 +274,51 @@ async function createFunctionalBtns() {
 
 //🟢searching.
 searchBox.addEventListener("input", async () => {
-  try{
-      const searchText = searchBox.value.trim();
-      const filterValue = searchBox.value;
+  try {
+    const searchText = searchBox.value.trim();
+    const filterValue = searchSelect.value;
 
-      if(filterValue === "")throw new Error("Please select filter!");
-  } catch(e) {
-    showAlert('Please select filter!', 'error');
+    if (!filterValue) throw new Error("Please select filter!");
+    console.log("Searching:", searchText, filterValue);
+
+    //getting tasks from backend.
+    const tasks = await getTaskList();
+    let filteredTasks = tasks;
+
+    if (filterValue === "tags") {
+      filteredTasks = tasks.filter(t =>
+        Array.isArray(t.tags) &&
+        t.tags.some(tag => tag.toLowerCase().includes(searchText))
+      );
+    }
+    else if (filterValue === "title") {
+      filteredTasks = tasks.filter(t =>
+        t.task && t.task.toLowerCase().includes(searchText)
+      );
+    }
+    else if (filterValue === "preference") {
+      filteredTasks = tasks.filter(t =>
+        t.preference && t.preference.toLowerCase().includes(searchText)
+      );
+    }
+
+    console.log("Filtered tasks:", filteredTasks);
+    displayTask(filteredTasks);
+
+
+    //---------------NOT WORKING------------------------
+    // const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
+    // if (!res.ok) throw new Error("Can't search");
+
+    // const tasks = await res.json();
+    // console.log("Tasks from backend:", tasks);
+    // displayTask(tasks);
+  } catch (err) {
+    showAlert(err.message, 'error');
+    console.error(err);
   }
 });
+
 
 //🟢emptying all the boxes after adding input.
 function restoreInputBoxes() {
