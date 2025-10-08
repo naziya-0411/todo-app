@@ -116,7 +116,7 @@ function displayTask(tasks) {
   </div>`;
 
 
-    newLi.id = t.id;//_id
+    newLi.id = t._id;//_id
     ul.appendChild(newLi);
   });
 
@@ -183,7 +183,7 @@ async function createFunctionalBtns() {
 
       //fetcining data to display in the input boxes.
       for (let task of tasks) {
-        if (id === String(task.id)) {
+        if (id === task._id) {
           taskData = task;
           break;
         }

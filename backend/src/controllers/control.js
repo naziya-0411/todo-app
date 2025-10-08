@@ -20,7 +20,7 @@ async function readTask() {
     // const parsed = JSON.parse(data);
     // return parsed.tasks;
     const data = await taskModel.find();
-    console.log("this is data from server",data);
+    console.log("this is data from server", data);
     return data;
   } catch (e) {
     console.error('Error reading tasks file:', e);
@@ -89,7 +89,7 @@ const updateCompletionStatus = async (req, res) => {
     let isFound = false;
 
     for (let t of tasks) {
-      if (String(t.id) === String(id)) {
+      if (t._id === id) {
         t.completed = !t.completed;
         isFound = true;
         break;
@@ -108,33 +108,44 @@ const updateCompletionStatus = async (req, res) => {
 const updateTask = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Optional: validate only the provided fields
     const validatedData = await validateRequest(taskUpdateSchema, req.body);
-    if (!validatedData) return;
-
-    const tasks = await readTask();
-    let isFound = false;
-
-    const { task, preference, dateTime, tags, completed } = req.body;
-
-    for (let t of tasks) {
-      if (id === String(t.id)) {
-        isFound = true;
-        t.task = task;
-        t.preference = preference;
-        // t.dateTime = dateTime;
-        t.tags = tags;
-        t.completed = completed;
-        t.updatedAt = new Date().toISOString();
-      }
+    if (!validatedData) {
+      return res.status(400).json({ error: "Invalid request data" });
     }
-    if (!isFound) return res.status(404).json({ error: `Task not found` });
-    await writeTask(tasks);
-    res.status(200).json({ success: `task updated successfully!` });
+
+    const updateFields = { ...validatedData };
+
+    // format dateTime if provided
+    if (updateFields.dateTime) {
+      updateFields.dateTime = new Date(updateFields.dateTime).toISOString();
+    }
+
+    // always update the updatedAt field
+    updateFields.updatedAt = new Date().toISOString();
+
+    const updatedTask = await taskModel.findByIdAndUpdate(
+      id,createdAt,
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!updatedTask) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    res.status(200).json({
+      success: "Task updated successfully!",
+      updatedTask,
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: `Failed to update task: ${e.message}` });
   }
-  catch (e) {
-    res.status(500).json({ error: `failed to update task. , ${e}` })
-  }
-}
+};
+
+
 
 const deleteTask = async (req, res) => {
   try {
@@ -142,7 +153,7 @@ const deleteTask = async (req, res) => {
     let tasks = await readTask();
 
     //optimized.
-    const index = tasks.findIndex(task => task.id === String(id));
+    const index = tasks.findIndex(task => task._id === id);
     tasks.splice(index, 1);
 
     await writeTask(tasks);
