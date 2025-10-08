@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'url';
+import { taskModel } from '../models/taskDb.js';
 
 
 const __filename = fileURLToPath(import.meta.url); //getting full path of current module.
@@ -14,11 +15,13 @@ import { validateRequest } from '../validators/validator.js';
 //returning task.
 async function readTask() {
   try {
-    console.log("read task");
-    const data = await readFile(DB_PATH, 'utf-8');
-    const parsed = JSON.parse(data);
-    console.log("Inside read tasks", parsed.tasks);
-    return parsed.tasks;
+    console.log("inside read task");
+    // const data = await readFile(DB_PATH, 'utf-8');
+    // const parsed = JSON.parse(data);
+    // return parsed.tasks;
+    const data = await taskModel.find();
+    console.log("this is data from server",data);
+    return data;
   } catch (e) {
     console.error('Error reading tasks file:', e);
     return [];
@@ -66,9 +69,10 @@ const addNewTask = async (req, res) => {
       updatedAt: new Date().toISOString(),
     }
 
-    const tasks = await readTask();
-    tasks.push(newTask);
-    await writeTask(tasks);
+    // const tasks = await readTask();
+    // tasks.push(newTask);
+    // await writeTask(tasks);
+    await taskModel.create(newTask);
     res.status(201).json();
   }
   catch (e) {

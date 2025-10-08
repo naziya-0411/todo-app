@@ -116,7 +116,7 @@ function displayTask(tasks) {
   </div>`;
 
 
-    newLi.id = t.id;
+    newLi.id = t.id;//_id
     ul.appendChild(newLi);
   });
 

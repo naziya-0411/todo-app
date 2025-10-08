@@ -27,7 +27,8 @@
       "dateTime": null,
       "tags": [],
       "createdAt": "2025-10-07T11:44:26.382Z",
-      "updatedAt": "2025-10-08T09:05:56.893Z"
+      "updatedAt": "2025-10-08T09:05:56.893Z",
+      "completed": true
     },
     {
       "id": 1759901505519,
@@ -58,16 +59,6 @@
       "completed": false,
       "createdAt": "2025-10-08T09:05:33.411Z",
       "updatedAt": "2025-10-08T09:05:33.411Z"
-    },
-    {
-      "id": 1759914347201,
-      "task": "wonderful",
-      "preference": "High",
-      "dateTime": "2025-10-23T09:05:00.000Z",
-      "tags": [],
-      "completed": false,
-      "createdAt": "2025-10-08T09:05:47.201Z",
-      "updatedAt": "2025-10-08T09:05:47.201Z"
     }
   ]
 }
