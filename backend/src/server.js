@@ -18,6 +18,8 @@ app.use(express.static('public'));
 
 app.use('/', todoRouter);
 
+// app.use(req, res, err, next)
+
 app.listen(port, ()=>{
     console.log(`Server Running At ${domain}:${port}`); 
 });
