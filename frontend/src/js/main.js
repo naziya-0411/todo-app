@@ -3,7 +3,7 @@ import "../scss/styles.scss";
 
 // Import all of Bootstrap’s JS
 import * as bootstrap from "bootstrap";
-import { getTaskList, addTask, deleteTask, updateTask, updateCompletionStatus } from "./api.js";
+import { getTaskList, addTask, deleteTask, updateTask, updateCompletionStatus, sortTask } from "./api.js";
 
 //declaring btn, tasklist and predefined style for functional btns.
 const addBtn = document.querySelector("#addBtn");
@@ -20,7 +20,6 @@ const ul = document.querySelector("#taskList");
 const taskBox = document.querySelector("#taskInput");
 const preferenceBox = document.querySelector("#preferenceInput");
 const tagsBox = document.querySelector(".tags-input");
-const dateTimeBox = document.querySelector("#dateTimeInput");
 const sortInput = document.querySelector("#sortInput");
 
 const alertBox = document.querySelector(".alert-box");
@@ -50,7 +49,7 @@ function displayTask(tasks) {
     const newLi = document.createElement("li");
     let textStyle = 'none'
 
-    if (t.completed === true) {
+    if (t.isCompleted === true) {
       textStyle = 'line-through';
     }
 
@@ -67,7 +66,6 @@ function displayTask(tasks) {
   <div class="list-container row d-flex align-items-center p-2">
     <div class="col-12 col-md-9 data-container d-flex flex-wrap gap-2 align-items-center">
       <div class="preference-container p-1 px-2 rounded-5" style="background:${preferenceColor}">${t.preference}</div>
-      <div class="time-container p-1 rounded-5 small">${t.dateTime ? new Date(t.dateTime).toLocaleString() : ''}</div>
     </div>
 
     <div class="d-flex align-items-center text-container py-3 px-3 gap-2">
@@ -77,7 +75,7 @@ function displayTask(tasks) {
 
     <div class="btn-container col-12 d-flex">
       <button class="btn primary-btn done-btn">
-        ${t.completed === true ? 'Undone' : 'Done'}
+        ${t.isCompleted === true ? 'Undone' : 'Done'}
       </button>
       ${functionalBtns}
     </div>
@@ -134,7 +132,7 @@ async function createFunctionalBtns() {
       }
     }
     catch (e) {
-      showAlert("Unable to mark task as completed", "error");
+      showAlert("Unable to mark task as isCompleted", "error");
     }
   });
 
@@ -149,7 +147,7 @@ async function createFunctionalBtns() {
       let tasks = await getTaskList();
       let taskData = null;
 
-      //fetcining data to display in the input boxes.
+      //fetching data to display in the input boxes.
       for (let task of tasks) {
         if (id === task._id) {
           taskData = task;
@@ -161,7 +159,6 @@ async function createFunctionalBtns() {
       if (taskData) {
         taskBox.value = taskData.task;
         preferenceBox.value = taskData.preference;
-        dateTimeBox.value = taskData.dateTime;
         tagsBox.value = taskData.tags;
 
         taskBox.style.background = "#dac2f0ff";
@@ -169,9 +166,6 @@ async function createFunctionalBtns() {
 
         preferenceBox.style.background = "#dac2f0ff";
         preferenceBox.style.border = "2px solid #c083f6ff";
-
-        dateTimeBox.style.background = "#dac2f0ff";
-        dateTimeBox.style.border = "2px solid #c083f6ff";
 
         tagsBox.style.background = "#dac2f0ff";
         tagsBox.style.border = "2px solid #c083f6ff";
@@ -207,14 +201,12 @@ async function createFunctionalBtns() {
             try {
               const preferenceInput = preferenceBox.value;
               const taskInput = taskBox.value.trim();
-              const dateTimeInput = dateTimeBox ? dateTimeBox.value : null;
               const tagsInput = tagsBox.value;
               const tagsInputArray = tagsInput ? tagsInput.split(",") : [];
 
               const updatedData = {
                 task: taskInput,
                 preference: preferenceInput,
-                dateTime: dateTimeInput,
                 tags: tagsInputArray,
               }
 
@@ -272,15 +264,6 @@ searchBox.addEventListener("input", async () => {
 
     console.log("Filtered tasks:", filteredTasks);
     displayTask(filteredTasks);
-
-
-    //---------------NOT WORKING------------------------
-    // const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
-    // if (!res.ok) throw new Error("Can't search");
-
-    // const tasks = await res.json();
-    // console.log("Tasks from backend:", tasks);
-    // displayTask(tasks);
   } catch (err) {
     showAlert(err.message, 'error');
     console.error(err);
@@ -293,7 +276,6 @@ function restoreInputBoxes() {
   const btnBox = document.querySelector('.btn-row');
   taskBox.value = "";
   preferenceBox.value = "";
-  dateTimeBox.value = "";
   tagsBox.value = "";
 
   taskBox.style.background = "white";
@@ -301,9 +283,6 @@ function restoreInputBoxes() {
 
   preferenceBox.style.background = "white";
   preferenceBox.style.border = "none";
-
-  dateTimeBox.style.background = "white";
-  dateTimeBox.style.border = "none";
 
   tagsBox.style.background = "white";
   tagsBox.style.border = "none";
@@ -314,7 +293,6 @@ function restoreInputBoxes() {
 addBtn.addEventListener("click", async () => {
   const preferenceInput = preferenceBox.value;
   const taskInput = taskBox.value.trim();
-  const dateTimeInput = dateTimeBox ? dateTimeBox.value : null;
   const tagsInput = tagsBox.value;
   const tagsInputArray = tagsInput ? tagsInput.split(",") : [];
 
@@ -328,21 +306,10 @@ addBtn.addEventListener("click", async () => {
     return;
   }
 
-  if (dateTimeInput) {
-    const inputDate = new Date(dateTimeInput + ":00");
-    const now = new Date();
-
-    if (inputDate < now) {
-      showAlert("Selected time cannot be in the past.", "error");
-      return;
-    }
-  }
-
   //adding task.
   const taskData = {
     task: taskInput,
     preference: preferenceInput,
-    dateTime: dateTimeInput ? new Date(dateTimeInput).toISOString() : null,
     tags: tagsInputArray,
   };
   console.log(taskData);
@@ -359,58 +326,40 @@ addBtn.addEventListener("click", async () => {
 });
 
 
-//sorting on the basis of Time.
-function sortByTime(tasks) {
-  tasks.sort((a, b) => {
-    const aTime = a.dateTime ? new Date(a.dateTime).getTime() : Infinity;
-    const bTime = b.dateTime ? new Date(b.dateTime).getTime() : Infinity;
-    return aTime - bTime; // earlier time first
-  });
-  return tasks;
-}
 
 //sorting on the basis of preference.
-function sortByPreference(tasks) {
-  const preferenceOrder = {
-    High: 1,
-    Medium: 2,
-    Low: 3
-  };
+// function sortByPreference(tasks) {
+//   const preferenceOrder = {
+//     High: 1,
+//     Medium: 2,
+//     Low: 3
+//   };
 
-  tasks.sort((a, b) => {
-    const aPref = preferenceOrder[a.preference] || 4;
-    const bPref = preferenceOrder[b.preference] || 4;
-    return aPref - bPref;
-  });
-  return tasks;
-}
+//   tasks.sort((a, b) => {
+//     const aPref = preferenceOrder[a.preference] || 4;
+//     const bPref = preferenceOrder[b.preference] || 4;
+//     return aPref - bPref;
+//   });
+//   return tasks;
+// }
 
-function sorting(tasks) {
-  const sortValue = sortInput.value;
-
-  if (sortValue === "time") {
-    tasks = sortByTime(tasks);
-  } else if (sortValue === "preference") {
-    tasks = sortByPreference(tasks);
-  }
-
-  //display tasks.
-  displayTask(tasks);
-}
-
-sortInput.addEventListener("change", async () => {
-  try {
-    let tasks = await getTaskList();
-    sorting(tasks);
-  } catch (e) {
+async function sorting() {
+  try{
+    const sortValue = sortInput.value;
+    let sortedTasks = await sortTask(sortValue);
+    //display tasks.
+    displayTask(tasks);
+  } catch(e){
     console.log(e);
   }
-});
+}
+
+sortInput.addEventListener("change", sorting);
 
 //🟢updating the analytics.
 function updateAnalyticBox(tasks) {
   const total = tasks.length;
-  const completed = tasks.filter(t => t.completed === true).length;
+  const completed = tasks.filter(t => t.isCompleted === true).length;
   const pending = total - completed;
 
   document.querySelector(".total-tasks .analytic-body").innerText = total;

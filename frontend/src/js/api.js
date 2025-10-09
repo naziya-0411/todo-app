@@ -22,7 +22,6 @@ async function addTask(taskData) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ taskData })
         });
-        console.log("this is a response", res);
         // if (!res.ok) throw new Error('Failed to create task');
         showAlert('Task added successfully!', 'success');
     } catch (e) {
@@ -52,13 +51,7 @@ async function updateTask(id, updatedData) {
         const res = await fetch(`http://localhost:8000/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                task: updatedData.task,
-                preference: updatedData.preference,
-                // dateTime: updatedData.dateTime,
-                tags: updatedData.tags,
-                completed: updatedData.completed,
-            })
+            body: JSON.stringify({ updatedData })
         });
         if (!res.ok) throw new Error('Failed to update task');
         showAlert('Task updated successfully!', 'success');
@@ -87,6 +80,31 @@ async function updateCompletionStatus(id) {
     }
 }
 
-export { getTaskList, addTask, deleteTask, updateTask, updateCompletionStatus};
+async function searchTask(text, filter){
+    try{
+        const res = await fetch('http://localhost:8000/search',{
+            method: 'GET',
+        });
+    } catch(e) {
+
+    }
+}
+// const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
+async function sortTask(filter){
+    try{
+        const res = await fetch('http://localhost:8000/sort?sortFilter=${filter}',{
+            method: 'GET',
+        });   
+        if(!res.ok){
+            throw new Error("Error occurred while sorting");
+        }
+    } catch(e) {
+        console.log(e);
+        return res.status(500).json({error: e});
+    }
+}
+
+
+export { getTaskList, addTask, deleteTask, updateTask, updateCompletionStatus, searchTask, sortTask};
 
 

@@ -9,13 +9,10 @@ const taskSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    dateTime: {
-        type: String,
-    },
     tags: {
         type: Array,
     },
-    completed: {
+    isCompleted: {
         type: Boolean,
         require: true,
     },
