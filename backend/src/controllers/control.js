@@ -1,19 +1,20 @@
 import { taskModel } from '../models/taskDb.js';
 
 //fetching all tasks.
-const getAllTasks = async (req, res) => {
+const getAllTasks = async (req, res, next) => {
   try {
     const data = await taskModel.find();
     if (!data) {
-      throw new Error("Failed to read task List")
+      throw new Error('Failed to read task List');
     }
     return await res.json(data);
   } catch (e) {
+    next(e);
     res.status(500).json({ error: `Failed to read tasks ${e}` });
   }
 };
 
-const addNewTask = async (req, res) => {
+const addNewTask = async (req, res, next) => {
   try {
     const { taskData } = req.body;
 
@@ -23,22 +24,22 @@ const addNewTask = async (req, res) => {
       isCompleted: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    }
-    console.log("newTAsks created", newTask);
+    };
+    console.log('newTAsks created', newTask);
     await taskModel.create(newTask);
     res.status(201).json();
+  } catch (e) {
+    next(e);
   }
-  catch (e) {
-    res.status(500).json({ error: `Failed to add new task, ${e}` });
-  }
-}
+};
 
-const updateCompletionStatus = async (req, res) => {
+const updateCompletionStatus = async (req, res, next) => {
   try {
     const { id } = req.params;
-    if (!id) return res.status(400).json({ error: "Missing task ID" });
+    if (!id) return res.status(400).json({ error: 'Missing task ID' });
 
     const prevItem = await taskModel.findById(id);
+
     if (!prevItem) throw new Error('Cannot Find Item!');
 
     const updatedItem = await taskModel.findByIdAndUpdate(
@@ -50,13 +51,13 @@ const updateCompletionStatus = async (req, res) => {
       throw new Error('Failed to update the completion status');
     }
 
-    return res.status(200).json({ message: "isCompleted" });
+    return res.status(200).json({ message: 'isCompleted' });
   } catch (e) {
-    res.status(500).json({ error: `Failed to update completion status: ${e.message}` });
+    next(e);
   }
 };
 
-const updateTask = async (req, res) => {
+const updateTask = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -66,8 +67,8 @@ const updateTask = async (req, res) => {
       task,
       preference,
       tags,
-      isCompleted
-    }
+      isCompleted,
+    };
 
     updatedFields.updatedAt = new Date().toISOString();
 
@@ -78,73 +79,75 @@ const updateTask = async (req, res) => {
     );
 
     if (!updatedTask) {
-      return res.status(404).json({ error: "Task not found" });
+      return res.status(404).json({ error: 'Task not found' });
     }
 
     res.status(200).json({
-      success: "Task updated successfully!",
+      success: 'Task updated successfully!',
       updatedTask,
     });
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: `Failed to update task: ${e.message}` });
+    next(e);
   }
 };
 
-
-const deleteTask = async (req, res) => {
+const deleteTask = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     const delItem = await taskModel.findByIdAndDelete(id);
     if (!delItem) {
-      throw new Error("Item to be deleted not found");
+      throw new Error('Item to be deleted not found');
     }
 
     res.status(204).json({ message: `task deleted successfully!` });
+  } catch (e) {
+    next(e);
   }
-  catch (e) {
-    res.status(500).json({ error: `failed to delete task, ${e}` })
-  }
-}
+};
 
-const sortTask = async (req, res) => {
+const sortTask = async (req, res, next) => {
   try {
     let { sortFilter } = req.query;
-    let filteredTasks = null
+    let filteredTasks = null;
 
-    if (sortFilter === "pending") {
-       filteredTasks = await taskModel.find({ $match: [{isCompleted: false}] });
-    } else if (sortFilter === "completed") {
-      filteredTasks = await taskModel.find({ $match: [{isCompleted: true}] });
+    if (sortFilter === 'pending') {
+      filteredTasks = await taskModel.find({
+        $match: [{ isCompleted: false }],
+      });
+    } else if (sortFilter === 'completed') {
+      filteredTasks = await taskModel.find({ $match: [{ isCompleted: true }] });
     }
 
     if (!filteredTasks) {
-      throw new Error("cannot fetch sorted tasks")
+      throw new Error('cannot fetch sorted tasks');
     }
     return filteredTasks;
   } catch (e) {
-    console.error("Search error:", e);
-    return res.status(500).json({ error: "Internal Server Error" });
+    next(e);
   }
-}
+};
 
-const searchTask = async (req, res) => {
+const searchTask = async (req, res, next) => {
   // try {
   //   let { searchText, searchFilter } = req.query;
   //   searchText = searchText.toLowerCase();
-
-
-
   //   const filteredTasks = await taskModel.find(query);
   //   if (!filteredTasks) {
   //     throw new Error('Error occured while searching!');
   //   }
   //   return res.status(200).json(filteredTasks);
   // } catch (e) {
-  //   console.error("Search error:", e);
-  //   return res.status(500).json({ error: "Internal Server Error" });
+  //  next(e);
   // }
-}
+};
 
-export { getAllTasks, addNewTask, updateCompletionStatus, updateTask, deleteTask, sortTask, searchTask };
+export {
+  getAllTasks,
+  addNewTask,
+  updateCompletionStatus,
+  updateTask,
+  deleteTask,
+  sortTask,
+  searchTask,
+};

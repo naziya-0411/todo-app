@@ -3,7 +3,14 @@ import "../scss/styles.scss";
 
 // Import all of Bootstrap’s JS
 import * as bootstrap from "bootstrap";
-import { getTaskList, addTask, deleteTask, updateTask, updateCompletionStatus, sortTask } from "./api.js";
+import {
+  getTaskList,
+  addTask,
+  deleteTask,
+  updateTask,
+  updateCompletionStatus,
+  sortTask,
+} from "./api.js";
 
 //declaring btn, tasklist and predefined style for functional btns.
 const addBtn = document.querySelector("#addBtn");
@@ -24,9 +31,8 @@ const sortInput = document.querySelector("#sortInput");
 
 const alertBox = document.querySelector(".alert-box");
 const messageBox = document.querySelector(".message");
-const searchBox = document.querySelector('#searchInput');
-const searchSelect = document.querySelector('#search-select');
-
+const searchBox = document.querySelector("#searchInput");
+const searchSelect = document.querySelector("#search-select");
 
 //🟢loading data in the local Storage.
 window.onload = async function () {
@@ -47,13 +53,14 @@ function displayTask(tasks) {
 
   tasks.forEach((t) => {
     const newLi = document.createElement("li");
-    let textStyle = 'none'
+    let textStyle = "none";
 
     if (t.isCompleted === true) {
-      textStyle = 'line-through';
+      textStyle = "line-through";
     }
 
     let preferenceColor = "black"; // default color
+
     if (t.preference.toLowerCase() === "high") {
       preferenceColor = " linear-gradient(135deg, #3e0791ff, #563190ff);";
     } else if (t.preference.toLowerCase() === "medium") {
@@ -63,26 +70,29 @@ function displayTask(tasks) {
     }
 
     newLi.innerHTML = `
-  <div class="list-container row d-flex align-items-center p-2">
-    <div class="col-12 col-md-9 data-container d-flex flex-wrap gap-2 align-items-center">
-      <div class="preference-container p-1 px-2 rounded-5" style="background:${preferenceColor}">${t.preference}</div>
-    </div>
+      <div class="list-container row d-flex align-items-center p-2">
+        <div class="col-12 col-md-9 data-container d-flex flex-wrap gap-2 align-items-center">
+          <div class="preference-container p-1 px-2 rounded-5" style="background:${preferenceColor}">${
+      t.preference
+    }</div>
+        </div>
 
-    <div class="d-flex align-items-center text-container py-3 px-3 gap-2">
-      <p class="m-0 text-break" style="text-decoration: ${textStyle}">${t.task}</p>
-      <div class="tags-container small text-muted">${t.tags.join(" ")}</div>
-    </div>
+        <div class="d-flex align-items-center text-container py-3 px-3 gap-2">
+          <p class="m-0 text-break" style="text-decoration: ${textStyle}">${
+      t.task
+    }</p>
+          <div class="tags-container small text-muted">${t.tags.join(" ")}</div>
+        </div>
 
-    <div class="btn-container col-12 d-flex">
-      <button class="btn primary-btn done-btn">
-        ${t.isCompleted === true ? 'Undone' : 'Done'}
-      </button>
-      ${functionalBtns}
-    </div>
-  </div>`;
+        <div class="btn-container col-12 d-flex">
+          <button class="btn primary-btn done-btn">
+            ${t.isCompleted === true ? "Undone" : "Done"}
+          </button>
+          ${functionalBtns}
+        </div>
+      </div>`;
 
-
-    newLi.id = t._id;//_id
+    newLi.id = t._id; //_id
     ul.appendChild(newLi);
   });
 
@@ -91,7 +101,6 @@ function displayTask(tasks) {
 
 //🟢making the list buttons functional.(adding event listener)
 async function createFunctionalBtns() {
-
   //🟢deleting task.
   ul.addEventListener("click", async (e) => {
     try {
@@ -118,7 +127,6 @@ async function createFunctionalBtns() {
     }
   });
 
-
   //🟢task done
   ul.addEventListener("click", async (e) => {
     try {
@@ -126,21 +134,19 @@ async function createFunctionalBtns() {
         const listItem = e.target.closest("li");
         const id = listItem.id;
 
-        await updateCompletionStatus(id);// save updates
-        const tasks = await getTaskList();//displaying data.
+        await updateCompletionStatus(id); // save updates
+        const tasks = await getTaskList(); //displaying data.
         displayTask(tasks);
       }
-    }
-    catch (e) {
+    } catch (e) {
       showAlert("Unable to mark task as isCompleted", "error");
     }
   });
 
-
   //🟢edit tasks
   ul.addEventListener("click", async (e) => {
     if (e.target.classList.contains("edit-btn")) {
-      console.log("inside edit button")
+      console.log("inside edit button");
       const listItem = e.target.closest("li");
       const id = listItem.id;
 
@@ -170,15 +176,15 @@ async function createFunctionalBtns() {
         tagsBox.style.background = "#dac2f0ff";
         tagsBox.style.border = "2px solid #c083f6ff";
 
-        const addTaskContainer = document.querySelector('.addTask-container');
-        const existing = document.querySelector('.btn-row');
+        const addTaskContainer = document.querySelector(".addTask-container");
+        const existing = document.querySelector(".btn-row");
 
         if (!existing) {
-          const newDiv = document.createElement('div');
-          newDiv.classList.add('row');
-          newDiv.classList.add('g-3');
-          newDiv.classList.add('pt-3');
-          newDiv.classList.add('btn-row');
+          const newDiv = document.createElement("div");
+          newDiv.classList.add("row");
+          newDiv.classList.add("g-3");
+          newDiv.classList.add("pt-3");
+          newDiv.classList.add("btn-row");
 
           newDiv.innerHTML = `<div class="col-md-6 d-grid">
             <button id="save-btn" class="btn primary-btn purple-btn">
@@ -192,12 +198,12 @@ async function createFunctionalBtns() {
             </button>
           </div>`;
 
-          addTaskContainer.insertAdjacentElement('afterend', newDiv);
+          addTaskContainer.insertAdjacentElement("afterend", newDiv);
 
-          const saveBtn = document.querySelector('#save-btn');
-          const cancelBtn = document.querySelector('#cancel-btn');
+          const saveBtn = document.querySelector("#save-btn");
+          const cancelBtn = document.querySelector("#cancel-btn");
 
-          saveBtn.addEventListener('click', async () => {
+          saveBtn.addEventListener("click", async () => {
             try {
               const preferenceInput = preferenceBox.value;
               const taskInput = taskBox.value.trim();
@@ -208,14 +214,14 @@ async function createFunctionalBtns() {
                 task: taskInput,
                 preference: preferenceInput,
                 tags: tagsInputArray,
-              }
+              };
 
-              await updateTask(id, updatedData);//updating tasks.
+              await updateTask(id, updatedData); //updating tasks.
 
               restoreInputBoxes();
 
               const tasks = await getTaskList();
-              sorting(tasks);
+              // sorting();
               displayTask(tasks);
             } catch (e) {
               console.error(e);
@@ -223,7 +229,7 @@ async function createFunctionalBtns() {
             }
           });
 
-          cancelBtn.addEventListener('click', () => {
+          cancelBtn.addEventListener("click", () => {
             restoreInputBoxes();
           });
         }
@@ -246,34 +252,32 @@ searchBox.addEventListener("input", async () => {
     let filteredTasks = tasks;
 
     if (filterValue === "tags") {
-      filteredTasks = tasks.filter(t =>
-        Array.isArray(t.tags) &&
-        t.tags.some(tag => tag.toLowerCase().includes(searchText))
+      filteredTasks = tasks.filter(
+        (t) =>
+          Array.isArray(t.tags) &&
+          t.tags.some((tag) => tag.toLowerCase().includes(searchText))
       );
-    }
-    else if (filterValue === "title") {
-      filteredTasks = tasks.filter(t =>
-        t.task && t.task.toLowerCase().includes(searchText)
+    } else if (filterValue === "title") {
+      filteredTasks = tasks.filter(
+        (t) => t.task && t.task.toLowerCase().includes(searchText)
       );
-    }
-    else if (filterValue === "preference") {
-      filteredTasks = tasks.filter(t =>
-        t.preference && t.preference.toLowerCase().includes(searchText)
+    } else if (filterValue === "preference") {
+      filteredTasks = tasks.filter(
+        (t) => t.preference && t.preference.toLowerCase().includes(searchText)
       );
     }
 
     console.log("Filtered tasks:", filteredTasks);
     displayTask(filteredTasks);
   } catch (err) {
-    showAlert(err.message, 'error');
+    showAlert(err.message, "error");
     console.error(err);
   }
 });
 
-
 //🟢emptying all the boxes after adding input.
 function restoreInputBoxes() {
-  const btnBox = document.querySelector('.btn-row');
+  const btnBox = document.querySelector(".btn-row");
   taskBox.value = "";
   preferenceBox.value = "";
   tagsBox.value = "";
@@ -325,31 +329,14 @@ addBtn.addEventListener("click", async () => {
   return;
 });
 
-
-
-//sorting on the basis of preference.
-// function sortByPreference(tasks) {
-//   const preferenceOrder = {
-//     High: 1,
-//     Medium: 2,
-//     Low: 3
-//   };
-
-//   tasks.sort((a, b) => {
-//     const aPref = preferenceOrder[a.preference] || 4;
-//     const bPref = preferenceOrder[b.preference] || 4;
-//     return aPref - bPref;
-//   });
-//   return tasks;
-// }
-
 async function sorting() {
-  try{
+  try {
     const sortValue = sortInput.value;
     let sortedTasks = await sortTask(sortValue);
+
     //display tasks.
     displayTask(tasks);
-  } catch(e){
+  } catch (e) {
     console.log(e);
   }
 }
@@ -359,11 +346,12 @@ sortInput.addEventListener("change", sorting);
 //🟢updating the analytics.
 function updateAnalyticBox(tasks) {
   const total = tasks.length;
-  const completed = tasks.filter(t => t.isCompleted === true).length;
+  const completed = tasks.filter((t) => t.isCompleted === true).length;
   const pending = total - completed;
 
   document.querySelector(".total-tasks .analytic-body").innerText = total;
-  document.querySelector(".completed-tasks .analytic-body").innerText = completed;
+  document.querySelector(".completed-tasks .analytic-body").innerText =
+    completed;
   document.querySelector(".pending-tasks .analytic-body").innerText = pending;
 }
 
