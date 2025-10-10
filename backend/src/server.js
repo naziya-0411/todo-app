@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors';
 import { PORT, DOMAIN, URI } from '../constants.js';
-import todoRouter from './routes/route.js';
+import todoRouter from './routes/taskRoute.js';
 import { connectToMongoDB } from '../DB/connect.js';
 
 const app = express();

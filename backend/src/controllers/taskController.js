@@ -141,12 +141,3 @@ export default class taskController{
   };
 }
 
-// export {
-//   getAllTasks,
-//   addNewTask,
-//   updateCompletionStatus,
-//   updateTask,
-//   deleteTask,
-//   sortTask,
-//   searchTask,
-// };

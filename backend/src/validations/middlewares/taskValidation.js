@@ -1,7 +1,7 @@
 import {
   taskCreateSchema,
   taskUpdateSchema,
-} from '../schema/validationsSchema.js';
+} from '../schema/taskValidationSchema.js';
 
 export default class toDoValidations {
   //validation for adding new task in the todo list.
