@@ -40,6 +40,7 @@ window.onload = async function () {
   try {
     let tasks = await getTaskList();
     createFunctionalBtns();
+    updateAnalyticBox(tasks);
     displayTask(tasks);
   } catch (e) {
     console.error(e);
@@ -97,7 +98,7 @@ function displayTask(tasks) {
     ul.appendChild(newLi);
   });
 
-  updateAnalyticBox(tasks);
+  // updateAnalyticBox(tasks);
 }
 
 //🟢making the list buttons functional.(adding event listener)
@@ -119,6 +120,7 @@ async function createFunctionalBtns() {
           //displaying after deleting.
           const tasks = await getTaskList();
           displayTask(tasks);
+          updateAnalyticBox(tasks);
           showAlert("Task Deleted Successfully!", "success");
         }
       }
@@ -138,6 +140,7 @@ async function createFunctionalBtns() {
         await updateCompletionStatus(id); // save updates
         const tasks = await getTaskList(); //displaying data.
         displayTask(tasks);
+        updateAnalyticBox(tasks);
       }
     } catch (e) {
       showAlert("Unable to mark task as isCompleted", "error");
@@ -309,6 +312,7 @@ addBtn.addEventListener("click", async () => {
 
   let tasks = await getTaskList();
   displayTask(tasks);
+  updateAnalyticBox(tasks);
 
   showAlert("Task added successfully!", "success");
 
