@@ -89,22 +89,24 @@ const deleteTask = async (req, res, next) => {
 
 const sortTask = async (req, res, next) => {
   try {
-    let { sortFilter } = req.query;
+    console.log("inside backend sorting")
+    const  sortFilter  = req.query.sortFilter;
+    console.log(sortFilter);
+
     let filteredTasks = null;
 
     if (sortFilter === 'pending') {
-      filteredTasks = await taskModel.find({
-        $match: [{ isCompleted: false }],
-      });
+      filteredTasks = await taskModel.find({ isCompleted: false });
     } else if (sortFilter === 'completed') {
-      filteredTasks = await taskModel.find({ $match: [{ isCompleted: true }] });
+      filteredTasks = await taskModel.find({ isCompleted: true });
     }
 
     if (!filteredTasks) {
       throw new Error('cannot fetch sorted tasks');
     }
-    return filteredTasks;
-    
+    console.log("this is filtered tasks", filteredTasks);
+    return await res.json(filteredTasks);
+
   } catch (e) {
     next(e);
   }

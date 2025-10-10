@@ -331,11 +331,14 @@ addBtn.addEventListener("click", async () => {
 
 async function sorting() {
   try {
+    console.log("inside frontend sorting");
     const sortValue = sortInput.value;
     let sortedTasks = await sortTask(sortValue);
+    console.log(sortedTasks);
 
     //display tasks.
-    displayTask(tasks);
+    displayTask(sortedTasks);
+
   } catch (e) {
     console.log(e);
   }

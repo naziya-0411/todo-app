@@ -85,15 +85,13 @@ async function searchTask(text, filter) {
 }
 // const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
 
-async function sortTask(filter) {
+async function sortTask(sortFilter) {
   try {
-    const res = await fetch("http://localhost:8000/sort", {
-      method: "GET",
-      body: JSON.stringify({ sortFilter: filter }),
-    });
+    const res = await fetch(`http://localhost:8000/sort?sortFilter=${sortFilter}`);
     if (!res.ok) {
       throw new Error("Error occurred while sorting");
     }
+    return await res.json(); 
   } catch (e) {
     console.log(e);
     return res.status(500).json({ error: e });
