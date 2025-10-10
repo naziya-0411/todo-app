@@ -5,14 +5,14 @@ import toDoValidations from '../validations/middlewares/taskValidation.js';
 
 const validationInstance = new toDoValidations();
 const taskControllerInstance = new taskController();
-const todoRouter = express.Router();
+const taskRouter = express.Router();
 
-todoRouter.get('/', taskControllerInstance.getAllTasks);
-todoRouter.post('/',validationInstance.validateRequest, taskControllerInstance.addNewTask);//adding middleware for data validation.
-todoRouter.patch('/:id', taskControllerInstance.updateCompletionStatus);
-todoRouter.put('/:id',validationInstance.updateRequest, taskControllerInstance.updateTask);//adding middleware for data validation.
-todoRouter.delete('/:id', taskControllerInstance.deleteTask);
-todoRouter.get('/search', taskControllerInstance.searchTask);
-todoRouter.get('/sort', taskControllerInstance.sortTask);
+taskRouter.get('/', taskControllerInstance.getAllTasks);
+taskRouter.post('/',validationInstance.validateRequest, taskControllerInstance.addNewTask);//adding middleware for data validation.
+taskRouter.patch('/:id', taskControllerInstance.updateCompletionStatus);
+taskRouter.put('/:id',validationInstance.updateRequest, taskControllerInstance.updateTask);//adding middleware for data validation.
+taskRouter.delete('/:id', taskControllerInstance.deleteTask);
+taskRouter.get('/search', taskControllerInstance.searchTask);
+taskRouter.get('/sort', taskControllerInstance.sortTask);
 
-export default todoRouter;
+export default taskRouter;
