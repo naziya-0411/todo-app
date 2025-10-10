@@ -17,8 +17,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-app.use('/', taskRouter);
 app.use('/user', userRouter);
+app.use('/', taskRouter);
 
 //global middleware for catching error.
 app.use((err, req, res) => {
