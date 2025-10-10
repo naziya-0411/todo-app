@@ -92,7 +92,7 @@ function displayTask(tasks) {
         </div>
       </div>`;
 
-    newLi.id = t._id; //_id
+    newLi.id = t._id;
     ul.appendChild(newLi);
   });
 
@@ -315,8 +315,8 @@ addBtn.addEventListener("click", async () => {
     task: taskInput,
     preference: preferenceInput,
     tags: tagsInputArray,
+    isCompleted: false,
   };
-  console.log(taskData);
 
   await addTask(taskData);
 

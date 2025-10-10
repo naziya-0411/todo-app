@@ -18,7 +18,7 @@ async function addTask(taskData) {
     const res = await fetch("http://localhost:8000/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ taskData }),
+      body: JSON.stringify(taskData),
     });
     // if (!res.ok) throw new Error('Failed to create task');
     showAlert("Task added successfully!", "success");
@@ -48,7 +48,7 @@ async function updateTask(id, updatedData) {
     const res = await fetch(`http://localhost:8000/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ updatedData }),
+      body: JSON.stringify(updatedData),
     });
     if (!res.ok) throw new Error("Failed to update task");
     showAlert("Task updated successfully!", "success");
@@ -84,6 +84,7 @@ async function searchTask(text, filter) {
   // }
 }
 // const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
+
 async function sortTask(filter) {
   try {
     const res = await fetch("http://localhost:8000/sort", {

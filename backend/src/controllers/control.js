@@ -10,23 +10,12 @@ const getAllTasks = async (req, res, next) => {
     return await res.json(data);
   } catch (e) {
     next(e);
-    res.status(500).json({ error: `Failed to read tasks ${e}` });
   }
 };
 
 const addNewTask = async (req, res, next) => {
   try {
-    const { taskData } = req.body;
-
-    const newTask = {
-      id: new Date().getTime(),
-      ...taskData,
-      isCompleted: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    console.log('newTAsks created', newTask);
-    await taskModel.create(newTask);
+    await taskModel.create(req.body);
     res.status(201).json();
   } catch (e) {
     next(e);
@@ -40,18 +29,21 @@ const updateCompletionStatus = async (req, res, next) => {
 
     const prevItem = await taskModel.findById(id);
 
-    if (!prevItem) throw new Error('Cannot Find Item!');
+    if (!prevItem) {
+      throw new Error('Cannot Find Item!', {statusCode: 404});
+    }
 
     const updatedItem = await taskModel.findByIdAndUpdate(
       id,
       { $set: { isCompleted: !prevItem.isCompleted } },
       { new: true }
     );
+
     if (!updatedItem) {
       throw new Error('Failed to update the completion status');
     }
 
-    return res.status(200).json({ message: 'isCompleted' });
+    return res.status(200).json({ message: 'Completion status updated.' });
   } catch (e) {
     next(e);
   }
@@ -61,30 +53,18 @@ const updateTask = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const { task, preference, tags, isCompleted } = req.body;
-
-    let updatedFields = {
-      task,
-      preference,
-      tags,
-      isCompleted,
-    };
-
-    updatedFields.updatedAt = new Date().toISOString();
-
     const updatedTask = await taskModel.findByIdAndUpdate(
       id,
-      { $set: updatedFields },
+      { $set: req.body },
       { new: true }
     );
 
     if (!updatedTask) {
-      return res.status(404).json({ error: 'Task not found' });
+      throw new Error('Unable to update task!');
     }
 
     res.status(200).json({
-      success: 'Task updated successfully!',
-      updatedTask,
+      message: 'Task updated successfully!',
     });
   } catch (e) {
     next(e);
@@ -96,8 +76,9 @@ const deleteTask = async (req, res, next) => {
     const { id } = req.params;
 
     const delItem = await taskModel.findByIdAndDelete(id);
+
     if (!delItem) {
-      throw new Error('Item to be deleted not found');
+      throw new Error('Item to be deleted not found', {statusCode: 404});
     }
 
     res.status(204).json({ message: `task deleted successfully!` });
@@ -123,6 +104,7 @@ const sortTask = async (req, res, next) => {
       throw new Error('cannot fetch sorted tasks');
     }
     return filteredTasks;
+    
   } catch (e) {
     next(e);
   }

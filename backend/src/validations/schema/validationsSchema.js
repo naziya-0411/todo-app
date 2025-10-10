@@ -7,7 +7,7 @@ export const taskCreateSchema = yup.object({
     preference: yup.string()
         .required(),
     tags: yup.array().of(yup.string()).default([]),
-    completed: yup.boolean().default(false),
+    isCompleted: yup.boolean().default(false),
 })
 
 export const taskUpdateSchema = yup.object({
@@ -15,6 +15,6 @@ export const taskUpdateSchema = yup.object({
     preference: yup.string()
         .required(),
     tags: yup.array().of(yup.string()),
-    completed: yup.boolean(),
+    isCompleted: yup.boolean(),
 })
 

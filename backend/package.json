@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch src/server.js",
+    "dev": "nodemon --inspect src/server.js",
     "format": " npx prettier --write .",
     "lint": "npx eslint .",
     "start": "node src/server.js",
