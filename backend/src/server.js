@@ -1,7 +1,8 @@
-import express from 'express'
+import express from 'express';
 import cors from 'cors';
 import { PORT, DOMAIN, URI } from '../constants.js';
-import todoRouter from './routes/taskRoute.js';
+import taskRouter from './routes/taskRoute.js';
+import userRouter from './routes/userRoute.js';
 import { connectToMongoDB } from '../DB/connect.js';
 
 const app = express();
@@ -16,16 +17,17 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-app.use('/', todoRouter);
+app.use('/', taskRouter);
+app.use('/user', userRouter);
 
 //global middleware for catching error.
 app.use((err, req, res) => {
   res.status(500).send({
     message: err.message,
     success: false,
-  })
-})
+  });
+});
 
 app.listen(port, () => {
-    console.log(`Server Running At ${domain}:${port}`);
+  console.log(`Server Running At ${domain}:${port}`);
 });

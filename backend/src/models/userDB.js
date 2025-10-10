@@ -2,6 +2,10 @@ import { mongoose } from 'mongoose';
 
 const userSchema = new mongoose.Schema(
   {
+    name: {
+        type: String,
+        required: true,
+    },
     email: {
       type: String,
       unique: true,
@@ -21,6 +25,6 @@ const userSchema = new mongoose.Schema(
 );
 
 // creating Model
-const userModel = mongoose.model('todo-db', userSchema);
+const userModel = mongoose.model('user-db', userSchema);
 
 export { userModel };

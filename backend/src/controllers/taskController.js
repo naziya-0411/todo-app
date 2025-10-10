@@ -1,14 +1,15 @@
 import { taskModel } from '../models/taskDb.js';
 
-//fetching all tasks.
-
 export default class taskController{
+  //fetching all tasks.
   getAllTasks = async (req, res, next) => {
     try {
       const data = await taskModel.find();
+
       if (!data) {
         throw new Error('Failed to read task List');
       }
+
       return await res.json(data);
     } catch (e) {
       next(e);
@@ -18,6 +19,7 @@ export default class taskController{
   addNewTask = async (req, res, next) => {
     try {
       await taskModel.create(req.body);
+      
       res.status(201).json();
     } catch (e) {
       next(e);
