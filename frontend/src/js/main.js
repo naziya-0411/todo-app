@@ -10,6 +10,7 @@ import {
   updateTask,
   updateCompletionStatus,
   sortTask,
+  searchTask,
 } from "./api.js";
 
 //declaring btn, tasklist and predefined style for functional btns.
@@ -239,41 +240,27 @@ async function createFunctionalBtns() {
 }
 
 //🟢searching.
-searchBox.addEventListener("input", async () => {
+searchBox.addEventListener("input", searching);
+
+async function searching() {
   try {
     const searchText = searchBox.value.trim();
-    const filterValue = searchSelect.value;
+    const searchFilter = searchSelect.value;
 
-    if (!filterValue) throw new Error("Please select filter!");
-    console.log("Searching:", searchText, filterValue);
+    if (!searchFilter) throw new Error("Please select filter!");
+    console.log("frontend searching", searchText, searchFilter);
 
-    //getting tasks from backend.
-    const tasks = await getTaskList();
-    let filteredTasks = tasks;
-
-    if (filterValue === "tags") {
-      filteredTasks = tasks.filter(
-        (t) =>
-          Array.isArray(t.tags) &&
-          t.tags.some((tag) => tag.toLowerCase().includes(searchText))
-      );
-    } else if (filterValue === "title") {
-      filteredTasks = tasks.filter(
-        (t) => t.task && t.task.toLowerCase().includes(searchText)
-      );
-    } else if (filterValue === "preference") {
-      filteredTasks = tasks.filter(
-        (t) => t.preference && t.preference.toLowerCase().includes(searchText)
-      );
-    }
+    // getting tasks from backend.
+    const filteredTasks = await searchTask(searchText, searchFilter);
 
     console.log("Filtered tasks:", filteredTasks);
     displayTask(filteredTasks);
+
   } catch (err) {
-    showAlert(err.message, "error");
+    // showAlert(err.message, "error");
     console.error(err);
   }
-});
+}
 
 //🟢emptying all the boxes after adding input.
 function restoreInputBoxes() {
@@ -338,7 +325,6 @@ async function sorting() {
 
     //display tasks.
     displayTask(sortedTasks);
-
   } catch (e) {
     console.log(e);
   }

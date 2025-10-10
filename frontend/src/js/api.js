@@ -75,23 +75,31 @@ async function updateCompletionStatus(id) {
   }
 }
 
-async function searchTask(text, filter) {
-  // try{
-  //     const res = await fetch('http://localhost:8000/search',{
-  //         method: 'GET',
-  //     });
-  // } catch(e) {
-  // }
-}
-// const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
-
-async function sortTask(sortFilter) {
+async function searchTask(searchText, searchFilter) {
   try {
-    const res = await fetch(`http://localhost:8000/sort?sortFilter=${sortFilter}`);
+    const res = await fetch(
+      `http://localhost:8000/search?searchText=${searchText}&searchFilter=${searchFilter}`
+    );
     if (!res.ok) {
       throw new Error("Error occurred while sorting");
     }
-    return await res.json(); 
+    return await res.json();
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ error: e });
+  }
+}
+
+// const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
+async function sortTask(sortFilter) {
+  try {
+    const res = await fetch(
+      `http://localhost:8000/sort?sortFilter=${sortFilter}`
+    );
+    if (!res.ok) {
+      throw new Error("Error occurred while sorting");
+    }
+    return await res.json();
   } catch (e) {
     console.log(e);
     return res.status(500).json({ error: e });

@@ -113,17 +113,29 @@ const sortTask = async (req, res, next) => {
 };
 
 const searchTask = async (req, res, next) => {
-  // try {
-  //   let { searchText, searchFilter } = req.query;
-  //   searchText = searchText.toLowerCase();
-  //   const filteredTasks = await taskModel.find(query);
-  //   if (!filteredTasks) {
-  //     throw new Error('Error occured while searching!');
-  //   }
-  //   return res.status(200).json(filteredTasks);
-  // } catch (e) {
-  //  next(e);
-  // }
+  try {
+    let { searchText, searchFilter } = req.query;
+    searchText = searchText.toLowerCase();
+
+    console.log(searchFilter, searchText);
+
+    const filteredTasks = await taskModel.find({
+      $or: [
+        { task: { $regex: searchText, $options: "i" } },
+        { preference: { $regex: searchText, $options: "i" } },
+        { tags: { $elemMatch: { $regex: searchText, $options: "i" } } }
+      ]
+    });
+
+    if (!filteredTasks) {
+      throw new Error('cannot fetch searched tasks');
+    }
+    console.log("this is filtered tasks", filteredTasks);
+    return await res.json(filteredTasks);
+
+  } catch (e) {
+   next(e);
+  }
 };
 
 export {
