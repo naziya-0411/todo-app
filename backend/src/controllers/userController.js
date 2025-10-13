@@ -55,11 +55,11 @@ export default class userController {
     }
   };
 
-  renderLoginPage = (req, res, next) => {
-    
-  }
+  // renderLoginPage = (req, res, next) => {
 
-  renderSignupPage = (req, res, next) =>{
+  // }
 
-  }
+  // renderSignupPage = (req, res, next) =>{
+
+  // }
 }
