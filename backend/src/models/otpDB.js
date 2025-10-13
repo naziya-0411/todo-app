@@ -1,6 +1,6 @@
 import { mongoose } from 'mongoose'
 
-const otpModel = new mongoose.Schema({
+const otpSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
@@ -22,4 +22,8 @@ const otpModel = new mongoose.Schema({
 
 }, {Timestamp: true})
 
-export default mongoose.model('Otp', otpModel);
+const otpModel =  mongoose.model('otp-db', otpSchema);
+
+export {
+    otpModel,
+}

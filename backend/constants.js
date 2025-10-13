@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import protectedRoute from './src/routes/protectedRoute';
+
 dotenv.config({
     path: './.env',
 })

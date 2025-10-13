@@ -1,8 +1,0 @@
-
-const verifyOTP = () => {
-
-}
-
-export{
- verifyOTP
-}

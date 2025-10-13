@@ -14,8 +14,6 @@ export default class userController {
         throw new Error({message: "User already exists"}, {statusCode: 401});
       }
 
-      
-
       const newUser = userModel.create({ username, email, password: hashedPassword });
 
       if (!newUser) {
@@ -56,4 +54,12 @@ export default class userController {
       next(e);
     }
   };
+
+  renderLoginPage = (req, res, next) => {
+    
+  }
+
+  renderSignupPage = (req, res, next) =>{
+
+  }
 }

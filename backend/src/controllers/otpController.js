@@ -1,37 +1,49 @@
-import { otpModel } from '../models/otpDB';
-import generateOTP from 'otp-generator';
+import { otpModel } from '../models/otpDB.js';
+import otpGenerator from 'otp-generator';
 import { mailSender } from '../utils/mailSender.js';
 
 export default class otpController {
-  sendOTP = async (email) => {
+  sendOTP = async (req, res, next) => {
     try {
-      const otp = generateOTP();
+      const { email } = req.body;
+
+      let otp = otpGenerator.generate(6, {
+        upperCaseAlphabets: false,
+        lowerCaseAlphabets: false,
+        specialChars: false,
+      });
+
       const newOTP = new otpModel({ email, otp });
       await newOTP.save();
 
+      // Send OTP via email
       await mailSender({
         to: email,
         subject: 'Your OTP',
         message: `<p>Your OTP is: <strong>${otp}</strong></p>`,
       });
 
-      return { success: true, message: 'OTP sent successfully' };
-    } catch {
-      return { success: false, message: 'Failed to send OTP' };
+      res.status(200).json({ success: true, message: 'OTP sent successfully' });
+    } catch (e) {
+      next(e);
     }
   };
 
-  verifyOTP = async (email, otp) => {
+  // Verify OTP provided by the user
+  verifyOTP = async (req, res, next) => {
     try {
+      const { email, otp } = req.query;
       const existingOTP = await otpModel.findOneAndDelete({ email, otp });
 
       if (existingOTP) {
-        return { success: true, message: 'OTP verified successfully' };
+        res
+          .status(200)
+          .json({ success: true, message: 'OTP verification successful' });
       } else {
-        return { success: false, message: 'Wrong OTP provided' };
+        res.status(400).json({ success: false, error: 'Invalid OTP' });
       }
-    } catch {
-      return { success: false, message: 'Failed to send OTP' };
+    } catch (e) {
+      next(e);
     }
   };
 }

@@ -6,6 +6,7 @@ import userRouter from './routes/userRoute.js';
 import protectedRouter from './routes/protectedRoute.js'
 import { connectToMongoDB } from '../DB/connect.js';
 import { loggerMiddleware } from './middlewares/logger.js'
+import { otpRouter } from './routes/otpRoute.js';
 
 const app = express();
 const port = PORT;
@@ -21,6 +22,7 @@ app.use(loggerMiddleware);
 
 app.use('/user', userRouter);
 app.use('/protected', protectedRouter);
+app.use('/otp', otpRouter);
 app.use('/', taskRouter);
 
 //global middleware for catching error.
