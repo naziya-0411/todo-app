@@ -1,4 +1,4 @@
-export default function loggerMiddleware(req, res, next) {
+function loggerMiddleware(req, res, next) {
   try {
     const { body, headers, params, query, originalUrl, baseUrl, host } = req;
 
@@ -21,4 +21,8 @@ export default function loggerMiddleware(req, res, next) {
   } catch (e) {
     next(e);
   }
+}
+
+export {
+    loggerMiddleware,
 }

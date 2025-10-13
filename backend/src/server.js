@@ -5,7 +5,7 @@ import taskRouter from './routes/taskRoute.js';
 import userRouter from './routes/userRoute.js';
 import protectedRouter from './routes/protectedRoute.js'
 import { connectToMongoDB } from '../DB/connect.js';
-import { loggerMiddleware } from ''
+import { loggerMiddleware } from './middlewares/logger.js'
 
 const app = express();
 const port = PORT;
@@ -13,16 +13,14 @@ const domain = DOMAIN;
 const uri = URI;
 
 connectToMongoDB(uri);
-console.log('this is connect to mongo db function');
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
-
 app.use(loggerMiddleware);
 
 app.use('/user', userRouter);
-app.use('/protectedRoute', protectedRouter);
+app.use('/protected', protectedRouter);
 app.use('/', taskRouter);
 
 //global middleware for catching error.

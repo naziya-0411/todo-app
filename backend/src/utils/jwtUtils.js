@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET_KEY } from '../../constants.js';
 
-const getAccessToken = async (req, res, next) => {
+const getAccessToken = async (user) => {
   const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, {
     expiresIn: '6h',
   });

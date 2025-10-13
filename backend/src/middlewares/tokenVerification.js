@@ -1,10 +1,18 @@
-import Router from 'express';
-import verifyToken from '../middlewares/tokenVerification.js';
+import jwt from "jsonwebtoken";
+import { JWT_SECRET_KEY } from "../../constants.js";
 
-const protectedRoute = new Router();
+function verifyToken(req, res, next){
+    try{
+        const token = req.headers('authorization'); 
+        if(!token){ 
+            throw new Error('Token not found, access denied', {statusCode: 401});
+        }
+        const tokenVerified = jwt.verify(token, JWT_SECRET_KEY);//tokenVerified will have the details of user.
+        req.user = tokenVerified._id;
+        next();
+    } catch (e) {
+        next(e);
+    }
+}
 
-protectedRoute.get('/', verifyToken, (req, res) => {
-  res.status(200).json({ message: 'Protected route accessed' });
-});
-
-export default protectedRoute;
+export default verifyToken;

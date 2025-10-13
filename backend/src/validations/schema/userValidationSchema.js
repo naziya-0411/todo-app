@@ -1,7 +1,7 @@
 import * as yup from 'yup'
 
 export const userCreateSchema = yup.object({
-    name: yup
+    username: yup
         .string()
         .required('Username is required'),
     email: yup.string()

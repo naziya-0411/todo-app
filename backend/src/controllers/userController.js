@@ -1,4 +1,4 @@
-import { userModel } from '../models/taskDb.js';
+import { userModel } from '../models/userDB.js';
 import bcrypt from 'bcrypt';
 import { getAccessToken } from '../utils/jwtUtils.js';
 
@@ -8,7 +8,7 @@ export default class userController {
       const { username, email, password } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const newUser = userModel.create({ username, email, hashedPassword });
+      const newUser = userModel.create({ username, email, password: hashedPassword });
 
       if (!newUser) {
         throw new Error('Unable to register new user!');
@@ -37,7 +37,7 @@ export default class userController {
         return res.status(401).json({ error: 'Authentication failed' });
       }
 
-      const { accessToken } = getAccessToken();
+      const { accessToken } = getAccessToken(user);
 
       res.status(200).json({ user, accessToken });
     } catch (e) {
