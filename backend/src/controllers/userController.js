@@ -8,6 +8,14 @@ export default class userController {
       const { username, email, password } = req.body;
       const hashedPassword = await bcrypt.hash(password, 10);
 
+      const user = await userModel.findOne({ email });
+
+      if (user) {
+        throw new Error({message: "User already exists"}, {statusCode: 401});
+      }
+
+      
+
       const newUser = userModel.create({ username, email, password: hashedPassword });
 
       if (!newUser) {

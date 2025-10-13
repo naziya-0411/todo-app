@@ -1,5 +1,5 @@
 // utils/mailSender.js
-import nodemailer from 'nodemailer'
+import nodemailer from 'nodemailer';
 import { MAIL_HOST, MAIL_PASS, MAIL_USER } from '../../constants.js';
 
 const mailSender = async (email, title, body) => {
@@ -19,7 +19,7 @@ const mailSender = async (email, title, body) => {
       subject: title,
       html: body,
     });
-    
+
     console.log("Email info: ", info);
     return info;
 

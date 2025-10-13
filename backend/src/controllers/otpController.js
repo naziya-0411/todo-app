@@ -1,37 +1,37 @@
 import { otpModel } from '../models/otpDB';
-
-
-
+import generateOTP from 'otp-generator';
+import { mailSender } from '../utils/mailSender.js';
 
 export default class otpController {
-  sendOTP = async () => {
+  sendOTP = async (email) => {
     try {
-      let transporter = nodemailer.createTransport({
-        host: MAIL_HOST,
-        auth: {
-            user: MAIL_USER,
-            pass: MAIL_PASS,
-        }
-        });
+      const otp = generateOTP();
+      const newOTP = new otpModel({ email, otp });
+      await newOTP.save();
 
-        let info = await transporter.sendMail({
-        from: 'naziya@itobuz.com - Naziya Begum',
+      await mailSender({
         to: email,
-        subject: title,
-        html: body,
-        });
-        console.log("Email info: ", info);
-        return info;
-    } catch (error) {
-        console.log(error.message);
+        subject: 'Your OTP',
+        message: `<p>Your OTP is: <strong>${otp}</strong></p>`,
+      });
+
+      return { success: true, message: 'OTP sent successfully' };
+    } catch {
+      return { success: false, message: 'Failed to send OTP' };
     }
-}
-
-  resendOTP = () => {
-
   };
 
+  verifyOTP = async (email, otp) => {
+    try {
+      const existingOTP = await otpModel.findOneAndDelete({ email, otp });
+
+      if (existingOTP) {
+        return { success: true, message: 'OTP verified successfully' };
+      } else {
+        return { success: false, message: 'Wrong OTP provided' };
+      }
+    } catch {
+      return { success: false, message: 'Failed to send OTP' };
+    }
+  };
 }
-
-
-

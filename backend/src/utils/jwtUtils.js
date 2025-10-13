@@ -15,4 +15,4 @@ const getRefreshToken = async (user) =>{
     return token;
 };
 
-export { getAccessToken, getRefreshToken};
+export { getAccessToken, getRefreshToken };
