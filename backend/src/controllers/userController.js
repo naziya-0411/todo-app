@@ -1,6 +1,6 @@
 import { userModel } from '../models/userDB.js';
 import bcrypt from 'bcrypt';
-import { getAccessToken } from '../utils/jwtUtils.js';
+import { getAccessToken, getRefreshToken} from '../utils/jwtUtils.js';
 
 export default class userController {
   registerUser = async (req, res, next) => {
@@ -36,10 +36,14 @@ export default class userController {
       if (!passwordMatch) {
         return res.status(401).json({ error: 'Authentication failed' });
       }
+ 
+      const  accessToken  = await getAccessToken(user);
+      const refreshToken = await getRefreshToken(user);
+      console.log("this is access and refresh token", accessToken, refreshToken);
 
-      const { accessToken } = getAccessToken(user);
+      user.isVerified = true;
 
-      res.status(200).json({ user, accessToken });
+      res.status(200).json({ user, accessToken, refreshToken });
     } catch (e) {
       next(e);
     }

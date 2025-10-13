@@ -1,15 +1,18 @@
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET_KEY } from '../../constants.js';
+import { JWT_SECRET_KEY, JWT_REFRESH_KEY } from '../../constants.js';
 
 const getAccessToken = async (user) => {
   const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, {
-    expiresIn: '6h',
+    expiresIn: '1h',
   });
   return token;
 };
 
-// const getRefreshToken = async ( req, res, next) =>{
-//     const token = jwt.sign()
-// }
+const getRefreshToken = async (user) =>{
+    const token = jwt.sign({userId: user._id}, JWT_REFRESH_KEY, {
+      expiresIn: '60d',
+    });
+    return token;
+};
 
-export { getAccessToken };
+export { getAccessToken, getRefreshToken};
