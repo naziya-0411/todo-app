@@ -6,5 +6,7 @@ dotenv.config({
 const PORT = Number(process.env.PORT) || 8000;
 const DOMAIN = process.env.DOMAIN || 'http://127.0.0.1';
 const URI = process.env.URI ;
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+const JWT_REFRESH_KEY = process.env.JWT_REFRESH_KEY;
 
-export {PORT, DOMAIN, URI};
+export {PORT, DOMAIN, URI, JWT_REFRESH_KEY, JWT_SECRET_KEY};

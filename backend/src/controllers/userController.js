@@ -1,35 +1,47 @@
-import { taskModel } from '../models/taskDb.js';
+import { userModel } from '../models/taskDb.js';
+import bcrypt from 'bcrypt';
+import { getAccessToken } from '../utils/jwtUtils.js';
 
 export default class userController {
-  loginUser = async (req, res, next) => {
+  registerUser = async (req, res, next) => {
     try {
       const { username, email, password } = req.body;
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-      const user = await User.findOne({ email });
+      const newUser = userModel.create({ username, email, hashedPassword });
+
+      if (!newUser) {
+        throw new Error('Unable to register new user!');
+      }
+      res
+        .status(201)
+        .json({ success: true, message: 'User generated successfully' });
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  loginUser = async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+
+      const user = await userModel.findOne({ email });
 
       if (!user) {
         return res.status(401).json({ error: 'User not found' });
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password);
+
       if (!passwordMatch) {
         return res.status(401).json({ error: 'Authentication failed' });
       }
 
-      const token = createAccessKey();
+      const { accessToken } = getAccessToken();
 
-      res.status(200).json({ token });
-    } catch (error) {
-      res.status(500).json({ error: 'Login failed' });
+      res.status(200).json({ user, accessToken });
+    } catch (e) {
+      next(e);
     }
   };
-
-  createAccessKey = async (req, res, next) => {
-    const token = jwt.sign({ userId: user._id }, 'your-secret-key', {
-      expiresIn: '6h',
-    });
-    return token;
-  };
-
-  
 }

@@ -1,11 +1,10 @@
 import express from 'express';
-
 import userController from '../controllers/taskController.js';
-
 const userRouter = express.Router();
 
-const userControllerInstance = new userController();
+const userInstance = new userController();
 
-userRouter.get('/login', userControllerInstance.loginUser);
+userRouter.post('/login', userInstance.loginUser);
+userRouter.post('/register', userInstance.registerUser);
 
 export default userRouter;
