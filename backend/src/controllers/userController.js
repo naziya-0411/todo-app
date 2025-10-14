@@ -45,6 +45,7 @@ export default class userController {
  
       const  accessToken  = await getAccessToken(user);
       const refreshToken = await getRefreshToken(user);
+
       console.log("this is access and refresh token", accessToken, refreshToken);
 
       user.isVerified = true;
