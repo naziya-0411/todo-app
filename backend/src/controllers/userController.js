@@ -55,11 +55,7 @@ export default class userController {
     }
   };
 
-  // renderLoginPage = (req, res, next) => {
-
-  // }
-
-  // renderSignupPage = (req, res, next) =>{
-
-  // }
+  refreshToken = (req, res, next) =>{
+    
+  }
 }

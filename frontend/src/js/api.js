@@ -1,10 +1,19 @@
-import { showAlert } from "./main.js";
+import  showAlert  from "./main.js";
+// import {DOMAIN, PORT} from '../../constants.js';
+
+const DOMAIN = '127.0.0.1';
+const PORT = 8000;
+
+const BASE_URL = `http://${DOMAIN}:${PORT}`;
 
 //🟢extracting taskList from database.
 async function getTaskList() {
   try {
-    const res = await fetch("http://localhost:8000");
+    console.log(BASE_URL);
+    const res = await fetch(`${BASE_URL}`);
+
     if (!res.ok) throw new Error("Failed to fetch tasks from backend.");
+
     return await res.json(); //returning tasksList fetched from DB.
   } catch (e) {
     console.error("Error fetching tasks:", e);
@@ -15,13 +24,15 @@ async function getTaskList() {
 //🟢adding task to database..
 async function addTask(taskData) {
   try {
-    const res = await fetch("http://localhost:8000/", {
+    const res = await fetch(`${BASE_URL}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
     });
+
     // if (!res.ok) throw new Error('Failed to create task');
     showAlert("Task added successfully!", "success");
+
   } catch (e) {
     console.error("Error creating task:", e);
     showAlert("Could not add task to server", "error");
@@ -31,13 +42,16 @@ async function addTask(taskData) {
 //🟢removing task from database.
 async function deleteTask(id) {
   try {
-    const res = await fetch(`http://localhost:8000/${id}`, {
+    const res = await fetch(`${BASE_URL}/${id}`, {
       method: "DELETE",
     });
+
     if (!res.ok) throw new Error("Failed to delete task");
+
     showAlert("Task deleted successfully!", "success");
   } catch (e) {
     console.error("Error deleting task:", e);
+
     showAlert("Could not delete task from server", "error");
   }
 }
@@ -45,12 +59,14 @@ async function deleteTask(id) {
 //🟢updating tasks.
 async function updateTask(id, updatedData) {
   try {
-    const res = await fetch(`http://localhost:8000/${id}`, {
+    const res = await fetch(`${BASE_URL}/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedData),
     });
+
     if (!res.ok) throw new Error("Failed to update task");
+
     showAlert("Task updated successfully!", "success");
     return;
   } catch (e) {
@@ -62,7 +78,7 @@ async function updateTask(id, updatedData) {
 //🟢updating only completion status.
 async function updateCompletionStatus(id) {
   try {
-    const res = await fetch(`http://localhost:8000/${id}`, {
+    const res = await fetch(`${BASE_URL}/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
@@ -78,11 +94,13 @@ async function updateCompletionStatus(id) {
 async function searchTask(searchText, searchFilter) {
   try {
     const res = await fetch(
-      `http://localhost:8000/search?searchText=${searchText}&searchFilter=${searchFilter}`
+      `${BASE_URL}/search?searchText=${searchText}&searchFilter=${searchFilter}`
     );
+
     if (!res.ok) {
       throw new Error("Error occurred while sorting");
     }
+
     return await res.json();
   } catch (e) {
     console.log(e);
@@ -94,11 +112,13 @@ async function searchTask(searchText, searchFilter) {
 async function sortTask(sortFilter) {
   try {
     const res = await fetch(
-      `http://localhost:8000/sort?sortFilter=${sortFilter}`
+      `${BASE_URL}/sort?sortFilter=${sortFilter}`
     );
+
     if (!res.ok) {
       throw new Error("Error occurred while sorting");
     }
+
     return await res.json();
   } catch (e) {
     console.log(e);

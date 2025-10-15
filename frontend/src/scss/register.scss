@@ -56,7 +56,7 @@ body {
   @include bubble(220px, $primary-dark, 0.3, 60%, 70%);
 }
 
-.login-form {
+.register-form {
   position: relative;
   z-index: 2;
   display: flex;
@@ -121,7 +121,7 @@ body {
     border-radius: 1.2rem;
   }
 
-  .login-form h1 {
+  .register-form h1 {
     font-size: 1.5rem;
   }
 }

@@ -1,13 +1,14 @@
 // routes/otpRoutes.js
-import Router from 'express';
+import express from 'express';
 import otpController from '../controllers/otpController.js';
 
 const otpInstance = new otpController();
 
-const otpRouter = Router();
+const otpRouter = express.Router();
 
-otpRouter.get('/sendOTP', otpInstance.sendOTP);
-otpRouter.get('/verifyOTP', otpInstance.verifyOTP);
+otpRouter.post('/sendOTP', otpInstance.sendOTP);
+otpRouter.post('/verifyOTP', otpInstance.verifyOTP);
+otpRouter.post('/resendOTP', otpInstance.sendOTP);
 
 export {
     otpRouter,

@@ -1,17 +1,18 @@
+
 const DOMAIN = "127.0.0.1";
 const PORT = 8000;
 
 const BASE_URL = `http://${DOMAIN}:${PORT}`;
 
-const loginForm = document.querySelector(".login-form");
-const emailBox = document.querySelector("#email");
-const passwordBox = document.querySelector("#password");
+const otpForm = document.querySelector('.otp-form');
+const otpBox = document.querySelector('.otp-input');
+const verifyBtn = document.querySelector('.verify-btn');
+const resendBtn = document.querySelector('.resend-btn');
 
-loginForm.addEventListener("submit", async (e) => {
+otpForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = emailBox.value.trim();
-  const password = passwordBox.value;
+  const otp = otpForm.querySelector('')
 
   if (!email || !password) {
     return;

@@ -349,7 +349,7 @@ function updateAnalyticBox(tasks) {
 }
 
 //🟢showing Alert message.
-export function showAlert(message, method) {
+export default function showAlert(message, method) {
   messageBox.innerText = message;
   // remove any previous state first
   alertBox.classList.remove("success", "error", "show");
@@ -381,3 +381,5 @@ function showConfirmBox(message) {
     };
   });
 }
+
+
