@@ -1,4 +1,4 @@
-import userApiClass from "./userApi.js";
+import userApiClass from "../userApi.js";
 
 const userApi = new userApiClass();
 

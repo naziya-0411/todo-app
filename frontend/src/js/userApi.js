@@ -97,12 +97,12 @@ export default class userApiClass {
     }
   };
 
-  resetPassword = async (password) => {
+  resetPassword = async (email, password) => {
     try {
       const res = await fetch(`${BASE_URL}/user/resetPassword`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {

@@ -1,4 +1,4 @@
-import userApiClass from "./userApi.js";
+import userApiClass from "../userApi.js";
 // import showAlert  from "./main.js";
 
 const userApi = new userApiClass();
