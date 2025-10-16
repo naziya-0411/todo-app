@@ -1,8 +1,6 @@
-import { DOMAIN, PORT } from "../../constants.js";
 import userApiClass from "./userApi.js";
 // import showAlert  from "./main.js";
 
-const BASE_URL = `http://${DOMAIN}:${PORT}`;
 const userApi = new userApiClass();
 
 const registerForm = document.querySelector(".register-form");
@@ -27,9 +25,11 @@ registerForm.addEventListener("submit", async (e) => {
     await userApi.registerUser(username, email, password);
 
     console.log("user registered successfully, moving to otp page");
+
     localStorage.setItem("email", email);
     await userApi.sendOTP(email);
-    window.location.href = "/pages/otp";
+
+    window.location.href = "/pages/otp?type=login";
   } catch (e) {
     console.log("error in registration");
   }

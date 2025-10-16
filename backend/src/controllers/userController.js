@@ -60,6 +60,8 @@ export default class userController {
   }
 
   resetPassword = (req, res, next) => {
+    const { email, newPassword } = req.body;
+    
 
   }
 }

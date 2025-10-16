@@ -1,7 +1,7 @@
 import  showAlert  from "./main.js";
 import {DOMAIN, PORT} from '../../constants.js';
 
-const BASE_URL = `http://${DOMAIN}:${PORT}`;
+const BASE_URL = `${DOMAIN}:${PORT}`;
 
 //🟢extracting taskList from database.
 async function getTaskList() {

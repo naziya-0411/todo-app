@@ -7,7 +7,8 @@ const BASE_URL = `${DOMAIN}:${PORT}`;
 export default class userApiClass {
   registerUser = async (username, email, password) => {
     try {
-      console.log(`${BASE_URL}/user/register`)
+      console.log(`${BASE_URL}/user/register`);
+
       const res = await fetch(`${BASE_URL}/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -77,7 +78,7 @@ export default class userApiClass {
 
   sendOTP = async (email) => {
     try {
-      const res = await fetch(`${BASE_URL}/otp/sendOTP`, {
+      const res = await fetch(`${BASE_URL}/otp/sendOTP?redirect=loginPage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -96,9 +97,31 @@ export default class userApiClass {
     }
   };
 
+  resetPassword = async (password) => {
+    try {
+      const res = await fetch(`${BASE_URL}/user/resetPassword`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.log("Unable to reset password");
+        throw new Error(errorData.message || "OTP failed");
+      }
+
+      console.log("password reset successfully");
+    } catch (e) {
+      console.error("unable to reset password", e);
+      throw e;
+    }
+  };
+
   refreshToken = async () => {
     try {
       const refreshToken = TokenManager.getRefreshToken();
+
       if (!refreshToken) {
         throw new Error("No refresh token available");
       }

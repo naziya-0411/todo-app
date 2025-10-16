@@ -17,9 +17,4 @@ export default class TokenManagerClass {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
     }
-
-    // isAuthenticated() {
-    //     const token = this.getAccessToken();
-    //     return !token;
-    // }
 }

@@ -1,8 +1,6 @@
-import { PORT, DOMAIN } from "../../constants.js";
 import userApiClass from "./userApi.js";
 
 const userApi = new userApiClass();
-const BASE_URL = `${DOMAIN}:${PORT}`;
 
 const otpBox = document.querySelector(".otp-input");
 const verifyBtn = document.querySelector(".verify-btn");
@@ -23,7 +21,16 @@ verifyBtn.addEventListener("click", async (e) => {
   }
 
   await userApi.verifyOTP(email, otp);
-  window.location.href = '/user/login';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const type = urlParams.get("type"); // "resetPage"
+  console.log(urlParams);
+
+  if(type === "login"){
+    window.location.href = '/pages/login'
+  } else{
+    window.location.href = "/pages/resetPassword";
+  }
 });
 
 resendBtn.addEventListener("click", async () => {
