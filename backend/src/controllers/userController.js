@@ -67,7 +67,8 @@ export default class userController {
   };
 
   refreshToken = (req, res, next) => {
-
+    const {refreshToken} = req.body;
+    
   };
 
   resetPassword = async (req, res, next) => {

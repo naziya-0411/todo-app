@@ -3,7 +3,7 @@ import { JWT_SECRET_KEY } from "../../constants.js";
 
 function verifyToken(req, res, next){
     try{
-        const token = req.headers('authorization'); 
+        const token = req.headers('Authorization'); 
         if(!token){ 
             throw new Error('Token not found, access denied', {statusCode: 401});
         }

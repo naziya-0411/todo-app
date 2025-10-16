@@ -8,7 +8,7 @@ const getAccessToken = async (user) => {
   return token;
 };
 
-const getRefreshToken = async (user) =>{
+const getRefreshToken = async (user) => {
     const token = jwt.sign({userId: user._id}, JWT_REFRESH_KEY, {
       expiresIn: '60d',
     });
