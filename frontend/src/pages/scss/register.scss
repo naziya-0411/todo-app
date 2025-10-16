@@ -1,5 +1,8 @@
-$primary-light: #d8b4fe;
-$primary-dark: #7e22ce;
+@import "bootstrap/scss/bootstrap";
+@import url("https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&display=swap");
+
+$primary-light: #682d92;
+$primary-dark: #04294f;
 $gradient: linear-gradient(135deg, $primary-dark, $primary-light);
 $white: #ffffff;
 $text-dark: #2e1065;
@@ -22,7 +25,7 @@ $shadow: rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Poppins", sans-serif;
+  font-family: "Fuzzy Bubbles", sans-serif;
 }
 
 body {
@@ -46,10 +49,14 @@ body {
   overflow: hidden;
 }
 
-.bubble-bg::before { @include bubble(180px, $primary-light, 0.25, 10%, 5%); }
-.bubble-bg::after  { @include bubble(220px, $primary-dark, 0.3, 60%, 70%); }
+.bubble-bg::before {
+  @include bubble(180px, $primary-light, 0.25, 10%, 5%);
+}
+.bubble-bg::after {
+  @include bubble(220px, $primary-dark, 0.3, 60%, 70%);
+}
 
-.auth-form {
+.register-form {
   position: relative;
   z-index: 2;
   display: flex;
@@ -114,7 +121,7 @@ body {
     border-radius: 1.2rem;
   }
 
-  .auth-form h1 {
+  .register-form h1 {
     font-size: 1.5rem;
   }
 }
