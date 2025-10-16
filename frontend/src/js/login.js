@@ -1,11 +1,13 @@
-const DOMAIN = "127.0.0.1";
-const PORT = 8000;
+import { PORT, DOMAIN } from '../../constants.js';
 
-const BASE_URL = `http://${DOMAIN}:${PORT}`;
+const BASE_URL = `${DOMAIN}:${PORT}`;
 
 const loginForm = document.querySelector(".login-form");
 const emailBox = document.querySelector("#email");
 const passwordBox = document.querySelector("#password");
+const resetPasswordLink = document.querySelector('.reset-password-link');
+
+console.log(resetPasswordLink);
 
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -42,3 +44,13 @@ async function loginUser(email, password) {
     console.error("Network Error:", err.message);
   }
 }
+
+resetPasswordLink.addEventListener('click', async (e) =>{
+    e.preventDefault();
+    const email = emailBox.value.trim();
+
+    sendOTP(email);
+    window.location.href = "/pages/otp";
+});
+
+

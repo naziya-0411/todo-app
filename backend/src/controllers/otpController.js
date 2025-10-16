@@ -61,12 +61,17 @@ export default class otpController {
       const diff = (now - otpCreated) / 1000;
       console.log(diff);
 
-      if (diff > 300) {
+      if (diff > 5000) {
         return res.status(400).json({
           success: false,
           message: 'OTP expired, please request a new one',
         });
       }
+
+      console.log(now , "   ");
+      console.log(otpCreated , " ");
+
+      console.log(diff);
 
       if (latestOTP !== otp) {
         return res.status(400).json({ success: false, message: 'Invalid OTP' });
@@ -86,10 +91,4 @@ export default class otpController {
       next(e);
     }
   }
-
-  async resetPassword(req, res, next){
-    
-  }
-
-
 }

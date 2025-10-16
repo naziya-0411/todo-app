@@ -1,45 +1,31 @@
+import { PORT, DOMAIN } from "../../constants.js";
+import userApiClass from "./userApi.js";
 
-const DOMAIN = "127.0.0.1";
-const PORT = 8000;
+const userApi = new userApiClass();
+const BASE_URL = `${DOMAIN}:${PORT}`;
 
-const BASE_URL = `http://${DOMAIN}:${PORT}`;
+const otpBox = document.querySelector(".otp-input");
+const verifyBtn = document.querySelector(".verify-btn");
+const resendBtn = document.querySelector(".resend-btn");
+const email = localStorage.getItem("email");
 
-const otpForm = document.querySelector('.otp-form');
-const otpBox = document.querySelector('.otp-input');
-const verifyBtn = document.querySelector('.verify-btn');
-const resendBtn = document.querySelector('.resend-btn');
+verifyBtn.addEventListener("click", async (e) => {
+  const otp = otpBox.value.trim();
 
-otpForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const otp = otpForm.querySelector('')
-
-  if (!email || !password) {
+  if (!otp) {
+    console.error("Please enter OTP");
     return;
   }
 
-  await loginUser(email, password);
+  if (!email) {
+    console.error("Email not found. Please go back and register again.");
+    return;
+  }
+
+  await userApi.verifyOTP(email, otp);
+  window.location.href = '/user/login';
 });
 
-async function loginUser(email, password) {
-  try {
-    const res = await fetch(`${BASE_URL}/user/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      localStorage.setItem("access-token", data.accessToken);
-      localStorage.setItem("refresh-token", data.refreshToken);
-
-      window.location.href = "/";
-    } else {
-      console.error("Login Failed:", data.message || "Unknown error");
-    }
-  } catch (err) {
-    console.error("Network Error:", err.message);
-  }
-}
+resendBtn.addEventListener("click", async () => {
+  await userApi.sendOTP(email);
+});

@@ -55,7 +55,11 @@ export default class userController {
     }
   };
 
-  refreshToken = (req, res, next) =>{
+  refreshToken = (req, res, next) => {
     
+  }
+
+  resetPassword = (req, res, next) => {
+
   }
 }

@@ -1,8 +1,5 @@
 import  showAlert  from "./main.js";
-// import {DOMAIN, PORT} from '../../constants.js';
-
-const DOMAIN = '127.0.0.1';
-const PORT = 8000;
+import {DOMAIN, PORT} from '../../constants.js';
 
 const BASE_URL = `http://${DOMAIN}:${PORT}`;
 

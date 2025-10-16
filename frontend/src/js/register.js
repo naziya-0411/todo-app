@@ -1,10 +1,9 @@
-// import {DOMAIN, PORT} from '../../constants.js';
+import { DOMAIN, PORT } from "../../constants.js";
+import userApiClass from "./userApi.js";
 // import showAlert  from "./main.js";
 
-const DOMAIN = "127.0.0.1";
-const PORT = 8000;
-
 const BASE_URL = `http://${DOMAIN}:${PORT}`;
+const userApi = new userApiClass();
 
 const registerForm = document.querySelector(".register-form");
 const emailBox = document.querySelector("#email");
@@ -12,54 +11,26 @@ const passwordBox = document.querySelector("#password");
 const usernameBox = document.querySelector("#username");
 
 registerForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  console.log("inside register");
-
-  const username = usernameBox.value.trim();
-  const email = emailBox.value.trim();
-  const password = passwordBox.value;
-
-  if (!username || !email || !password) {
-    console.error("Please enter all fields");
-    return;
-  }
-
-  await registerUser(username, email, password);
-});
-
-async function registerUser(username, email, password) {
   try {
-    const res = await fetch(`${BASE_URL}/user/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password }),
-    });
+    e.preventDefault();
+    const username = usernameBox.value.trim();
+    const email = emailBox.value.trim();
+    const password = passwordBox.value;
 
-    const data = await res.json();
-
-    if (res.ok) {
-      sendOTP(email); //sending OTP after signing in.
-
-      window.location.href = "/pages/otp";
-    } else {
-      console.error("Registration Failed:", data.message || "Unknown error");
+    if (!username || !email || !password) {
+      // showMessage("Please enter all fields", "error");
+      console.log("Please enter all fields");
+      return;
     }
-  } catch (err) {
-    console.error("Error:", err.message);
-  }
-}
 
-async function sendOTP(email) {
-  const res = await fetch(`${BASE_URL}/otp/sendOTP`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  });
+    // showMessage("Registering user...", "info");
+    await userApi.registerUser(username, email, password);
 
-  if (res.ok) {
-    console.log("Please try Again! unable to send OTP");
-    return;
+    console.log("user registered successfully, moving to otp page");
+    localStorage.setItem("email", email);
+    await userApi.sendOTP(email);
+    window.location.href = "/pages/otp";
+  } catch (e) {
+    console.log("error in registration");
   }
-  console.log("OTP sent successfully");
-  return;
-}
+});
