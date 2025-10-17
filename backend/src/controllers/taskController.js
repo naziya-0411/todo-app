@@ -4,7 +4,12 @@ export default class taskController {
   //fetching all tasks.
   getAllTasks = async (req, res, next) => {
     try {
-      const data = await taskModel.find();
+      const userId = req.user;
+      console.log(userId);
+
+      const data = await taskModel.find({ user: userId });
+      // const data = await taskModel.find();
+      console.log(data);
 
       if (!data) {
         throw new Error('Failed to read task List');

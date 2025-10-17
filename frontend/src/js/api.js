@@ -7,8 +7,8 @@ const BASE_URL = `${DOMAIN}:${PORT}`;
 //🟢extracting taskList from database.
 async function getTaskList() {
   try {
-    console.log(BASE_URL);
     const res = await fetchAuth(`${BASE_URL}`);
+    
 
     if (!res.ok) throw new Error("Failed to fetch tasks from backend.");
 
