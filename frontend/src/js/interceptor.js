@@ -23,15 +23,18 @@ export default async function fetchAuth(url, options = {}, retry = true) {
   try {
     const res = await fetch(url, { ...options, headers });
 
-    if (res.status === 401 && retry) {
+    if (res.status === 401) {
       const resData = await res.json();
+      console.log(resData);
 
-      if (resData.message === "jwt expired") {
+      if (resData.error === "jwt expired") {
+        console.log("inside jwt expired part");
+
         const renewResponse = await fetch(`${BASE_URL}/user/refreshToken`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            refreshToken: refreshToken,
+            refreshToken: `Bearer ${refreshToken}`,
           },
         });
 
@@ -43,7 +46,8 @@ export default async function fetchAuth(url, options = {}, retry = true) {
         }
 
         const renewData = await renewResponse.json();
-
+        console.log(renewData);
+    
         localStorage.setItem("accessToken", renewData.accessToken);
         localStorage.setItem("refreshToken", renewData.refreshToken);
 

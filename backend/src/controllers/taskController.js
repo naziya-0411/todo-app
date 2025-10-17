@@ -18,7 +18,10 @@ export default class taskController {
 
   addNewTask = async (req, res, next) => {
     try {
-      await taskModel.create(req.body);
+      const user = req.user;
+      console.log(user);
+
+      await taskModel.create({ user, ...req.body });
 
       res.status(201).json();
     } catch (e) {

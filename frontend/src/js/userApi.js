@@ -120,6 +120,7 @@ export default class userApiClass {
 
   refreshToken = async () => {
     try {
+      console.log("refreshToken route");
       const refreshToken = TokenManager.getRefreshToken();
 
       if (!refreshToken) {

@@ -72,20 +72,28 @@ export default class userController {
 
   refreshToken = async (req, res, next) => {
     try {
-      const { refreshToken } = req.headers.refreshToken;
+      const header = req.headers['refreshtoken'];
 
-      console.log(refreshToken);
+      const refreshToken = header.split(' ')[1];
+
+      console.log('inside refresh token', refreshToken);
 
       const payload = await verifyRefreshToken(refreshToken);
+      console.log("this is payload", payload);
 
       const user = await userModel.findById(payload.userId);
+      console.log("this is user", user)
 
       if (!user) {
         throw new Error('user not found', { statusCode: 404 });
       }
 
-      const newAccessToken = getAccessToken(user);
-      return res.status(200).json({ accessToken: newAccessToken });
+      const newAccessToken = await getAccessToken(user);
+      const newRefreshToken = await getRefreshToken(user);
+
+      console.log(newAccessToken);
+
+      return res.status(200).json({ refreshToken: newRefreshToken, accessToken: newAccessToken });
     } catch (e) {
       console.error('Error refreshing token:', e);
       next(e);

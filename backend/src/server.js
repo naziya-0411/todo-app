@@ -16,13 +16,7 @@ const uri = URI;
 
 connectToMongoDB(uri);
 
-app.use(
-  cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'authorization'],
-  })
-);
+app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 app.use(loggerMiddleware);
@@ -33,7 +27,7 @@ app.use('/otp', otpRouter);
 app.use('/', verifyToken, taskRouter);
 
 //global middleware for catching error.
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   try {
     const status = err.status || 500;
 
