@@ -9,6 +9,4 @@ const otpRouter = express.Router();
 otpRouter.post('/sendOTP', otpInstance.sendOTP);
 otpRouter.post('/verifyOTP', otpInstance.verifyOTP);
 
-export {
-    otpRouter,
-}
+export { otpRouter };

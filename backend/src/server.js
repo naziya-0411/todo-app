@@ -5,9 +5,9 @@ import taskRouter from './routes/taskRoute.js';
 import userRouter from './routes/userRoute.js';
 // import protectedRouter from './routes/protectedRoute.js'
 import { connectToMongoDB } from '../DB/connect.js';
-import { loggerMiddleware } from './middlewares/logger.js'
+import { loggerMiddleware } from './middlewares/logger.js';
 import { otpRouter } from './routes/otpRoute.js';
-import  verifyToken  from './middlewares/tokenVerification.js'
+import verifyToken from './middlewares/tokenVerification.js';
 
 const app = express();
 const port = PORT;
@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'authorization'],
   })
 );
 app.use(express.json());
@@ -30,7 +30,7 @@ app.use(loggerMiddleware);
 app.use('/user', userRouter);
 // app.use('/protected', protectedRouter);
 app.use('/otp', otpRouter);
-app.use('/', taskRouter);
+app.use('/', verifyToken, taskRouter);
 
 //global middleware for catching error.
 app.use((err, req, res) => {

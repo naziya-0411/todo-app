@@ -68,8 +68,8 @@ export default class otpController {
         });
       }
 
-      console.log(now , "   ");
-      console.log(otpCreated , " ");
+      console.log(now, '   ');
+      console.log(otpCreated, ' ');
 
       console.log(diff);
 

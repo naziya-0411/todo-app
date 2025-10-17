@@ -13,6 +13,12 @@ import {
   searchTask,
 } from "./api.js";
 
+const accessToken = localStorage.getItem("accessToken");
+
+if(!accessToken){
+  window.location.href = `/pages/login`;
+}
+
 //declaring btn, tasklist and predefined style for functional btns.
 const addBtn = document.querySelector("#addBtn");
 const taskList = document.querySelector("#taskList");

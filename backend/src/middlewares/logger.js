@@ -23,6 +23,4 @@ function loggerMiddleware(req, res, next) {
   }
 }
 
-export {
-    loggerMiddleware,
-}
+export { loggerMiddleware };

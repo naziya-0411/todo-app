@@ -1,28 +1,28 @@
-import { mongoose } from 'mongoose'
+import { mongoose } from 'mongoose';
 
-const otpSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    unique: true,
-    required: true,
+const otpSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+    otp: {
+      type: [String],
+      required: true,
+    },
+    isValid: {
+      type: Boolean,
+      default: false,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
-  otp: {
-    type: [String],
-    required: true,
-  },
-  isValid: {
-    type: Boolean,
-    default: false,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
+  { Timestamp: true }
+);
 
-}, {Timestamp: true})
+const otpModel = mongoose.model('otp-db', otpSchema);
 
-const otpModel =  mongoose.model('otp-db', otpSchema);
-
-export {
-    otpModel,
-}
+export { otpModel };

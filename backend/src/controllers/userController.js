@@ -1,6 +1,10 @@
 import { userModel } from '../models/userDB.js';
 import bcrypt from 'bcrypt';
-import { getAccessToken, getRefreshToken } from '../utils/jwtUtils.js';
+import {
+  getAccessToken,
+  getRefreshToken,
+  verifyRefreshToken,
+} from '../utils/jwtUtils.js';
 
 export default class userController {
   registerUser = async (req, res, next) => {
@@ -66,9 +70,26 @@ export default class userController {
     }
   };
 
-  refreshToken = (req, res, next) => {
-    const {refreshToken} = req.body;
-    
+  refreshToken = async (req, res, next) => {
+    try {
+      const { refreshToken } = req.headers.refreshToken;
+
+      console.log(refreshToken);
+
+      const payload = await verifyRefreshToken(refreshToken);
+
+      const user = await userModel.findById(payload.userId);
+
+      if (!user) {
+        throw new Error('user not found', { statusCode: 404 });
+      }
+
+      const newAccessToken = getAccessToken(user);
+      return res.status(200).json({ accessToken: newAccessToken });
+    } catch (e) {
+      console.error('Error refreshing token:', e);
+      next(e);
+    }
   };
 
   resetPassword = async (req, res, next) => {
@@ -77,15 +98,18 @@ export default class userController {
       console.log(email, password);
 
       if (!email || !password) {
-        throw new Error('Email and new password are required', {statusCode: 400});
+        throw new Error('Email and new password are required', {
+          statusCode: 400,
+        });
       }
 
       const user = await userModel.findOne({ email });
       console.log(user);
 
       if (!user) {
-
-        throw new Error('User with this email does not exist', {statusCode: 404});
+        throw new Error('User with this email does not exist', {
+          statusCode: 404,
+        });
       }
 
       const saltRounds = 10;
@@ -98,7 +122,6 @@ export default class userController {
         success: true,
         message: 'Password has been successfully reset',
       });
-
     } catch (e) {
       console.log(e.message);
       next(e);

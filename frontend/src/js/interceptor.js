@@ -1,31 +1,58 @@
-async function fetchAuth(url, options = {}, retry = true) {
+import { DOMAIN, PORT } from "../../constants.js";
+
+const BASE_URL = `${DOMAIN}:${PORT}`;
+
+export default async function fetchAuth(url, options = {}, retry = true) {
+  console.log("fetch auth used");
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
 
   if (!accessToken || !refreshToken) {
-    localStorage.removeItem("access-token");
-    localStorage.removeItem("refresh-token");
-    window.location.href = "/pages/login";
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.href = "/pages/login.html";
     return;
   }
 
   const headers = {
     ...(options.headers || {}),
-    Authorization: `Bearer ${accessToken}`,
+    authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
   };
 
   try {
-    const res = await fetch(url, {
-      ...options,
-      headers,
-    });
+    const res = await fetch(url, { ...options, headers });
 
-    if (res.status === 401 && !retry) {
+    if (res.status === 401 && retry) {
       const resData = await res.json();
+
       if (resData.message === "jwt expired") {
-        const renewToken = await 
+        const renewResponse = await fetch(`${BASE_URL}/user/refreshToken`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            refreshToken: refreshToken,
+          },
+        });
+
+        if (!renewResponse.ok) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          window.location.reload();
+          return;
+        }
+
+        const renewData = await renewResponse.json();
+
+        localStorage.setItem("accessToken", renewData.accessToken);
+        localStorage.setItem("refreshToken", renewData.refreshToken);
+
+        return fetchAuth(url, options, false);
       }
     }
-  } catch {}
+    return res;
+  } catch (error) {
+    console.error("fetchAuth error:", error);
+    throw error;
+  }
 }

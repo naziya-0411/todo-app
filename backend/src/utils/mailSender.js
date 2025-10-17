@@ -6,8 +6,8 @@ const mailSender = async (email, title, body) => {
   try {
     let transporter = nodemailer.createTransport({
       host: MAIL_HOST,
-      port: 587, 
-      secure: false, 
+      port: 587,
+      secure: false,
       auth: {
         user: MAIL_USER,
         pass: MAIL_PASS,
@@ -16,7 +16,7 @@ const mailSender = async (email, title, body) => {
 
     transporter.verify((error, success) => {
       if (error) console.log('Transporter verification failed:', error);
-      else console.log('✅ Transporter is ready');
+      else console.log('Transporter is ready');
     });
 
     let info = await transporter.sendMail({

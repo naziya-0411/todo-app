@@ -1,5 +1,6 @@
 import  showAlert  from "./main.js";
 import {DOMAIN, PORT} from '../../constants.js';
+import fetchAuth from "./interceptor.js";
 
 const BASE_URL = `${DOMAIN}:${PORT}`;
 
@@ -7,7 +8,7 @@ const BASE_URL = `${DOMAIN}:${PORT}`;
 async function getTaskList() {
   try {
     console.log(BASE_URL);
-    const res = await fetch(`${BASE_URL}`);
+    const res = await fetchAuth(`${BASE_URL}`);
 
     if (!res.ok) throw new Error("Failed to fetch tasks from backend.");
 
@@ -21,7 +22,7 @@ async function getTaskList() {
 //🟢adding task to database..
 async function addTask(taskData) {
   try {
-    const res = await fetch(`${BASE_URL}`, {
+    const res = await fetchAuth(`${BASE_URL}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(taskData),
@@ -39,7 +40,7 @@ async function addTask(taskData) {
 //🟢removing task from database.
 async function deleteTask(id) {
   try {
-    const res = await fetch(`${BASE_URL}/${id}`, {
+    const res = await fetchAuth(`${BASE_URL}/${id}`, {
       method: "DELETE",
     });
 
@@ -56,7 +57,7 @@ async function deleteTask(id) {
 //🟢updating tasks.
 async function updateTask(id, updatedData) {
   try {
-    const res = await fetch(`${BASE_URL}/${id}`, {
+    const res = await fetchAuth(`${BASE_URL}/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedData),
@@ -75,7 +76,7 @@ async function updateTask(id, updatedData) {
 //🟢updating only completion status.
 async function updateCompletionStatus(id) {
   try {
-    const res = await fetch(`${BASE_URL}/${id}`, {
+    const res = await fetchAuth(`${BASE_URL}/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
@@ -90,7 +91,7 @@ async function updateCompletionStatus(id) {
 
 async function searchTask(searchText, searchFilter) {
   try {
-    const res = await fetch(
+    const res = await fetchAuth(
       `${BASE_URL}/search?searchText=${searchText}&searchFilter=${searchFilter}`
     );
 
@@ -108,7 +109,7 @@ async function searchTask(searchText, searchFilter) {
 // const res = await fetch(`/search?text=${encodeURIComponent(searchText)}&filter=${encodeURIComponent(filterValue)}`);
 async function sortTask(sortFilter) {
   try {
-    const res = await fetch(
+    const res = await fetchAuth(
       `${BASE_URL}/sort?sortFilter=${sortFilter}`
     );
 
