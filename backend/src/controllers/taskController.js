@@ -103,19 +103,22 @@ export default class taskController {
     try {
       console.log('inside backend sorting');
       const sortFilter = req.query.sortFilter;
+      const user = req.user;
+
       console.log(sortFilter);
 
       let filteredTasks = null;
 
       if (sortFilter === 'pending') {
-        filteredTasks = await taskModel.find({ isCompleted: false });
+        filteredTasks = await taskModel.find({$and: [{ isCompleted: false }, {user}]});
       } else if (sortFilter === 'completed') {
-        filteredTasks = await taskModel.find({ isCompleted: true });
+        filteredTasks = await taskModel.find({$and: [{ isCompleted: true }, {user}]});
       }
 
       if (!filteredTasks) {
         throw new Error('cannot fetch sorted tasks');
       }
+
       console.log('this is filtered tasks', filteredTasks);
       return await res.json(filteredTasks);
     } catch (e) {
@@ -126,16 +129,23 @@ export default class taskController {
   searchTask = async (req, res, next) => {
     try {
       let { searchText, searchFilter } = req.query;
+      const user = req.user;
+
       searchText = searchText.toLowerCase();
 
       console.log(searchFilter, searchText);
 
       const filteredTasks = await taskModel.find({
-        $or: [
-          { task: { $regex: searchText, $options: 'i' } },
-          { preference: { $regex: searchText, $options: 'i' } },
-          { tags: { $elemMatch: { $regex: searchText, $options: 'i' } } },
-        ],
+        $and: [
+          {
+            $or: [
+              { task: { $regex: searchText, $options: 'i' } },
+              { preference: { $regex: searchText, $options: 'i' } },
+              { tags: { $elemMatch: { $regex: searchText, $options: 'i' } } },
+            ],
+          },
+          {user}
+        ]
       });
 
       if (!filteredTasks) {
