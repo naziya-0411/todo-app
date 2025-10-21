@@ -189,15 +189,15 @@ async function createFunctionalBtns() {
                 tags: tagsInputArray,
               };
 
-              await updateTask(id, updatedData);
+              await api.updateTask(id, updatedData);
 
               restoreInputBoxes();
 
               const tasks = await api.getTaskList();
 
               displayTask(tasks);
-            } catch (e) {
-              showAlert("Error in updating task! Please try again.", "error");
+            } catch (err) {
+              showAlert(err.message, "error");
             }
           });
 
@@ -293,6 +293,7 @@ async function sorting() {
     let sortedTasks = await api.sortTask(sortValue);
 
     displayTask(sortedTasks);
+
   } catch (e) {
     showAlert("Error in sorting tasks! Please try again.", "error");
   }

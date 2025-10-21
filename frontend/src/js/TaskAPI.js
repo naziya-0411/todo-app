@@ -8,18 +8,18 @@ export default class TaskAPI{
   getTaskList = async() => {
     try {
       const res = await fetchAuth(`${BASE_URL}`);
+      
       let data;
   
       try {
-        data = await res.json();
+        const parsedRes = await res.json();
+        data = parsedRes.data;
       } catch {
         data = null;
       }
-  
+
       if (!res.ok) {
-        const err = new Error(data?.message || res.statusText || `Error in fetching task from Database`);
-        err.status = res.status;
-        throw err;
+        throw new Error(data.error || "Error in fetching taskList!");
       }
   
       return data;
@@ -37,9 +37,8 @@ export default class TaskAPI{
       });
   
       if (!res.ok) {
-        const err = new Error(res.statusText || `Error in adding task in database`);
-        err.status = res.status;
-        throw err;
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Unable to add task in the taskList.");
       }
   
       return;
@@ -55,9 +54,8 @@ export default class TaskAPI{
       });
   
       if (!res.ok) {
-        const err = new Error(res.statusText || `Error in deleting task from database.`);
-        err.status = res.status;
-        throw err;
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Unable to add task in the taskList.");
       }
   
       return;
@@ -75,9 +73,8 @@ export default class TaskAPI{
       });
   
       if (!res.ok) {
-        const err = new Error(res.statusText || `Error in updating task`);
-        err.status = res.status;
-        throw err;
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Error in updating task!");
       }
   
       return;
@@ -95,9 +92,8 @@ export default class TaskAPI{
       });
   
       if (!res.ok) {
-        const err = new Error(res.statusText || `Error in updating task completion status`);
-        err.status = res.status;
-        throw err;
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Error in updating task!");
       }
   
       return;
@@ -113,9 +109,8 @@ export default class TaskAPI{
       );
   
       if (!res.ok) {
-        const err = new Error(res.statusText || `Error in searching tasks.`);
-        err.status = res.status;
-        throw err;
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Error in searching tasks!");
       }
   
       return await res.json();
@@ -129,14 +124,13 @@ export default class TaskAPI{
       const res = await fetchAuth(
         `${BASE_URL}/sort?sortFilter=${sortFilter}`
       );
-  
+      const filteredData = await res.json();
+
       if (!res.ok) {
-        const err = new Error(res.statusText || `Error in sorting tasks.`);
-        err.status = res.status;
-        throw err;
+        throw new Error(filteredData.error || "Error in sorting task!");
       }
-  
-      return await res.json();
+
+      return filteredData.filteredTasks;
     } catch (e) {
       throw (e);
     }

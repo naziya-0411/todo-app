@@ -4,7 +4,6 @@ export default class taskController {
   getAllTasks = async (req, res, next) => {
     try {
       const userId = req.user;
-      console.log(userId);
 
       const data = await taskModel.find({ user: userId });
 
@@ -104,7 +103,6 @@ export default class taskController {
 
   sortTask = async (req, res, next) => {
     try {
-
       const sortFilter = req.query.sortFilter;
       const user = req.user;
 
@@ -121,9 +119,7 @@ export default class taskController {
         next(new Error(`Unable to fetch sorted task!`));
       }
 
-      const data = await res.json();
-      res.status(200).json(data);
-
+      res.status(200).json({success: true, filteredTasks});
     } catch (e) {
       next(e);
     }

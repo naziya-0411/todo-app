@@ -26,7 +26,6 @@ const searchBox = document.querySelector("#searchInput");
 const searchSelect = document.querySelector("#search-select");
 const logoutBtn = document.querySelector(".logout-btn");
 
-
 export {
     addBtn,
     functionalBtns,

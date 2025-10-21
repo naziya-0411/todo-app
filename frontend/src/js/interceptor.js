@@ -3,7 +3,6 @@ import { DOMAIN, PORT } from "../../constants.js";
 const BASE_URL = `${DOMAIN}:${PORT}`;
 
 export default async function fetchAuth(url, options = {}, retry = true) {
-  console.log("fetch auth used");
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
 
