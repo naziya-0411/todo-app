@@ -3,25 +3,25 @@ import {
   taskUpdateSchema,
 } from '../schema/taskValidationSchema.js';
 
-export default class toDoValidations {
-  //validation for adding new task in the todo list.
+export default class TaskValidation {
   validateRequest = async (req, res, next) => {
     try {
       await taskCreateSchema.validate(req.body, {
         abortEarly: false,
         stripUnknown: true,
       });
-      next(); //calling next if task performed.
+
+      next();
     } catch (err) {
       if (err.name === 'ValidationError') {
         err.status = 400;
         next(new Error(err.errors.join(', ')));
       }
+
       next(err);
     }
   };
 
-  //validation for updating values.
   updateRequest = async (req, res, next) => {
     try {
       await taskUpdateSchema.validate(req.body, {
@@ -35,6 +35,7 @@ export default class toDoValidations {
         err.status = 400;
         next(new Error(err.errors.join(', ')));
       }
+
       next(err);
     }
   };

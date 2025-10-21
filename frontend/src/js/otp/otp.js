@@ -1,5 +1,5 @@
 import AuthAPI from "../AuthAPI.js";
-import showAlert from "../toast.js";
+import { wait, showAlert } from "../toast.js";
 
 const api = new AuthAPI();
 const accessToken = localStorage.getItem("accessToken");
@@ -23,7 +23,9 @@ verifyBtn.addEventListener("click", async (e) => {
     }
 
     if (!email) {
-      showAlert("User not found! Please register to continue!");
+      showAlert("User not found! Please register to continue!", "error");
+
+      await wait(3000);
       window.location.href = "/pages/register";
       return;
     }
@@ -33,6 +35,9 @@ verifyBtn.addEventListener("click", async (e) => {
     const urlParams = new URLSearchParams(window.location.search);
     const type = urlParams.get("type");
 
+    showAlert("OTP verified successfully!");
+    await wait(3000);
+    
     if (type === "login") {
       window.location.href = "/pages/login";
     } else {
@@ -40,7 +45,6 @@ verifyBtn.addEventListener("click", async (e) => {
     }
 
   } catch (err) {
-    console.log("inside catch of OTP page!");
     showAlert(err.message, "error");
   }
 });
@@ -49,6 +53,7 @@ resendBtn.addEventListener("click", async () => {
   try {
     await api.sendOTP(email);
     showAlert("OTP sent successfully", "success");
+
   } catch(err) {
     showAlert(err.message, "error");
   }

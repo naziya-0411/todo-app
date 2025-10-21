@@ -33,9 +33,11 @@ registerForm.addEventListener("submit", async (e) => {
     );
 
     localStorage.setItem("email", email);
-    
-    await api.sendOTP(email);
 
+    await api.sendOTP(email);
+    showAlert("OTP sent successfully");
+    await wait(3000);
+    
     window.location.href = "/pages/otp?type=login";
   } catch (e) {
     showAlert(err.message, "error");

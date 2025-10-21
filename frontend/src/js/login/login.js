@@ -1,6 +1,6 @@
 import AuthAPI from "../AuthAPI.js";
 import TokenManagerClass from "../../../utils/tokenManager.js";
-import showAlert from "../toast.js";
+import {wait, showAlert} from "../toast.js";
 
 const api = new AuthAPI();
 const TokenManager = new TokenManagerClass();
@@ -32,6 +32,8 @@ loginForm.addEventListener("submit", async (e) => {
     const data = await api.loginUser(email, password);
 
     TokenManager.setTokens(data.accessToken, data.refreshToken);
+    showAlert("user Logged In successfully!");
+    await wait(3000);
     window.location.href = "/";
 
   } catch (err) {
@@ -44,7 +46,11 @@ resetPasswordLink.addEventListener("click", async (e) => {
     e.preventDefault();
   
     await api.sendOTP(email);
+
+    showAlert("OTP sent successfully!");
+    await wait(3000);
     window.location.href = "/pages/otp?type=reset";
+
   } catch(err){
     showAlert(err.message, 'error');
   }

@@ -22,25 +22,22 @@ app.use(express.static('public'));
 app.use(loggerMiddleware);
 
 app.use('/user', userRouter);
-// app.use('/protected', protectedRouter);
 app.use('/otp', otpRouter);
 app.use('/', verifyToken, taskRouter);
 
-//global middleware for catching error.
 app.use((err, req, res, next) => {
   try {
-    console.log("this is global middleware", res.status);
-    if(res.statusCode === 200) res.statusCode = 500;
+    console.log('this is global middleware', res.status);
+    if (res.statusCode === 200) res.statusCode = 500;
     const status = res.statusCode || 500;
-    
-    console.log("err.message", err.message);
+
+    console.log('err.message', err.message);
 
     res.status(status).json({
       error: err.message || 'Server Error',
     });
-
   } catch {
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

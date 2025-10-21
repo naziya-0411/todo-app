@@ -45,7 +45,6 @@ export default class OTPController {
       }
 
       const otpDoc = await otpModel.findOne({ email });
-      console.log(otpDoc);
 
       if (!otpDoc || otpDoc.otp.length === 0) {
         res.status(400);
@@ -59,12 +58,12 @@ export default class OTPController {
       const diff = (now - otpCreated) / 1000;
 
       if (diff > 300) {
-        res.status(400);
+        res.status(403);
         return next(new Error(`OTP expired, please request a new one`));
       }
 
       if (latestOTP !== otp) {
-        res.status(400);
+        res.status(401);
         return next(new Error(`Invalid OTP`));
       }
 
@@ -72,9 +71,9 @@ export default class OTPController {
 
       if (user) {
         user.isVerified = true;
-        await user.save(); 
+        await user.save();
       }
-      
+
       return res.status(200).json({
         success: true,
         message: 'OTP verified successfully',

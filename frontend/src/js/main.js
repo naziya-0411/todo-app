@@ -1,5 +1,5 @@
 import "../scss/styles.scss";
-import showAlert from "./toast.js";
+import { wait, showAlert } from "./toast.js";
 import TaskAPI from './TaskAPI.js';
 import TokenManagerClass from "../../utils/tokenManager.js";
 import {
@@ -22,7 +22,7 @@ const api = new TaskAPI();
 const tokenManager = new TokenManagerClass();
 const accessToken = localStorage.getItem("accessToken");
 
-if (!accessToken) {
+if (!accessToken) { 
   window.location.href = `/pages/login`;
 }
 

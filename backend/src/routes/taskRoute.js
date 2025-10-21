@@ -1,9 +1,9 @@
 import express from 'express';
-import taskController from '../controllers/taskController.js';
-import toDoValidations from '../validations/middlewares/taskValidation.js';
+import TaskController from '../controllers/TaskController.js';
+import TaskValidation from '../validations/middlewares/TaskValidation.js';
 
-const validationInstance = new toDoValidations();
-const taskInstance = new taskController();
+const validationInstance = new TaskValidation();
+const taskInstance = new TaskController();
 const taskRouter = express.Router();
 
 taskRouter.get('/', taskInstance.getAllTasks);

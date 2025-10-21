@@ -31,8 +31,10 @@ resetForm.addEventListener("submit", async (e) => {
 
     await api.resetPassword(email, password);
 
-    window.location.href = "/pages/login";
+
     showAlert("password changed successfully!", "success");
+    await wait(3000);
+    window.location.href = "/pages/login";
 
   } catch (err) {
     showAlert(err.message, "error");

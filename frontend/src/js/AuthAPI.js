@@ -1,6 +1,6 @@
 import { DOMAIN, PORT } from "../../constants.js";
 import TokenManagerClass from "../../utils/tokenManager.js";
-import showAlert from "./toast.js";
+import {wait, showAlert} from "./toast.js";
 
 const TokenManager = new TokenManagerClass();
 const BASE_URL = `${DOMAIN}:${PORT}`;
@@ -27,8 +27,6 @@ export default class AuthAPI {
 
   loginUser = async (email, password) => {
     try {
-      console.log("this is login API");
-
       const res = await fetch(`${BASE_URL}/user/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,14 +55,12 @@ export default class AuthAPI {
       const data = await res.json();
 
       if (res.ok) {
-        showAlert("OTP verified successfully!");
-        window.location.href = "/pages/login.html";
+        return;
       } else {
         throw new Error(data.error || "OTP verification failed!");
       }
     } catch (err) {
       throw(err);
-      // showAlert("Network Error:", err.message);
     }
   };
 

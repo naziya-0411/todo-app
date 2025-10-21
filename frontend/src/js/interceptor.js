@@ -9,6 +9,7 @@ export default async function fetchAuth(url, options = {}, retry = true) {
   if (!accessToken || !refreshToken) {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    
     window.location.href = "/pages/login.html";
     return;
   }

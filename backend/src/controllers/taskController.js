@@ -1,6 +1,6 @@
 import { taskModel } from '../models/taskDb.js';
 
-export default class taskController {
+export default class TaskController {
   getAllTasks = async (req, res, next) => {
     try {
       const userId = req.user;
@@ -33,9 +33,9 @@ export default class taskController {
   updateCompletionStatus = async (req, res, next) => {
     try {
       const { id } = req.params;
-      if(!id){
+      if (!id) {
         res.status(400);
-        return next(new Error("Bad Request, Task ID is missing"));
+        return next(new Error('Bad Request, Task ID is missing'));
       }
 
       const prevItem = await taskModel.findById(id);
@@ -57,6 +57,7 @@ export default class taskController {
       }
 
       return res.status(200).json({ success: false, message: `task updated successfully!` });
+      
     } catch (e) {
       next(e);
     }
@@ -77,8 +78,9 @@ export default class taskController {
         return next(new Error(`failed to update task!`));
       }
 
-      return res.status(200).json({ success: false, message: `task updated successfully!` });
-
+      return res
+        .status(200)
+        .json({ success: false, message: `task updated successfully!` });
     } catch (e) {
       next(e);
     }
@@ -109,9 +111,13 @@ export default class taskController {
       let filteredTasks = null;
 
       if (sortFilter === 'pending') {
-        filteredTasks = await taskModel.find({ $and: [{ isCompleted: false }, { user }] });
+        filteredTasks = await taskModel.find({
+          $and: [{ isCompleted: false }, { user }],
+        });
       } else if (sortFilter === 'completed') {
-        filteredTasks = await taskModel.find({ $and: [{ isCompleted: true }, { user }] });
+        filteredTasks = await taskModel.find({
+          $and: [{ isCompleted: true }, { user }],
+        });
       }
 
       if (!filteredTasks) {
@@ -119,7 +125,7 @@ export default class taskController {
         next(new Error(`Unable to fetch sorted task!`));
       }
 
-      res.status(200).json({success: true, filteredTasks});
+      res.status(200).json({ success: true, filteredTasks });
     } catch (e) {
       next(e);
     }
@@ -141,8 +147,8 @@ export default class taskController {
               { tags: { $elemMatch: { $regex: searchText, $options: 'i' } } },
             ],
           },
-          { user }
-        ]
+          { user },
+        ],
       });
 
       if (!filteredTasks) {

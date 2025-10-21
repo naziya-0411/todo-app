@@ -6,7 +6,7 @@ import {
   verifyRefreshToken,
 } from '../utils/jwtUtils.js';
 
-export default class userController {
+export default class UserController {
   registerUser = async (req, res, next) => {
     try {
       const { username, email, password } = req.body;
@@ -63,7 +63,7 @@ export default class userController {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) {
-        console.log("password not matched invoked!");
+        console.log('password not matched invoked!');
         res.status(401);
         next(new Error(`Password not matched, Please try again`));
       }
