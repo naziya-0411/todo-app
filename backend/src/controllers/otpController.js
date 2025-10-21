@@ -3,7 +3,7 @@ import { otpModel } from '../models/otpDB.js';
 import otpGenerator from 'otp-generator';
 import { mailSender } from '../utils/mailSender.js';
 
-export default class OTPController {
+export default class OtpController {
   sendOTP = async (req, res, next) => {
     try {
       const { email } = req.body;

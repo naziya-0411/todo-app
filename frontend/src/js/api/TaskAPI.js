@@ -1,16 +1,15 @@
-import { DOMAIN, PORT } from '../../constants.js';
+import { DOMAIN, PORT } from "../../../constants.js";
 import fetchAuth from "./interceptor.js";
 
 const BASE_URL = `${DOMAIN}:${PORT}`;
 
-export default class TaskAPI{
-
-  getTaskList = async() => {
+export default class TaskAPI {
+  getTaskList = async () => {
     try {
       const res = await fetchAuth(`${BASE_URL}`);
-      
+
       let data;
-  
+
       try {
         const parsedRes = await res.json();
         data = parsedRes.data;
@@ -21,13 +20,13 @@ export default class TaskAPI{
       if (!res.ok) {
         throw new Error(data.error || "Error in fetching taskList!");
       }
-  
+
       return data;
     } catch (err) {
-      throw (err);
+      throw err;
     }
-  }
-  
+  };
+
   addTask = async (taskData) => {
     try {
       const res = await fetchAuth(`${BASE_URL}`, {
@@ -35,95 +34,97 @@ export default class TaskAPI{
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(taskData),
       });
-  
+
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "Unable to add task in the taskList.");
+        throw new Error(
+          errorData.error || "Unable to add task in the taskList."
+        );
       }
-  
+
       return;
     } catch (err) {
-      throw (err);
+      throw err;
     }
-  }
-  
-  deleteTask = async(id) => {
+  };
+
+  deleteTask = async (id) => {
     try {
       const res = await fetchAuth(`${BASE_URL}/${id}`, {
         method: "DELETE",
       });
-  
+
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "Unable to add task in the taskList.");
+        throw new Error(
+          errorData.error || "Unable to add task in the taskList."
+        );
       }
-  
+
       return;
     } catch (err) {
-      throw (err);
+      throw err;
     }
-  }
-  
-  updateTask = async(id, updatedData) => {
+  };
+
+  updateTask = async (id, updatedData) => {
     try {
       const res = await fetchAuth(`${BASE_URL}/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData),
       });
-  
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Error in updating task!");
       }
-  
+
       return;
     } catch (err) {
-      throw (err);
+      throw err;
     }
-  }
-  
-  updateCompletionStatus = async(id) => {
+  };
+
+  updateCompletionStatus = async (id) => {
     try {
       const res = await fetchAuth(`${BASE_URL}/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
-  
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Error in updating task!");
       }
-  
+
       return;
     } catch (err) {
-      throw (e);
+      throw err;
     }
-  }
-  
-  searchTask = async(searchText, searchFilter) => {
+  };
+
+  searchTask = async (searchText, searchFilter) => {
     try {
       const res = await fetchAuth(
         `${BASE_URL}/search?searchText=${searchText}&searchFilter=${searchFilter}`
       );
-  
+
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Error in searching tasks!");
       }
-  
+
       return await res.json();
-    } catch (e) {
-      throw (e);
+    } catch (err) {
+      throw err;
     }
-  }
-  
-  sortTask = async(sortFilter) => {
+  };
+
+  sortTask = async (sortFilter) => {
     try {
-      const res = await fetchAuth(
-        `${BASE_URL}/sort?sortFilter=${sortFilter}`
-      );
+      const res = await fetchAuth(`${BASE_URL}/sort?sortFilter=${sortFilter}`);
       const filteredData = await res.json();
 
       if (!res.ok) {
@@ -131,8 +132,26 @@ export default class TaskAPI{
       }
 
       return filteredData.filteredTasks;
-    } catch (e) {
-      throw (e);
+    } catch (err) {
+      throw err;
     }
-  }
+  };
+
+  clearTask = async () => {
+    try {
+      const res = await fetchAuth(`${BASE_URL}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Error in deleting all tasks!");
+      }
+      
+      return;
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
+  };
 }

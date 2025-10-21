@@ -1,4 +1,4 @@
-import AuthAPI from "../AuthAPI.js";
+import AuthAPI from "../api/AuthAPI.js";
 import showAlert from "../toast.js";
 
 const api = new AuthAPI();
@@ -37,7 +37,7 @@ registerForm.addEventListener("submit", async (e) => {
     await api.sendOTP(email);
     showAlert("OTP sent successfully");
     await wait(3000);
-    
+
     window.location.href = "/pages/otp?type=login";
   } catch (e) {
     showAlert(err.message, "error");

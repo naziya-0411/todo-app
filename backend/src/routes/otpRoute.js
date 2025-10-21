@@ -1,8 +1,8 @@
 // routes/otpRoutes.js
 import express from 'express';
-import OTPController from '../controllers/OTPController.js';
+import OtpController from '../controllers/OtpController.js';
 
-const otpInstance = new OTPController();
+const otpInstance = new OtpController();
 
 const otpRouter = express.Router();
 

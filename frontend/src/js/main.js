@@ -1,6 +1,6 @@
 import "../scss/styles.scss";
 import { wait, showAlert } from "./toast.js";
-import TaskAPI from './TaskAPI.js';
+import TaskAPI from "./api/TaskAPI.js";
 import TokenManagerClass from "../../utils/tokenManager.js";
 import {
   addBtn,
@@ -15,14 +15,15 @@ import {
   searchBox,
   searchSelect,
   saveCancelBtn,
-  logoutBtn
-} from './mainConstants.js';
+  logoutBtn,
+  clearTask,
+} from "./mainConstants.js";
 
 const api = new TaskAPI();
 const tokenManager = new TokenManagerClass();
 const accessToken = localStorage.getItem("accessToken");
 
-if (!accessToken) { 
+if (!accessToken) {
   window.location.href = `/pages/login`;
 }
 
@@ -33,8 +34,8 @@ window.onload = async function () {
     createFunctionalBtns();
     updateAnalyticBox(tasks);
     displayTask(tasks);
-  } catch (e) {
-    showAlert("Error in loading tasks! Please try again!", "error");
+  } catch (err) {
+    showAlert(err.message, "error");
   }
 };
 
@@ -63,13 +64,15 @@ function displayTask(tasks) {
     newLi.innerHTML = `
       <div class="list-container row d-flex align-items-center p-2">
         <div class="col-12 col-md-9 data-container d-flex flex-wrap gap-2 align-items-center">
-          <div class="preference-container p-1 px-2 rounded-5" style="background:${preferenceColor}">${t.preference
-      }</div>
+          <div class="preference-container p-1 px-2 rounded-5" style="background:${preferenceColor}">${
+      t.preference
+    }</div>
         </div>
 
         <div class="d-flex align-items-center text-container py-3 px-3 gap-2">
-          <p class="m-0 text-break" style="text-decoration: ${textStyle}">${t.task
-      }</p>
+          <p class="m-0 text-break" style="text-decoration: ${textStyle}">${
+      t.task
+    }</p>
           <div class="tags-container small text-muted">${t.tags.join(" ")}</div>
         </div>
 
@@ -222,9 +225,8 @@ async function searching() {
 
     const filteredTasks = await api.searchTask(searchText, searchFilter);
     displayTask(filteredTasks);
-
   } catch {
-    showAlert('Some error occured while filtering! Please try again', "error");
+    showAlert("Some error occured while filtering! Please try again", "error");
   }
 }
 
@@ -282,8 +284,8 @@ addBtn.addEventListener("click", async () => {
 
     restoreInputBoxes();
     return;
-  } catch {
-    showAlert("Error in adding tasks!", "error");
+  } catch (e) {
+    showAlert(e.message, "error");
   }
 });
 
@@ -293,9 +295,8 @@ async function sorting() {
     let sortedTasks = await api.sortTask(sortValue);
 
     displayTask(sortedTasks);
-
-  } catch (e) {
-    showAlert("Error in sorting tasks! Please try again.", "error");
+  } catch (err) {
+    showAlert(err.message, "error");
   }
 }
 
@@ -307,7 +308,8 @@ function updateAnalyticBox(tasks) {
   const pending = total - completed;
 
   document.querySelector(".total-tasks .analytic-body").innerText = total;
-  document.querySelector(".completed-tasks .analytic-body").innerText =completed;
+  document.querySelector(".completed-tasks .analytic-body").innerText =
+    completed;
   document.querySelector(".pending-tasks .analytic-body").innerText = pending;
 }
 
@@ -332,12 +334,22 @@ function showConfirmBox(message) {
   });
 }
 
-logoutBtn.addEventListener('click', ()=>{
-  try{
+logoutBtn.addEventListener("click", () => {
+  try {
     tokenManager.clearTokens();
-    window.location.href ='/pages/login';
-  } catch(e){
+    window.location.href = "/pages/login";
+  } catch (e) {
     showAlert("Unable to logout user! Please try after sometime");
   }
-})
+});
 
+clearTask.addEventListener("click", async () => {
+  try {
+    await api.clearTask();
+    showAlert("Task cleared successfully!");
+
+    displayTask([]);
+  } catch (e) {
+    showAlert(e.message);
+  }
+});

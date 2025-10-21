@@ -1,5 +1,5 @@
-import AuthAPI from "../AuthAPI.js";
-import showAlert from "../toast.js";
+import AuthAPI from "../api/AuthAPI.js";
+import { wait, showAlert } from "../toast.js";
 
 const api = new AuthAPI();
 const accessToken = localStorage.getItem("accessToken");
@@ -31,11 +31,10 @@ resetForm.addEventListener("submit", async (e) => {
 
     await api.resetPassword(email, password);
 
-
     showAlert("password changed successfully!", "success");
     await wait(3000);
-    window.location.href = "/pages/login";
 
+    window.location.href = "/pages/login";
   } catch (err) {
     showAlert(err.message, "error");
   }

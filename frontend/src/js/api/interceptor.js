@@ -1,4 +1,4 @@
-import { DOMAIN, PORT } from "../../constants.js";
+import { DOMAIN, PORT } from "../../../constants.js";
 
 const BASE_URL = `${DOMAIN}:${PORT}`;
 
@@ -9,7 +9,7 @@ export default async function fetchAuth(url, options = {}, retry = true) {
   if (!accessToken || !refreshToken) {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    
+
     window.location.href = "/pages/login.html";
     return;
   }
@@ -47,7 +47,7 @@ export default async function fetchAuth(url, options = {}, retry = true) {
 
         const renewData = await renewResponse.json();
         console.log(renewData);
-    
+
         localStorage.setItem("accessToken", renewData.accessToken);
         localStorage.setItem("refreshToken", renewData.refreshToken);
 

@@ -3,7 +3,6 @@ import cors from 'cors';
 import { PORT, DOMAIN, URI } from '../constants.js';
 import taskRouter from './routes/taskRoute.js';
 import userRouter from './routes/userRoute.js';
-// import protectedRouter from './routes/protectedRoute.js'
 import { connectToMongoDB } from '../DB/connect.js';
 import { loggerMiddleware } from './middlewares/logger.js';
 import { otpRouter } from './routes/otpRoute.js';
@@ -27,11 +26,8 @@ app.use('/', verifyToken, taskRouter);
 
 app.use((err, req, res, next) => {
   try {
-    console.log('this is global middleware', res.status);
     if (res.statusCode === 200) res.statusCode = 500;
     const status = res.statusCode || 500;
-
-    console.log('err.message', err.message);
 
     res.status(status).json({
       error: err.message || 'Server Error',

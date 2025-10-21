@@ -1,6 +1,5 @@
-import { DOMAIN, PORT } from "../../constants.js";
-import TokenManagerClass from "../../utils/tokenManager.js";
-import {wait, showAlert} from "./toast.js";
+import { DOMAIN, PORT } from "../../../constants.js";
+import TokenManagerClass from "../../../utils/tokenManager.js";
 
 const TokenManager = new TokenManagerClass();
 const BASE_URL = `${DOMAIN}:${PORT}`;
@@ -60,7 +59,7 @@ export default class AuthAPI {
         throw new Error(data.error || "OTP verification failed!");
       }
     } catch (err) {
-      throw(err);
+      throw err;
     }
   };
 

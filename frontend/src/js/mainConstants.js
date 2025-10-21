@@ -25,6 +25,7 @@ const sortInput = document.querySelector("#sortInput");
 const searchBox = document.querySelector("#searchInput");
 const searchSelect = document.querySelector("#search-select");
 const logoutBtn = document.querySelector(".logout-btn");
+const clearTask = document.querySelector(".clear-task");
 
 export {
     addBtn,
@@ -40,4 +41,9 @@ export {
     searchSelect,
     saveCancelBtn,
     logoutBtn,
+    clearTask,
+}
+
+export default class constants{
+    
 }

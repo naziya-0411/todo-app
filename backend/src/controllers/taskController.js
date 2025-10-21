@@ -24,7 +24,9 @@ export default class TaskController {
 
       await taskModel.create({ user, ...req.body });
 
-      res.status(201).json({ success: true, message: `task added successfully!` });
+      res
+        .status(201)
+        .json({ success: true, message: `task added successfully!` });
     } catch (e) {
       next(e);
     }
@@ -56,8 +58,9 @@ export default class TaskController {
         return next(new Error(`failed to update task!`));
       }
 
-      return res.status(200).json({ success: false, message: `task updated successfully!` });
-      
+      return res
+        .status(200)
+        .json({ success: false, message: `task updated successfully!` });
     } catch (e) {
       next(e);
     }
@@ -66,7 +69,6 @@ export default class TaskController {
   updateTask = async (req, res, next) => {
     try {
       const { id } = req.params;
-
       const updatedTask = await taskModel.findByIdAndUpdate(
         id,
         { $set: req.body },
@@ -89,7 +91,6 @@ export default class TaskController {
   deleteTask = async (req, res, next) => {
     try {
       const { id } = req.params;
-
       const delItem = await taskModel.findByIdAndDelete(id);
 
       if (!delItem) {
@@ -133,7 +134,7 @@ export default class TaskController {
 
   searchTask = async (req, res, next) => {
     try {
-      let { searchText, searchFilter } = req.query;
+      let { searchText } = req.query;
       const user = req.user;
 
       searchText = searchText.toLowerCase();
@@ -157,6 +158,26 @@ export default class TaskController {
       }
 
       return await res.json(filteredTasks);
+    } catch (e) {
+      next(e);
+    }
+  };
+
+  clearTask = async (req, res, next) => {
+    try {
+      const user = req.user;
+      const del = await taskModel.deleteMany({ user });
+
+      if (!del) {
+        res.status(404);
+        next(new Error('Unable to delete all tasks!'));
+      }
+
+      res.status(200).json({
+        message: 'All tasks deleted successfully!',
+        success: true,
+      });
+      
     } catch (e) {
       next(e);
     }
