@@ -1,6 +1,12 @@
-import userApiClass from "../userApi.js";
+import AuthAPI from "../AuthAPI.js";
+import showAlert from "../toast.js";
 
-const userApi = new userApiClass();
+const api = new AuthAPI();
+const accessToken = localStorage.getItem("accessToken");
+
+if (accessToken) {
+  window.location.href = "/";
+}
 
 const otpBox = document.querySelector(".otp-input");
 const verifyBtn = document.querySelector(".verify-btn");
@@ -8,31 +14,40 @@ const resendBtn = document.querySelector(".resend-btn");
 const email = localStorage.getItem("email");
 
 verifyBtn.addEventListener("click", async (e) => {
-  const otp = otpBox.value.trim();
+  try {
+    const otp = otpBox.value.trim();
 
-  if (!otp) {
-    console.error("Please enter OTP");
-    return;
-  }
+    if (!otp) {
+      showAlert("Please enter OTP", "error");
+      return;
+    }
 
-  if (!email) {
-    console.error("Email not found. Please go back and register again.");
-    return;
-  }
+    if (!email) {
+      showAlert("User not found! Please register to continue!");
+      window.location.href = "/pages/register";
+      return;
+    }
 
-  await userApi.verifyOTP(email, otp);
+    await api.verifyOTP(email, otp);
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const type = urlParams.get("type"); // "resetPage"
-  console.log(urlParams);
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get("type");
 
-  if(type === "login"){
-    window.location.href = '/pages/login'
-  } else{
-    window.location.href = "/pages/resetPassword";
+    if (type === "login") {
+      window.location.href = "/pages/login";
+    } else {
+      window.location.href = "/pages/resetPassword";
+    }
+  } catch (e) {
+    showAlert(e.message, "error");
+    // showAlert("Wrong OTP entered! Please try again!", "error");
   }
 });
 
 resendBtn.addEventListener("click", async () => {
-  await userApi.sendOTP(email);
+  try {
+    await api.sendOTP(email);
+  } catch {
+    showAlert("Error occured while sending OTP! Please try again", "error");
+  }
 });

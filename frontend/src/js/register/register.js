@@ -1,7 +1,12 @@
-import userApiClass from "../userApi.js";
-// import showAlert  from "./main.js";
+import AuthAPI from "../AuthAPI.js";
+import showAlert from "../toast.js";
 
-const userApi = new userApiClass();
+const api = new AuthAPI();
+const accessToken = localStorage.getItem("accessToken");
+
+if (accessToken) {
+  window.location.href = "/";
+}
 
 const registerForm = document.querySelector(".register-form");
 const emailBox = document.querySelector("#email");
@@ -16,18 +21,19 @@ registerForm.addEventListener("submit", async (e) => {
     const password = passwordBox.value;
 
     if (!username || !email || !password) {
-      // showMessage("Please enter all fields", "error");
-      console.log("Please enter all fields");
+      showAlert("Please enter all fields", "error");
       return;
     }
 
-    // showMessage("Registering user...", "info");
-    await userApi.registerUser(username, email, password);
+    await api.registerUser(username, email, password);
 
-    console.log("user registered successfully, moving to otp page");
+    showAlert(
+      "user registered successfully, redirecting for user email verification.",
+      "success"
+    );
 
     localStorage.setItem("email", email);
-    await userApi.sendOTP(email);
+    await api.sendOTP(email);
 
     window.location.href = "/pages/otp?type=login";
   } catch (e) {

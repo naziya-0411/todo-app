@@ -1,63 +1,46 @@
-// Import our custom CSS
 import "../scss/styles.scss";
-
-// Import all of Bootstrap’s JS
-import * as bootstrap from "bootstrap";
+import showAlert from "./toast.js";
+import TaskAPI from './TaskAPI.js';
+import TokenManagerClass from "../../utils/tokenManager.js";
 import {
-  getTaskList,
-  addTask,
-  deleteTask,
-  updateTask,
-  updateCompletionStatus,
-  sortTask,
-  searchTask,
-} from "./api.js";
+  addBtn,
+  functionalBtns,
+  confirmBox,
+  confirmMsgBox,
+  ul,
+  taskBox,
+  preferenceBox,
+  tagsBox,
+  sortInput,
+  searchBox,
+  searchSelect,
+  saveCancelBtn,
+  logoutBtn
+} from './mainConstants.js';
 
+const api = new TaskAPI();
+const tokenManager = new TokenManagerClass();
 const accessToken = localStorage.getItem("accessToken");
 
-if(!accessToken){
+if (!accessToken) {
   window.location.href = `/pages/login`;
 }
 
-//declaring btn, tasklist and predefined style for functional btns.
-const addBtn = document.querySelector("#addBtn");
-const taskList = document.querySelector("#taskList");
-const functionalBtns = `<div class="functional-btns">
-<img class="del-btn" src="./assets/svg/delete.svg" alt="delete-img">
-<img class="edit-btn" src="./assets/svg/pencil.svg" alt = "edit-img">
-</div>`;
-
-const confirmBox = document.querySelector(".confirm-box");
-const confirmMsgBox = document.querySelector(".confirm-msg-box");
-const ul = document.querySelector("#taskList");
-
-const taskBox = document.querySelector("#taskInput");
-const preferenceBox = document.querySelector("#preferenceInput");
-const tagsBox = document.querySelector(".tags-input");
-const sortInput = document.querySelector("#sortInput");
-
-const alertBox = document.querySelector(".alert-box");
-const messageBox = document.querySelector(".message");
-const searchBox = document.querySelector("#searchInput");
-const searchSelect = document.querySelector("#search-select");
-
-//🟢loading data in the local Storage.
 window.onload = async function () {
   try {
-    let tasks = await getTaskList();
+    let tasks = await api.getTaskList();
+
     createFunctionalBtns();
     updateAnalyticBox(tasks);
     displayTask(tasks);
   } catch (e) {
-    console.error(e);
-    showAlert("Could not load tasks from server.", "error");
+    showAlert("Error in loading tasks! Please try again!", "error");
   }
 };
 
-//🟢displaying tasks.
 function displayTask(tasks) {
   const ul = document.querySelector("#taskList");
-  ul.innerHTML = ""; //empty the container before adding the values again.
+  ul.innerHTML = "";
 
   tasks.forEach((t) => {
     const newLi = document.createElement("li");
@@ -67,7 +50,7 @@ function displayTask(tasks) {
       textStyle = "line-through";
     }
 
-    let preferenceColor = "black"; // default color
+    let preferenceColor = "black";
 
     if (t.preference.toLowerCase() === "high") {
       preferenceColor = " linear-gradient(135deg, #3e0791ff, #563190ff);";
@@ -80,15 +63,13 @@ function displayTask(tasks) {
     newLi.innerHTML = `
       <div class="list-container row d-flex align-items-center p-2">
         <div class="col-12 col-md-9 data-container d-flex flex-wrap gap-2 align-items-center">
-          <div class="preference-container p-1 px-2 rounded-5" style="background:${preferenceColor}">${
-      t.preference
-    }</div>
+          <div class="preference-container p-1 px-2 rounded-5" style="background:${preferenceColor}">${t.preference
+      }</div>
         </div>
 
         <div class="d-flex align-items-center text-container py-3 px-3 gap-2">
-          <p class="m-0 text-break" style="text-decoration: ${textStyle}">${
-      t.task
-    }</p>
+          <p class="m-0 text-break" style="text-decoration: ${textStyle}">${t.task
+      }</p>
           <div class="tags-container small text-muted">${t.tags.join(" ")}</div>
         </div>
 
@@ -103,48 +84,44 @@ function displayTask(tasks) {
     newLi.id = t._id;
     ul.appendChild(newLi);
   });
-
-  // updateAnalyticBox(tasks);
 }
 
-//🟢making the list buttons functional.(adding event listener)
 async function createFunctionalBtns() {
-  //🟢deleting task.
   ul.addEventListener("click", async (e) => {
     try {
       if (e.target.classList.contains("del-btn")) {
-        console.log("delete btn clicked");
         const result = await showConfirmBox("Do you want to delete the task?");
+
         if (result === "yes") {
           confirmMsgBox.innerText = "";
           confirmBox.classList.remove("down");
           const listItem = e.target.closest("li");
           const deleteId = listItem.id;
 
-          await deleteTask(deleteId);
+          await api.deleteTask(deleteId);
 
-          //displaying after deleting.
-          const tasks = await getTaskList();
+          const tasks = await api.getTaskList();
+
           displayTask(tasks);
           updateAnalyticBox(tasks);
           showAlert("Task Deleted Successfully!", "success");
         }
       }
     } catch (e) {
-      console.error(e);
-      showAlert("Deletion Error", "error");
+      showAlert("Error in deleting tasks! Please try again.", "error");
     }
   });
 
-  //🟢task done
   ul.addEventListener("click", async (e) => {
     try {
       if (e.target.classList.contains("done-btn")) {
         const listItem = e.target.closest("li");
         const id = listItem.id;
 
-        await updateCompletionStatus(id); // save updates
-        const tasks = await getTaskList(); //displaying data.
+        await api.updateCompletionStatus(id);
+
+        const tasks = await api.getTaskList();
+
         displayTask(tasks);
         updateAnalyticBox(tasks);
       }
@@ -153,17 +130,14 @@ async function createFunctionalBtns() {
     }
   });
 
-  //🟢edit tasks
   ul.addEventListener("click", async (e) => {
     if (e.target.classList.contains("edit-btn")) {
-      console.log("inside edit button");
       const listItem = e.target.closest("li");
       const id = listItem.id;
 
-      let tasks = await getTaskList();
+      let tasks = await api.getTaskList();
       let taskData = null;
 
-      //fetching data to display in the input boxes.
       for (let task of tasks) {
         if (id === task._id) {
           taskData = task;
@@ -171,7 +145,6 @@ async function createFunctionalBtns() {
         }
       }
 
-      //display in input box.
       if (taskData) {
         taskBox.value = taskData.task;
         preferenceBox.value = taskData.preference;
@@ -196,17 +169,7 @@ async function createFunctionalBtns() {
           newDiv.classList.add("pt-3");
           newDiv.classList.add("btn-row");
 
-          newDiv.innerHTML = `<div class="col-md-6 d-grid">
-            <button id="save-btn" class="btn primary-btn purple-btn">
-              Save
-            </button>
-          </div>
-
-          <div class="col-md-6 d-grid">
-            <button id="cancel-btn" class="btn primary-btn purple-btn">
-              Cancel
-            </button>
-          </div>`;
+          newDiv.innerHTML = saveCancelBtn;
 
           addTaskContainer.insertAdjacentElement("afterend", newDiv);
 
@@ -226,16 +189,15 @@ async function createFunctionalBtns() {
                 tags: tagsInputArray,
               };
 
-              await updateTask(id, updatedData); //updating tasks.
+              await updateTask(id, updatedData);
 
               restoreInputBoxes();
 
-              const tasks = await getTaskList();
-              // sorting();
+              const tasks = await api.getTaskList();
+
               displayTask(tasks);
             } catch (e) {
-              console.error(e);
-              showAlert("Updation error!", "error");
+              showAlert("Error in updating task! Please try again.", "error");
             }
           });
 
@@ -248,30 +210,26 @@ async function createFunctionalBtns() {
   });
 }
 
-//🟢searching.
-searchBox.addEventListener("input", searching);
-
 async function searching() {
   try {
     const searchText = searchBox.value.trim();
     const searchFilter = searchSelect.value;
 
-    if (!searchFilter) throw new Error("Please select filter!");
-    console.log("frontend searching", searchText, searchFilter);
+    if (!searchFilter) {
+      showAlert("Please select filter", "error");
+      return;
+    }
 
-    // getting tasks from backend.
-    const filteredTasks = await searchTask(searchText, searchFilter);
-
-    console.log("Filtered tasks:", filteredTasks);
+    const filteredTasks = await api.searchTask(searchText, searchFilter);
     displayTask(filteredTasks);
 
-  } catch (err) {
-    // showAlert(err.message, "error");
-    console.error(err);
+  } catch {
+    showAlert('Some error occured while filtering! Please try again', "error");
   }
 }
 
-//🟢emptying all the boxes after adding input.
+searchBox.addEventListener("input", searching);
+
 function restoreInputBoxes() {
   const btnBox = document.querySelector(".btn-row");
   taskBox.value = "";
@@ -286,89 +244,74 @@ function restoreInputBoxes() {
 
   tagsBox.style.background = "white";
   tagsBox.style.border = "none";
+
   if (btnBox) btnBox.remove();
 }
 
-//🟢Adding new List(event listener)
 addBtn.addEventListener("click", async () => {
-  const preferenceInput = preferenceBox.value;
-  const taskInput = taskBox.value.trim();
-  const tagsInput = tagsBox.value;
-  const tagsInputArray = tagsInput ? tagsInput.split(",") : [];
+  try {
+    const preferenceInput = preferenceBox.value;
+    const taskInput = taskBox.value.trim();
+    const tagsInput = tagsBox.value;
+    const tagsInputArray = tagsInput ? tagsInput.split(",") : [];
 
-  if (taskInput === "") {
-    showAlert("Please enter the task!", "error");
+    if (taskInput === "") {
+      showAlert("Please enter the task!", "error");
+      return;
+    }
+
+    if (preferenceInput === "") {
+      showAlert("Please select preference!", "error");
+      return;
+    }
+
+    const taskData = {
+      task: taskInput,
+      preference: preferenceInput,
+      tags: tagsInputArray,
+      isCompleted: false,
+    };
+
+    await api.addTask(taskData);
+    let tasks = await api.getTaskList();
+
+    displayTask(tasks);
+    updateAnalyticBox(tasks);
+
+    showAlert("Task added successfully!", "success");
+
+    restoreInputBoxes();
     return;
+  } catch {
+    showAlert("Error in adding tasks!", "error");
   }
-
-  if (preferenceInput === "") {
-    showAlert("Please select preference!", "error");
-    return;
-  }
-
-  //adding task.
-  const taskData = {
-    task: taskInput,
-    preference: preferenceInput,
-    tags: tagsInputArray,
-    isCompleted: false,
-  };
-
-  await addTask(taskData);
-
-  let tasks = await getTaskList();
-  displayTask(tasks);
-  updateAnalyticBox(tasks);
-
-  showAlert("Task added successfully!", "success");
-
-  restoreInputBoxes();
-  return;
 });
 
 async function sorting() {
   try {
-    console.log("inside frontend sorting");
     const sortValue = sortInput.value;
-    let sortedTasks = await sortTask(sortValue);
-    console.log(sortedTasks);
+    let sortedTasks = await api.sortTask(sortValue);
 
-    //display tasks.
     displayTask(sortedTasks);
   } catch (e) {
-    console.log(e);
+    showAlert("Error in sorting tasks! Please try again.", "error");
   }
 }
 
 sortInput.addEventListener("change", sorting);
 
-//🟢updating the analytics.
 function updateAnalyticBox(tasks) {
   const total = tasks.length;
   const completed = tasks.filter((t) => t.isCompleted === true).length;
   const pending = total - completed;
 
   document.querySelector(".total-tasks .analytic-body").innerText = total;
-  document.querySelector(".completed-tasks .analytic-body").innerText =
-    completed;
+  document.querySelector(".completed-tasks .analytic-body").innerText =completed;
   document.querySelector(".pending-tasks .analytic-body").innerText = pending;
 }
 
-//🟢showing Alert message.
-export default function showAlert(message, method) {
-  messageBox.innerText = message;
-  // remove any previous state first
-  alertBox.classList.remove("success", "error", "show");
-  // add new state
-  alertBox.classList.add("show", method === "success" ? "success" : "error");
-  setTimeout(() => {
-    alertBox.classList.remove("success", "error", "show");
-  }, 3000);
-}
-
-//🟢showing confirmation box.
 function showConfirmBox(message) {
-  confirmMsgBox.innerHTML = message; //adding msg to confirm box
+  confirmMsgBox.innerHTML = message;
   confirmBox.classList.add("up");
 
   return new Promise((resolve) => {
@@ -388,4 +331,12 @@ function showConfirmBox(message) {
   });
 }
 
+logoutBtn.addEventListener('click', ()=>{
+  try{
+    tokenManager.clearTokens();
+    window.location.href ='/pages/login';
+  } catch(e){
+    showAlert("Unable to logout user! Please try after sometime");
+  }
+})
 

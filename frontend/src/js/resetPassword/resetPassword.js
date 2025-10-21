@@ -1,7 +1,12 @@
-import userApiClass from "../userApi.js";
-// import showAlert  from "./main.js";
+import AuthAPI from "../AuthAPI.js";
+import showAlert from "../toast.js";
 
-const userApi = new userApiClass();
+const api = new AuthAPI();
+const accessToken = localStorage.getItem("accessToken");
+
+if (accessToken) {
+  window.location.href = "/";
+}
 
 const resetForm = document.querySelector(".reset-form");
 const passwordBox = document.querySelector("#password");
@@ -14,24 +19,24 @@ resetForm.addEventListener("submit", async (e) => {
     const password = passwordBox.value;
     const confirmPassword = confirmPasswordBox.value;
 
-    console.log(password, "this is confirm password", confirmPassword);
-
     if (!password || !confirmPassword) {
-      // showMessage("Please enter all fields", "error");
-      console.log("Please enter all fields");
+      showAlert("Please enter all fields", "error");
       return;
     }
 
     if (password !== confirmPassword) {
-      console.log("password and reset password not matched!");
+      showAlert("password and reset password not matched!", "error");
       return;
     }
 
-    // showMessage("Registering user...", "info");
-    await userApi.resetPassword(email, password);
+    await api.resetPassword(email, password);
+
     window.location.href = "/pages/login";
-    console.log("password changed successfully!");
+    showAlert("password changed successfully!", "success");
   } catch (e) {
-    console.error("error in changing password");
+    showAlert(
+      "Error occurred while changing password! Please try again",
+      "success"
+    );
   }
 });

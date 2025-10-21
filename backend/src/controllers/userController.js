@@ -13,22 +13,24 @@ export default class userController {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const user = await userModel.findOne({ email });
+      console.log("this is the user", user);
 
       if (user) {
-        throw new Error(
-          { message: 'User already exists' },
-          { statusCode: 401 }
-        );
+        const err = new Error('User already exists! Please login');
+        err.statusCode = 401;
+        throw err;
       }
 
-      const newUser = userModel.create({
+      const newUser = await userModel.create({
         username,
         email,
         password: hashedPassword,
       });
 
       if (!newUser) {
-        throw new Error('Unable to register new user!');
+        const err = new Error('Unable to register user! Please try again.');
+        err.statusCode = 400;
+        throw err;
       }
       res
         .status(201)
@@ -45,7 +47,14 @@ export default class userController {
       const user = await userModel.findOne({ email });
 
       if (!user) {
-        return res.status(401).json({ error: 'User not found' });
+        return res.status(401).json({ error: 'User not found! Please register to continue' });
+      }
+
+      if (!user.isVerified) {
+        return res.status(401).json({
+          error: "Account not verified. Please verify your email before logging in.",
+          redirect: "/pages/otp?type=reset"
+        });
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password);
@@ -56,13 +65,9 @@ export default class userController {
 
       const accessToken = await getAccessToken(user);
       const refreshToken = await getRefreshToken(user);
-      console.log(
-        'this is access and refresh token',
-        accessToken,
-        refreshToken
-      );
 
       user.isVerified = true;
+      await user.save();
 
       res.status(200).json({ user, accessToken, refreshToken });
     } catch (e) {

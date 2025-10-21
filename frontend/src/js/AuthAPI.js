@@ -1,14 +1,13 @@
 import { DOMAIN, PORT } from "../../constants.js";
 import TokenManagerClass from "../../utils/tokenManager.js";
+import showAlert from "./toast.js";
 
 const TokenManager = new TokenManagerClass();
 const BASE_URL = `${DOMAIN}:${PORT}`;
 
-export default class userApiClass {
+export default class AuthAPI {
   registerUser = async (username, email, password) => {
     try {
-      console.log(`${BASE_URL}/user/register`);
-
       const res = await fetch(`${BASE_URL}/user/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -16,21 +15,21 @@ export default class userApiClass {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        console.error("Error response:", errorData);
-        return;
+        const error = new Error(res.statusText || "Registration failed");
+        error.status = res.status;
+        throw error;
       }
 
-      console.log("Registration successful");
       return;
-    } catch (e) {
-      console.error("Error registering user:", e);
-      return;
+    } catch (err) {
+      throw err
     }
   };
 
   loginUser = async (email, password) => {
     try {
+      console.log("this is login API");
+
       const res = await fetch(`${BASE_URL}/user/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -38,17 +37,14 @@ export default class userApiClass {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.message || "Login failed");
+        const error = new Error(res.statusText || "Login failed");
+        error.status = res.status;
+        throw error;
       }
 
-      const data = await res.json();
-
-      console.log("Login successful:", data);
-      return data;
-    } catch (e) {
-      console.error("Error logging in user:", e);
-      throw e;
+      return await res.json();
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -63,16 +59,16 @@ export default class userApiClass {
       const data = await res.json();
 
       if (res.ok) {
-        console.log("OTP verified successfully!");
+        showAlert("OTP verified successfully!");
         window.location.href = "/pages/login.html";
       } else {
-        console.error(
-          "Unable to verify user:",
-          data.message || "Unknown error"
-        );
+        const err = new Error(res.statusText || "Unable to verify OTP");
+        err.status = res.status;
+        throw err;
       }
+
     } catch (err) {
-      console.error("Network Error:", err.message);
+      showAlert("Network Error:", err.message);
     }
   };
 
@@ -85,15 +81,12 @@ export default class userApiClass {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        console.log("Please try Again! unable to send OTP");
-        throw new Error(errorData.message || "OTP failed");
+        const err = new Error(res.statusText || "Unable to send OTP");
+        err.status = res.status;
+        throw err;
       }
-
-      console.log("OTP sent successfully");
-    } catch (e) {
-      console.error("Network Error:", e);
-      throw e;
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -106,21 +99,18 @@ export default class userApiClass {
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        console.log("Unable to reset password");
-        throw new Error(errorData.message || "OTP failed");
+        const err = new Error(res.statusText || "Unable to reset Password!");
+        err.status = res.status;
+        throw err;
       }
 
-      console.log("password reset successfully");
-    } catch (e) {
-      console.error("unable to reset password", e);
-      throw e;
+    } catch (err) {
+      throw err;
     }
   };
 
   refreshToken = async () => {
     try {
-      console.log("refreshToken route");
       const refreshToken = TokenManager.getRefreshToken();
 
       if (!refreshToken) {
@@ -128,7 +118,7 @@ export default class userApiClass {
       }
 
       const res = await fetch(
-        `${APIInterceptor.API_BASE_URL}/user/refreshToken`,
+        `${BASE_URL}/user/refreshToken`,
         {
           method: "POST",
           headers: {
@@ -138,23 +128,17 @@ export default class userApiClass {
         }
       );
 
-      if (!response.ok) {
+      if (!res.ok) {
         throw new Error("Token refresh failed");
       }
 
       const data = await res.json();
-
       TokenManager.setTokens(data.accessToken, data.refreshToken);
-
       return data;
-    } catch (error) {
-      console.error("Token refresh error:", error);
+
+    } catch (err) {
       TokenManager.clearTokens();
-      throw error;
+      throw err;
     }
   };
-
-  logout() {
-    TokenManager.clearTokens();
-  }
 }

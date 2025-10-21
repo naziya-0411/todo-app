@@ -1,21 +1,21 @@
 import { taskModel } from '../models/taskDb.js';
 
 export default class taskController {
-  //fetching all tasks.
   getAllTasks = async (req, res, next) => {
     try {
       const userId = req.user;
       console.log(userId);
 
       const data = await taskModel.find({ user: userId });
-      // const data = await taskModel.find();
-      console.log(data);
 
       if (!data) {
-        throw new Error('Failed to read task List');
+        return res.status(404).json({
+          success: false,
+          message: "No tasks found for this user.",
+        });
       }
 
-      return await res.json(data);
+      return await res.status(200).json({ success: true, data });
     } catch (e) {
       next(e);
     }
@@ -24,11 +24,10 @@ export default class taskController {
   addNewTask = async (req, res, next) => {
     try {
       const user = req.user;
-      console.log(user);
 
       await taskModel.create({ user, ...req.body });
 
-      res.status(201).json();
+      res.status(201).json({ success: true, message: `task added successfully!` });
     } catch (e) {
       next(e);
     }
@@ -39,10 +38,11 @@ export default class taskController {
       const { id } = req.params;
       if (!id) return res.status(400).json({ error: 'Missing task ID' });
 
+
       const prevItem = await taskModel.findById(id);
 
       if (!prevItem) {
-        throw new Error('Cannot Find Item!', { statusCode: 404 });
+        res.status(404).json({ success: false, message: `Unable to find task!` })
       }
 
       const updatedItem = await taskModel.findByIdAndUpdate(
@@ -52,10 +52,13 @@ export default class taskController {
       );
 
       if (!updatedItem) {
-        throw new Error('Failed to update the completion status');
+        return res.status(404).json({
+          success: false,
+          message: 'failed to update task!',
+        });
       }
 
-      return res.status(200).json({ message: 'Completion status updated.' });
+      return res.status(200).json({ success: false, message: `task updated successfully!` });
     } catch (e) {
       next(e);
     }
@@ -72,12 +75,14 @@ export default class taskController {
       );
 
       if (!updatedTask) {
-        throw new Error('Unable to update task!');
+        return res.status(404).json({
+          success: false,
+          message: 'failed to update task!',
+        });
       }
 
-      res.status(200).json({
-        message: 'Task updated successfully!',
-      });
+      return res.status(200).json({ success: false, message: `task updated successfully!` });
+
     } catch (e) {
       next(e);
     }
@@ -90,7 +95,10 @@ export default class taskController {
       const delItem = await taskModel.findByIdAndDelete(id);
 
       if (!delItem) {
-        throw new Error('Item to be deleted not found', { statusCode: 404 });
+        return res.status(404).json({
+          success: false,
+          message: 'Item to be deleted not found',
+        });
       }
 
       res.status(204).json({ message: `task deleted successfully!` });
@@ -110,9 +118,9 @@ export default class taskController {
       let filteredTasks = null;
 
       if (sortFilter === 'pending') {
-        filteredTasks = await taskModel.find({$and: [{ isCompleted: false }, {user}]});
+        filteredTasks = await taskModel.find({ $and: [{ isCompleted: false }, { user }] });
       } else if (sortFilter === 'completed') {
-        filteredTasks = await taskModel.find({$and: [{ isCompleted: true }, {user}]});
+        filteredTasks = await taskModel.find({ $and: [{ isCompleted: true }, { user }] });
       }
 
       if (!filteredTasks) {
@@ -144,7 +152,7 @@ export default class taskController {
               { tags: { $elemMatch: { $regex: searchText, $options: 'i' } } },
             ],
           },
-          {user}
+          { user }
         ]
       });
 

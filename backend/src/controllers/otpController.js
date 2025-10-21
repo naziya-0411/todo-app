@@ -3,7 +3,7 @@ import { otpModel } from '../models/otpDB.js';
 import otpGenerator from 'otp-generator';
 import { mailSender } from '../utils/mailSender.js';
 
-export default class otpController {
+export default class OTPController {
   sendOTP = async (req, res, next) => {
     try {
       const { email } = req.body;
@@ -23,7 +23,6 @@ export default class otpController {
       otpDoc.otp.push(otp);
       await otpDoc.save();
 
-      // Send OTP via email
       await mailSender(
         email,
         'Please confirm your OTP',
@@ -68,11 +67,6 @@ export default class otpController {
         });
       }
 
-      console.log(now, '   ');
-      console.log(otpCreated, ' ');
-
-      console.log(diff);
-
       if (latestOTP !== otp) {
         return res.status(400).json({ success: false, message: 'Invalid OTP' });
       }
@@ -87,6 +81,7 @@ export default class otpController {
         success: true,
         message: 'OTP verified successfully',
       });
+      
     } catch (e) {
       next(e);
     }
