@@ -38,16 +38,18 @@ verifyBtn.addEventListener("click", async (e) => {
     } else {
       window.location.href = "/pages/resetPassword";
     }
-  } catch (e) {
-    showAlert(e.message, "error");
-    // showAlert("Wrong OTP entered! Please try again!", "error");
+
+  } catch (err) {
+    console.log("inside catch of OTP page!");
+    showAlert(err.message, "error");
   }
 });
 
 resendBtn.addEventListener("click", async () => {
   try {
     await api.sendOTP(email);
-  } catch {
-    showAlert("Error occured while sending OTP! Please try again", "error");
+    showAlert("OTP sent successfully", "success");
+  } catch(err) {
+    showAlert(err.message, "error");
   }
 });

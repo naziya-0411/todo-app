@@ -6,6 +6,8 @@ const api = new AuthAPI();
 const TokenManager = new TokenManagerClass();
 
 const accessToken = localStorage.getItem("accessToken");
+const email = localStorage.getItem("email");
+
 if (accessToken) {
   window.location.href = "/";
 }
@@ -32,15 +34,18 @@ loginForm.addEventListener("submit", async (e) => {
     TokenManager.setTokens(data.accessToken, data.refreshToken);
     window.location.href = "/";
 
-  } catch (e) {
-    console.error("Login failed due to some error", e.message);
+  } catch (err) {
+    showAlert(err.message, "error");
   }
 });
 
 resetPasswordLink.addEventListener("click", async (e) => {
-  e.preventDefault();
-  const email = emailBox.value.trim();
-
-  api.sendOTP(email);
-  window.location.href = "/pages/otp?type=reset";
+  try{
+    e.preventDefault();
+  
+    await api.sendOTP(email);
+    window.location.href = "/pages/otp?type=reset";
+  } catch(err){
+    showAlert(err.message, 'error');
+  }
 });

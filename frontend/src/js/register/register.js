@@ -33,10 +33,11 @@ registerForm.addEventListener("submit", async (e) => {
     );
 
     localStorage.setItem("email", email);
+    
     await api.sendOTP(email);
 
     window.location.href = "/pages/otp?type=login";
   } catch (e) {
-    console.log("error in registration");
+    showAlert(err.message, "error");
   }
 });

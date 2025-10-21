@@ -1,5 +1,4 @@
 import express from 'express';
-
 import taskController from '../controllers/taskController.js';
 import toDoValidations from '../validations/middlewares/taskValidation.js';
 

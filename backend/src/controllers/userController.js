@@ -13,12 +13,11 @@ export default class userController {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const user = await userModel.findOne({ email });
-      console.log("this is the user", user);
+      console.log('this is the user', user);
 
       if (user) {
-        const err = new Error('User already exists! Please login');
-        err.statusCode = 401;
-        throw err;
+        res.status(400);
+        next(new Error(`User already exists! Please login to continue.`));
       }
 
       const newUser = await userModel.create({
@@ -28,10 +27,10 @@ export default class userController {
       });
 
       if (!newUser) {
-        const err = new Error('Unable to register user! Please try again.');
-        err.statusCode = 400;
-        throw err;
+        res.status = 400;
+        next(new Error(`Unable to register user! Please try again.`));
       }
+
       res
         .status(201)
         .json({ success: true, message: 'User generated successfully' });
@@ -47,20 +46,26 @@ export default class userController {
       const user = await userModel.findOne({ email });
 
       if (!user) {
-        return res.status(401).json({ error: 'User not found! Please register to continue' });
+        res.status(401);
+        next(new Error(`User not found! Please register to continue`));
       }
 
       if (!user.isVerified) {
-        return res.status(401).json({
-          error: "Account not verified. Please verify your email before logging in.",
-          redirect: "/pages/otp?type=reset"
-        });
+        res.status(401);
+        res.redirect = '/pages/otp?type=reset';
+        next(
+          new Error(
+            `Account not verified. Please verify your email before logging in.`
+          )
+        );
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) {
-        return res.status(401).json({ error: 'Authentication failed' });
+        console.log("password not matched invoked!");
+        res.status(401);
+        next(new Error(`Password not matched, Please try again`));
       }
 
       const accessToken = await getAccessToken(user);
@@ -71,6 +76,7 @@ export default class userController {
 
       res.status(200).json({ user, accessToken, refreshToken });
     } catch (e) {
+      console.log(e);
       next(e);
     }
   };
@@ -81,13 +87,9 @@ export default class userController {
 
       const refreshToken = header.split(' ')[1];
 
-      console.log('inside refresh token', refreshToken);
-
       const payload = await verifyRefreshToken(refreshToken);
-      console.log("this is payload", payload);
 
       const user = await userModel.findById(payload.userId);
-      console.log("this is user", user)
 
       if (!user) {
         throw new Error('user not found', { statusCode: 404 });
@@ -96,11 +98,10 @@ export default class userController {
       const newAccessToken = await getAccessToken(user);
       const newRefreshToken = await getRefreshToken(user);
 
-      console.log(newAccessToken);
-
-      return res.status(200).json({ refreshToken: newRefreshToken, accessToken: newAccessToken });
+      return res
+        .status(200)
+        .json({ refreshToken: newRefreshToken, accessToken: newAccessToken });
     } catch (e) {
-      console.error('Error refreshing token:', e);
       next(e);
     }
   };
@@ -111,18 +112,15 @@ export default class userController {
       console.log(email, password);
 
       if (!email || !password) {
-        throw new Error('Email and new password are required', {
-          statusCode: 400,
-        });
+        res.status(400);
+        next(new Error(`Please fill all fields!`));
       }
 
       const user = await userModel.findOne({ email });
-      console.log(user);
 
       if (!user) {
-        throw new Error('User with this email does not exist', {
-          statusCode: 404,
-        });
+        res.status(404);
+        next(new Error(`User with this email does not exist`));
       }
 
       const saltRounds = 10;
@@ -136,7 +134,6 @@ export default class userController {
         message: 'Password has been successfully reset',
       });
     } catch (e) {
-      console.log(e.message);
       next(e);
     }
   };

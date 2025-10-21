@@ -15,14 +15,13 @@ export default class AuthAPI {
       });
 
       if (!res.ok) {
-        const error = new Error(res.statusText || "Registration failed");
-        error.status = res.status;
-        throw error;
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Registration failed!");
       }
 
       return;
     } catch (err) {
-      throw err
+      throw err;
     }
   };
 
@@ -37,9 +36,8 @@ export default class AuthAPI {
       });
 
       if (!res.ok) {
-        const error = new Error(res.statusText || "Login failed");
-        error.status = res.status;
-        throw error;
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Login failed!");
       }
 
       return await res.json();
@@ -62,13 +60,11 @@ export default class AuthAPI {
         showAlert("OTP verified successfully!");
         window.location.href = "/pages/login.html";
       } else {
-        const err = new Error(res.statusText || "Unable to verify OTP");
-        err.status = res.status;
-        throw err;
+        throw new Error(data.error || "OTP verification failed!");
       }
-
     } catch (err) {
-      showAlert("Network Error:", err.message);
+      throw(err);
+      // showAlert("Network Error:", err.message);
     }
   };
 
@@ -81,9 +77,8 @@ export default class AuthAPI {
       });
 
       if (!res.ok) {
-        const err = new Error(res.statusText || "Unable to send OTP");
-        err.status = res.status;
-        throw err;
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Unable to send OTP!");
       }
     } catch (err) {
       throw err;
@@ -99,11 +94,9 @@ export default class AuthAPI {
       });
 
       if (!res.ok) {
-        const err = new Error(res.statusText || "Unable to reset Password!");
-        err.status = res.status;
-        throw err;
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to Reset Password!");
       }
-
     } catch (err) {
       throw err;
     }
@@ -117,25 +110,22 @@ export default class AuthAPI {
         throw new Error("No refresh token available");
       }
 
-      const res = await fetch(
-        `${BASE_URL}/user/refreshToken`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ refreshToken }),
-        }
-      );
+      const res = await fetch(`${BASE_URL}/user/refreshToken`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
 
       if (!res.ok) {
-        throw new Error("Token refresh failed");
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Unable to refresh token!");
       }
 
       const data = await res.json();
       TokenManager.setTokens(data.accessToken, data.refreshToken);
       return data;
-
     } catch (err) {
       TokenManager.clearTokens();
       throw err;

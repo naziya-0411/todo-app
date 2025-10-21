@@ -40,48 +40,45 @@ export default class OTPController {
       const { email, otp } = req.body;
 
       if (!email || !otp) {
-        return res
-          .status(400)
-          .json({ success: false, message: 'Email and OTP are required' });
+        res.status(400);
+        return next(new Error(`OTP is required`));
       }
 
       const otpDoc = await otpModel.findOne({ email });
       console.log(otpDoc);
 
       if (!otpDoc || otpDoc.otp.length === 0) {
-        throw new Error('otp not found', { statusCode: 400 });
+        res.status(400);
+        return next(new Error(`OTP not found! Please resend OTP`));
       }
 
       const latestOTP = otpDoc.otp[otpDoc.otp.length - 1];
-      console.log(latestOTP);
 
       const now = Date.now();
-      const otpCreated = new Date(otpDoc.createdAt).getTime();
+      const otpCreated = new Date(otpDoc.updatedAt).getTime();
       const diff = (now - otpCreated) / 1000;
-      console.log(diff);
 
-      if (diff > 5000) {
-        return res.status(400).json({
-          success: false,
-          message: 'OTP expired, please request a new one',
-        });
+      if (diff > 300) {
+        res.status(400);
+        return next(new Error(`OTP expired, please request a new one`));
       }
 
       if (latestOTP !== otp) {
-        return res.status(400).json({ success: false, message: 'Invalid OTP' });
+        res.status(400);
+        return next(new Error(`Invalid OTP`));
       }
 
-      const user = userModel.findOne({ email });
+      const user = await userModel.findOne({ email });
 
       if (user) {
         user.isVerified = true;
+        await user.save(); 
       }
-
+      
       return res.status(200).json({
         success: true,
         message: 'OTP verified successfully',
       });
-      
     } catch (e) {
       next(e);
     }

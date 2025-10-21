@@ -9,10 +9,8 @@ export default class taskController {
       const data = await taskModel.find({ user: userId });
 
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: "No tasks found for this user.",
-        });
+        res.status(404);
+        return next(new Error(`No tasks found for this user.`));
       }
 
       return await res.status(200).json({ success: true, data });
@@ -36,13 +34,16 @@ export default class taskController {
   updateCompletionStatus = async (req, res, next) => {
     try {
       const { id } = req.params;
-      if (!id) return res.status(400).json({ error: 'Missing task ID' });
-
+      if(!id){
+        res.status(400);
+        return next(new Error("Bad Request, Task ID is missing"));
+      }
 
       const prevItem = await taskModel.findById(id);
 
       if (!prevItem) {
-        res.status(404).json({ success: false, message: `Unable to find task!` })
+        res.status(404);
+        return next(new Error(`Unable to find task!`));
       }
 
       const updatedItem = await taskModel.findByIdAndUpdate(
@@ -52,10 +53,8 @@ export default class taskController {
       );
 
       if (!updatedItem) {
-        return res.status(404).json({
-          success: false,
-          message: 'failed to update task!',
-        });
+        res.status(404);
+        return next(new Error(`failed to update task!`));
       }
 
       return res.status(200).json({ success: false, message: `task updated successfully!` });
@@ -75,10 +74,8 @@ export default class taskController {
       );
 
       if (!updatedTask) {
-        return res.status(404).json({
-          success: false,
-          message: 'failed to update task!',
-        });
+        res.status(404);
+        return next(new Error(`failed to update task!`));
       }
 
       return res.status(200).json({ success: false, message: `task updated successfully!` });
@@ -95,10 +92,8 @@ export default class taskController {
       const delItem = await taskModel.findByIdAndDelete(id);
 
       if (!delItem) {
-        return res.status(404).json({
-          success: false,
-          message: 'Item to be deleted not found',
-        });
+        res.status(404);
+        return next(new Error(`Item to be deleted not found`));
       }
 
       res.status(204).json({ message: `task deleted successfully!` });
@@ -109,11 +104,9 @@ export default class taskController {
 
   sortTask = async (req, res, next) => {
     try {
-      console.log('inside backend sorting');
+
       const sortFilter = req.query.sortFilter;
       const user = req.user;
-
-      console.log(sortFilter);
 
       let filteredTasks = null;
 
@@ -124,11 +117,13 @@ export default class taskController {
       }
 
       if (!filteredTasks) {
-        throw new Error('cannot fetch sorted tasks');
+        res.status(404);
+        next(new Error(`Unable to fetch sorted task!`));
       }
 
-      console.log('this is filtered tasks', filteredTasks);
-      return await res.json(filteredTasks);
+      const data = await res.json();
+      res.status(200).json(data);
+
     } catch (e) {
       next(e);
     }
@@ -140,8 +135,6 @@ export default class taskController {
       const user = req.user;
 
       searchText = searchText.toLowerCase();
-
-      console.log(searchFilter, searchText);
 
       const filteredTasks = await taskModel.find({
         $and: [
@@ -157,9 +150,10 @@ export default class taskController {
       });
 
       if (!filteredTasks) {
-        throw new Error('cannot fetch searched tasks');
+        res.status(404);
+        next(new Error('cannot fetch searched tasks'));
       }
-      console.log('this is filtered tasks', filteredTasks);
+
       return await res.json(filteredTasks);
     } catch (e) {
       next(e);

@@ -29,13 +29,18 @@ app.use('/', verifyToken, taskRouter);
 //global middleware for catching error.
 app.use((err, req, res, next) => {
   try {
-    const status = err.status || 500;
+    console.log("this is global middleware", res.status);
+    if(res.statusCode === 200) res.statusCode = 500;
+    const status = res.statusCode || 500;
+    
+    console.log("err.message", err.message);
 
     res.status(status).json({
       error: err.message || 'Server Error',
     });
-  } catch (e) {
-    return res.status(500).json({ error: e.message });
+
+  } catch {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

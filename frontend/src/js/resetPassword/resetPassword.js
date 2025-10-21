@@ -33,10 +33,8 @@ resetForm.addEventListener("submit", async (e) => {
 
     window.location.href = "/pages/login";
     showAlert("password changed successfully!", "success");
-  } catch (e) {
-    showAlert(
-      "Error occurred while changing password! Please try again",
-      "success"
-    );
+
+  } catch (err) {
+    showAlert(err.message, "error");
   }
 });
