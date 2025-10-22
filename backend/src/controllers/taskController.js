@@ -61,7 +61,6 @@ export default class TaskController {
       return res
         .status(200)
         .json({ success: false, message: `task updated successfully!` });
-
     } catch (e) {
       next(e);
     }
@@ -84,7 +83,6 @@ export default class TaskController {
       return res
         .status(200)
         .json({ success: false, message: `task updated successfully!` });
-        
     } catch (e) {
       next(e);
     }

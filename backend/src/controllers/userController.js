@@ -130,7 +130,6 @@ export default class UserController {
         success: true,
         message: 'Password has been successfully reset',
       });
-
     } catch (e) {
       next(e);
     }

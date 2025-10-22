@@ -32,7 +32,6 @@ app.use((err, req, res, next) => {
     res.status(status).json({
       error: err.message || 'Server Error',
     });
-
   } catch {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
