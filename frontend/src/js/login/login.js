@@ -35,9 +35,15 @@ loginForm.addEventListener("submit", async (e) => {
 
     await wait(3000);
     window.location.href = "/";
-
   } catch (err) {
     showAlert(err.message, "error");
+
+    if (err.message.includes("Account not verified")) {
+      await wait(3000);
+      await api.sendOtp(email);
+      window.location.href = "/pages/otp?type=login";
+    }
+
   }
 });
 
@@ -49,6 +55,7 @@ resetPasswordLink.addEventListener("click", async (e) => {
 
     showAlert("OTP sent successfully!");
     await wait(3000);
+
     window.location.href = "/pages/otp?type=reset";
   } catch (err) {
     showAlert(err.message, "error");

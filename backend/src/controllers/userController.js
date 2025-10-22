@@ -52,8 +52,8 @@ export default class UserController {
 
       if (!user.isVerified) {
         res.status(401);
-        res.redirect = '/pages/otp?type=reset';
-        next(
+
+        return next(
           new Error(
             `Account not verified. Please verify your email before logging in.`
           )
@@ -84,11 +84,9 @@ export default class UserController {
   refreshToken = async (req, res, next) => {
     try {
       const header = req.headers['refreshtoken'];
-
       const refreshToken = header.split(' ')[1];
 
       const payload = await verifyRefreshToken(refreshToken);
-
       const user = await userModel.findById(payload.userId);
 
       if (!user) {
@@ -109,7 +107,6 @@ export default class UserController {
   resetPassword = async (req, res, next) => {
     try {
       const { email, password } = req.body;
-      console.log(email, password);
 
       if (!email || !password) {
         res.status(400);
@@ -133,6 +130,7 @@ export default class UserController {
         success: true,
         message: 'Password has been successfully reset',
       });
+
     } catch (e) {
       next(e);
     }

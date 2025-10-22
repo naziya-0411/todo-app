@@ -30,7 +30,7 @@ verifyBtn.addEventListener("click", async (e) => {
       return;
     }
 
-    await api.verifyOtp(email, otp);
+    const data = await api.verifyOtp(email, otp);
 
     const urlParams = new URLSearchParams(window.location.search);
     const type = urlParams.get("type");
@@ -43,6 +43,7 @@ verifyBtn.addEventListener("click", async (e) => {
     } else {
       window.location.href = "/pages/resetPassword";
     }
+
   } catch (err) {
     showAlert(err.message, "error");
   }

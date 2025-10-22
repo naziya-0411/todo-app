@@ -71,18 +71,17 @@ export default class OtpController {
       }
 
       const user = await userModel.findOne({ email });
-
-      if (user) {
-        user.isVerified = true;
-        await user.save();
-      }
+      console.log(user);
+      
+      user.isVerified = true;
+      await user.save();
 
       const accessToken = await getAccessToken(user);
 
       return res.status(200).json({
         success: true,
         message: 'OTP verified successfully',
-        accessToken
+        accessToken,
       });
 
     } catch (e) {

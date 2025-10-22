@@ -47,11 +47,12 @@ export default class AuthAPI {
     try {
       const res = await fetch(`${BASE_URL}/otp/verify-otp`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" , "Authorization": `Bearer ${token}`},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp }),
       });
 
       const data = await res.json();
+      sessionStorage.setItem("accessToken", data.accessToken);
 
       if (res.ok) {
         return;
@@ -68,10 +69,10 @@ export default class AuthAPI {
     try {
       const token = tokenInstance.getAccessToken();
 
-      const res = await fetch(`${BASE_URL}/otp/send-otp?redirect=loginPage`, {
+      const res = await fetch(`${BASE_URL}/otp/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email,  }),
+        body: JSON.stringify({ email }),
       });
 
       if (!res.ok) {
@@ -87,14 +88,20 @@ export default class AuthAPI {
 
   resetPassword = async (email, password) => {
     try {
+      console.log("inside reset password");
+      const token = sessionStorage.getItem("accessToken");
+
+      console.log(token);
+
       const res = await fetch(`${BASE_URL}/user/reset-password`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}`},
         body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
         const errorData = await res.json();
+        console.log(errorData);
         throw new Error(errorData.error || "Failed to Reset Password!");
       }
 
