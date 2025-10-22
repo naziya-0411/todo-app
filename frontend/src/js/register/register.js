@@ -4,14 +4,14 @@ import {wait, showAlert} from "../toast.js";
 const api = new AuthAPI();
 const accessToken = localStorage.getItem("accessToken");
 
-if (accessToken) {
-  window.location.href = "/";
-}
-
 const registerForm = document.querySelector(".register-form");
 const emailBox = document.querySelector("#email");
 const passwordBox = document.querySelector("#password");
 const usernameBox = document.querySelector("#username");
+
+if (accessToken) {
+  window.location.href = "/";
+}
 
 registerForm.addEventListener("submit", async (e) => {
   try {
