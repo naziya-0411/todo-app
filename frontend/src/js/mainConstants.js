@@ -43,9 +43,3 @@ export {
     logoutBtn,
     clearTask,
 }
-
-// export default class Constants{
-
-// }
-// mainConst = new Constants();
-// mainConst 

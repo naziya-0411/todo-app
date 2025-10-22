@@ -1,5 +1,5 @@
 import AuthAPI from "../api/AuthAPI.js";
-import showAlert from "../toast.js";
+import {wait, showAlert} from "../toast.js";
 
 const api = new AuthAPI();
 const accessToken = localStorage.getItem("accessToken");

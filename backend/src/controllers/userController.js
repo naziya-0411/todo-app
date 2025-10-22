@@ -13,11 +13,10 @@ export default class UserController {
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const user = await userModel.findOne({ email });
-      console.log('this is the user', user);
 
       if (user) {
         res.status(400);
-        next(new Error(`User already exists! Please login to continue.`));
+        return next(new Error(`User already exists! Please login to continue.`));
       }
 
       const newUser = await userModel.create({
@@ -28,14 +27,14 @@ export default class UserController {
 
       if (!newUser) {
         res.status = 400;
-        next(new Error(`Unable to register user! Please try again.`));
+        return next(new Error(`Unable to register user! Please try again.`));
       }
 
       res
         .status(201)
         .json({ success: true, message: 'User generated successfully' });
-    } catch (e) {
-      next(e);
+    } catch (err) {
+      next(err);
     }
   };
 
@@ -47,7 +46,7 @@ export default class UserController {
 
       if (!user) {
         res.status(401);
-        next(new Error(`User not found! Please register to continue`));
+        return next(new Error(`User not found! Please register to continue`));
       }
 
       if (!user.isVerified) {
@@ -65,19 +64,16 @@ export default class UserController {
       if (!passwordMatch) {
         console.log('password not matched invoked!');
         res.status(401);
-        next(new Error(`Password not matched, Please try again`));
+        return next(new Error(`Password not matched, Please try again`));
       }
 
       const accessToken = await getAccessToken(user);
       const refreshToken = await getRefreshToken(user);
 
-      user.isVerified = true;
-      await user.save();
-
       res.status(200).json({ user, accessToken, refreshToken });
-    } catch (e) {
-      console.log(e);
-      next(e);
+
+    } catch (err) {
+      next(err);
     }
   };
 
@@ -99,6 +95,7 @@ export default class UserController {
       return res
         .status(200)
         .json({ refreshToken: newRefreshToken, accessToken: newAccessToken });
+
     } catch (e) {
       next(e);
     }
@@ -110,14 +107,14 @@ export default class UserController {
 
       if (!email || !password) {
         res.status(400);
-        next(new Error(`Please fill all fields!`));
+        return next(new Error(`Please fill all fields!`));
       }
 
       const user = await userModel.findOne({ email });
 
       if (!user) {
         res.status(404);
-        next(new Error(`User with this email does not exist`));
+        return next(new Error(`User with this email does not exist`));
       }
 
       const saltRounds = 10;
@@ -130,6 +127,7 @@ export default class UserController {
         success: true,
         message: 'Password has been successfully reset',
       });
+      
     } catch (e) {
       next(e);
     }

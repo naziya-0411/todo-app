@@ -23,7 +23,6 @@ export default class OtpController {
 
       otpDoc.otp.push(otp);
       await otpDoc.save();
-
       await mailSender(
         email,
         'Please confirm your OTP',
@@ -31,6 +30,7 @@ export default class OtpController {
       );
 
       res.status(200).json({ success: true, message: 'OTP sent successfully' });
+
     } catch (e) {
       next(e);
     }

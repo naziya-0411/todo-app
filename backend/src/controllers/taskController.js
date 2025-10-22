@@ -35,6 +35,7 @@ export default class TaskController {
   updateCompletionStatus = async (req, res, next) => {
     try {
       const { id } = req.params;
+
       if (!id) {
         res.status(400);
         return next(new Error('Bad Request, Task ID is missing'));
@@ -69,6 +70,7 @@ export default class TaskController {
   updateTask = async (req, res, next) => {
     try {
       const { id } = req.params;
+
       const updatedTask = await taskModel.findByIdAndUpdate(
         id,
         { $set: req.body },
@@ -98,7 +100,7 @@ export default class TaskController {
         return next(new Error(`Item to be deleted not found`));
       }
 
-      res.status(204).json({ message: `task deleted successfully!` });
+      res.status(204).json({ success: true, message: `task deleted successfully!` });
     } catch (e) {
       next(e);
     }
@@ -123,7 +125,7 @@ export default class TaskController {
 
       if (!filteredTasks) {
         res.status(404);
-        next(new Error(`Unable to fetch sorted task!`));
+        return next(new Error(`Unable to fetch sorted task!`));
       }
 
       res.status(200).json({ success: true, filteredTasks });
@@ -166,6 +168,7 @@ export default class TaskController {
   clearTask = async (req, res, next) => {
     try {
       const user = req.user;
+
       const del = await taskModel.deleteMany({ user });
 
       if (!del) {
@@ -173,10 +176,11 @@ export default class TaskController {
         next(new Error('Unable to delete all tasks!'));
       }
 
-      res.status(200).json({
+      res.status(204).json({
         message: 'All tasks deleted successfully!',
         success: true,
       });
+
     } catch (e) {
       next(e);
     }
