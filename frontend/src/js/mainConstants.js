@@ -44,6 +44,8 @@ export {
     clearTask,
 }
 
-export default class constants{
-    
-}
+// export default class Constants{
+
+// }
+// mainConst = new Constants();
+// mainConst 

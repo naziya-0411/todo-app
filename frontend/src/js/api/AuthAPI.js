@@ -1,7 +1,7 @@
 import { DOMAIN, PORT } from "../../../constants.js";
-import TokenManagerClass from "../../../utils/tokenManager.js";
+import TokenManager from "../../../utils/TokenManager.js";
 
-const TokenManager = new TokenManagerClass();
+const tokenInstance = new TokenManager();
 const BASE_URL = `${DOMAIN}:${PORT}`;
 
 export default class AuthAPI {
@@ -43,11 +43,11 @@ export default class AuthAPI {
     }
   };
 
-  verifyOTP = async (email, otp) => {
+  verifyOtp = async (email, otp) => {
     try {
-      const res = await fetch(`${BASE_URL}/otp/verifyOTP`, {
+      const res = await fetch(`${BASE_URL}/otp/verify-otp`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" , "Authorization": `Bearer ${token}`},
         body: JSON.stringify({ email, otp }),
       });
 
@@ -58,23 +58,28 @@ export default class AuthAPI {
       } else {
         throw new Error(data.error || "OTP verification failed!");
       }
+
     } catch (err) {
       throw err;
     }
   };
 
-  sendOTP = async (email) => {
+  sendOtp = async (email) => {
     try {
-      const res = await fetch(`${BASE_URL}/otp/sendOTP?redirect=loginPage`, {
+      const token = tokenInstance.getAccessToken();
+
+      const res = await fetch(`${BASE_URL}/otp/send-otp?redirect=loginPage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email,  }),
       });
 
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || "Unable to send OTP!");
       }
+
+      return;
     } catch (err) {
       throw err;
     }
@@ -82,7 +87,7 @@ export default class AuthAPI {
 
   resetPassword = async (email, password) => {
     try {
-      const res = await fetch(`${BASE_URL}/user/resetPassword`, {
+      const res = await fetch(`${BASE_URL}/user/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -92,6 +97,7 @@ export default class AuthAPI {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to Reset Password!");
       }
+
     } catch (err) {
       throw err;
     }
@@ -99,13 +105,13 @@ export default class AuthAPI {
 
   refreshToken = async () => {
     try {
-      const refreshToken = TokenManager.getRefreshToken();
+      const refreshToken = tokenInstance.getRefreshToken();
 
       if (!refreshToken) {
         throw new Error("No refresh token available");
       }
 
-      const res = await fetch(`${BASE_URL}/user/refreshToken`, {
+      const res = await fetch(`${BASE_URL}/user/refresh-token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,10 +125,11 @@ export default class AuthAPI {
       }
 
       const data = await res.json();
-      TokenManager.setTokens(data.accessToken, data.refreshToken);
+      tokenInstance.setTokens(data.accessToken, data.refreshToken);
       return data;
+
     } catch (err) {
-      TokenManager.clearTokens();
+      tokenInstance.clearTokens();
       throw err;
     }
   };

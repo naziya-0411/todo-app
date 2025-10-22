@@ -1,7 +1,7 @@
 import "../scss/styles.scss";
 import { wait, showAlert } from "./toast.js";
 import TaskAPI from "./api/TaskAPI.js";
-import TokenManagerClass from "../../utils/tokenManager.js";
+import TokenManager from "../../utils/TokenManager.js";
 import {
   addBtn,
   functionalBtns,
@@ -20,7 +20,7 @@ import {
 } from "./mainConstants.js";
 
 const api = new TaskAPI();
-const tokenManager = new TokenManagerClass();
+const tokenInstance = new TokenManager();
 const accessToken = localStorage.getItem("accessToken");
 
 if (!accessToken) {
@@ -308,8 +308,7 @@ function updateAnalyticBox(tasks) {
   const pending = total - completed;
 
   document.querySelector(".total-tasks .analytic-body").innerText = total;
-  document.querySelector(".completed-tasks .analytic-body").innerText =
-    completed;
+  document.querySelector(".completed-tasks .analytic-body").innerText = completed;
   document.querySelector(".pending-tasks .analytic-body").innerText = pending;
 }
 
@@ -326,6 +325,7 @@ function showConfirmBox(message) {
       confirmBox.classList.add("down");
       resolve("yes");
     };
+
     noBtn.onclick = () => {
       confirmBox.classList.remove("up");
       confirmBox.classList.add("down");
@@ -336,7 +336,7 @@ function showConfirmBox(message) {
 
 logoutBtn.addEventListener("click", () => {
   try {
-    tokenManager.clearTokens();
+    tokenInstance.clearTokens();
     window.location.href = "/pages/login";
   } catch (e) {
     showAlert("Unable to logout user! Please try after sometime");

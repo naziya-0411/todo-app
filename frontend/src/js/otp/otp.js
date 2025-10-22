@@ -30,7 +30,7 @@ verifyBtn.addEventListener("click", async (e) => {
       return;
     }
 
-    await api.verifyOTP(email, otp);
+    await api.verifyOtp(email, otp);
 
     const urlParams = new URLSearchParams(window.location.search);
     const type = urlParams.get("type");
@@ -50,7 +50,7 @@ verifyBtn.addEventListener("click", async (e) => {
 
 resendBtn.addEventListener("click", async () => {
   try {
-    await api.sendOTP(email);
+    await api.sendOtp(email);
     showAlert("OTP sent successfully", "success");
   } catch (err) {
     showAlert(err.message, "error");

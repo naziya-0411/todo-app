@@ -61,6 +61,7 @@ export default class TaskController {
       return res
         .status(200)
         .json({ success: false, message: `task updated successfully!` });
+
     } catch (e) {
       next(e);
     }
@@ -83,6 +84,7 @@ export default class TaskController {
       return res
         .status(200)
         .json({ success: false, message: `task updated successfully!` });
+        
     } catch (e) {
       next(e);
     }
@@ -177,7 +179,6 @@ export default class TaskController {
         message: 'All tasks deleted successfully!',
         success: true,
       });
-      
     } catch (e) {
       next(e);
     }

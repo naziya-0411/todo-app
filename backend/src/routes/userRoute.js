@@ -6,7 +6,7 @@ const userInstance = new UserController();
 
 userRouter.post('/login', userInstance.loginUser);
 userRouter.post('/register', userInstance.registerUser);
-userRouter.post('/refreshToken', userInstance.refreshToken);
-userRouter.post('/resetPassword', userInstance.resetPassword);
+userRouter.post('/refresh-token', userInstance.refreshToken);
+userRouter.post('/reset-password', userInstance.resetPassword);
 
 export default userRouter;

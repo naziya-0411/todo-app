@@ -1,9 +1,9 @@
 import AuthAPI from "../api/AuthAPI.js";
-import TokenManagerClass from "../../../utils/tokenManager.js";
+import TokenManager from "../../../utils/TokenManager.js";
 import { wait, showAlert } from "../toast.js";
 
 const api = new AuthAPI();
-const TokenManager = new TokenManagerClass();
+const tokenInstance = new TokenManager();
 
 const accessToken = localStorage.getItem("accessToken");
 const email = localStorage.getItem("email");
@@ -30,11 +30,12 @@ loginForm.addEventListener("submit", async (e) => {
 
     const data = await api.loginUser(email, password);
 
-    TokenManager.setTokens(data.accessToken, data.refreshToken);
+    tokenInstance.setTokens(data.accessToken, data.refreshToken);
     showAlert("User logged In successfully!");
 
     await wait(3000);
     window.location.href = "/";
+
   } catch (err) {
     showAlert(err.message, "error");
   }
@@ -44,7 +45,7 @@ resetPasswordLink.addEventListener("click", async (e) => {
   try {
     e.preventDefault();
 
-    await api.sendOTP(email);
+    await api.sendOtp(email);
 
     showAlert("OTP sent successfully!");
     await wait(3000);

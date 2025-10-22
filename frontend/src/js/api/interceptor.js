@@ -56,7 +56,6 @@ export default async function fetchAuth(url, options = {}, retry = true) {
     }
     return res;
   } catch (error) {
-    console.error("fetchAuth error:", error);
     throw error;
   }
 }

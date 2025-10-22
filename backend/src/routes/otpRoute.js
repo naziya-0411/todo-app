@@ -6,7 +6,7 @@ const otpInstance = new OtpController();
 
 const otpRouter = express.Router();
 
-otpRouter.post('/sendOTP', otpInstance.sendOTP);
-otpRouter.post('/verifyOTP', otpInstance.verifyOTP);
+otpRouter.post('/send-otp', otpInstance.sendOtp);
+otpRouter.post('/verify-otp', otpInstance.verifyOtp);
 
 export { otpRouter };

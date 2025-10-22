@@ -1,4 +1,4 @@
-export default class TokenManagerClass {
+export default class TokenManager {
     setTokens(accessToken, refreshToken) {
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);

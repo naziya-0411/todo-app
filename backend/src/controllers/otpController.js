@@ -2,9 +2,12 @@ import { userModel } from '../models/userDB.js';
 import { otpModel } from '../models/otpDB.js';
 import otpGenerator from 'otp-generator';
 import { mailSender } from '../utils/mailSender.js';
+import {
+  getAccessToken,
+} from '../utils/jwtUtils.js';
 
 export default class OtpController {
-  sendOTP = async (req, res, next) => {
+  sendOtp = async (req, res, next) => {
     try {
       const { email } = req.body;
 
@@ -35,7 +38,7 @@ export default class OtpController {
     }
   };
 
-  async verifyOTP(req, res, next) {
+  async verifyOtp(req, res, next) {
     try {
       const { email, otp } = req.body;
 
@@ -74,10 +77,14 @@ export default class OtpController {
         await user.save();
       }
 
+      const accessToken = await getAccessToken(user);
+
       return res.status(200).json({
         success: true,
         message: 'OTP verified successfully',
+        accessToken
       });
+
     } catch (e) {
       next(e);
     }
