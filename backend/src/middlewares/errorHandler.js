@@ -3,7 +3,7 @@ export default function errorHandler(err, req, res, next) {
     if (res.statusCode === 200) {
       res.statusCode = 500;
     }
-    
+
     const status = res.statusCode || 500;
 
     res.status(status).json({

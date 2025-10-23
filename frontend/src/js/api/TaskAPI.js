@@ -150,7 +150,6 @@ export default class TaskAPI {
       
       return;
     } catch (err) {
-      console.log(err);
       throw err;
     }
   };

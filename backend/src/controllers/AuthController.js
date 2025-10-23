@@ -1,11 +1,11 @@
-import { userModel } from '../models/userDB.js';
+import { userModel } from '../models/UserDb.js';
 import bcrypt from 'bcrypt';
 import {
   getAccessToken,
   getRefreshToken,
   verifyRefreshToken,
 } from '../utils/jwtUtils.js';
-import { otpModel } from '../models/otpDB.js';
+import { otpModel } from '../models/OtpDb.js';
 import otpGenerator from 'otp-generator';
 import { mailSender } from '../utils/mailSender.js';
 

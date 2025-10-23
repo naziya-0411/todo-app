@@ -3,7 +3,7 @@ import env from '../../constants.js';
 
 const getAccessToken = async (user) => {
   const token = jwt.sign({ userId: user._id }, env.JWT_SECRET_KEY, {
-    expiresIn: '6h',
+    expiresIn: '5s',
   });
   return token;
 };

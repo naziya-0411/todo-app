@@ -1,4 +1,4 @@
-import { taskModel } from '../models/taskDb.js';
+import { taskModel } from '../models/TaskDb.js';
 
 export default class TaskController {
   getAllTasks = async (req, res, next) => {

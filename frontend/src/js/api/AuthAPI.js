@@ -88,10 +88,7 @@ export default class AuthAPI {
 
   resetPassword = async (email, password) => {
     try {
-      console.log("inside reset password");
       const token = sessionStorage.getItem("accessToken");
-
-      console.log(token);
 
       const res = await fetch(`${BASE_URL}/user/auth/reset-password`, {
         method: "POST",
@@ -101,7 +98,6 @@ export default class AuthAPI {
 
       if (!res.ok) {
         const errorData = await res.json();
-        console.log(errorData);
         throw new Error(errorData.error || "Failed to Reset Password!");
       }
 

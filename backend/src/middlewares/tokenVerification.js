@@ -3,6 +3,7 @@ import env from '../../constants.js';
 
 export default function verifyToken(req, res, next) {
   try {
+
     const authHeader = req.headers['authorization'];
     const token = authHeader.split(' ')[1];
 
@@ -16,7 +17,7 @@ export default function verifyToken(req, res, next) {
     next();
     
   } catch (e) {
-    e.status = 401;
+    res.status(401);
     next(e);
   }
 }
