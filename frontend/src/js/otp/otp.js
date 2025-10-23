@@ -13,7 +13,19 @@ const verifyBtn = document.querySelector(".verify-btn");
 const resendBtn = document.querySelector(".resend-btn");
 const email = localStorage.getItem("email");
 
-verifyBtn.addEventListener("click", async (e) => {
+verifyBtn.addEventListener("click", verifyOtp);
+resendBtn.addEventListener("click", resendOtp);
+
+async function resendOtp() {
+  try {
+    await api.sendOtp(email);
+    showAlert("OTP sent successfully", "success");
+  } catch (err) {
+    showAlert(err.message, "error");
+  }
+}
+
+async function verifyOtp() {
   try {
     const otp = otpBox.value.trim();
 
@@ -43,17 +55,7 @@ verifyBtn.addEventListener("click", async (e) => {
     } else {
       window.location.href = "/pages/resetPassword";
     }
-
   } catch (err) {
     showAlert(err.message, "error");
   }
-});
-
-resendBtn.addEventListener("click", async () => {
-  try {
-    await api.sendOtp(email);
-    showAlert("OTP sent successfully", "success");
-  } catch (err) {
-    showAlert(err.message, "error");
-  }
-});
+}

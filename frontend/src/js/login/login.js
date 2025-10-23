@@ -16,7 +16,25 @@ if (accessToken) {
   window.location.href = "/";
 }
 
-loginForm.addEventListener("submit", async (e) => {
+loginForm.addEventListener("submit", userLogin);
+resetPasswordLink.addEventListener("click", resetPassword);
+
+async function resetPassword(e) {
+  try {
+    e.preventDefault();
+
+    await api.sendOtp(email);
+
+    showAlert("OTP sent successfully!");
+    await wait(3000);
+
+    window.location.href = "/pages/otp?type=reset";
+  } catch (err) {
+    showAlert(err.message, "error");
+  }
+}
+
+async function userLogin(e) {
   try {
     e.preventDefault();
 
@@ -43,21 +61,5 @@ loginForm.addEventListener("submit", async (e) => {
       await api.sendOtp(email);
       window.location.href = "/pages/otp?type=login";
     }
-
   }
-});
-
-resetPasswordLink.addEventListener("click", async (e) => {
-  try {
-    e.preventDefault();
-
-    await api.sendOtp(email);
-
-    showAlert("OTP sent successfully!");
-    await wait(3000);
-
-    window.location.href = "/pages/otp?type=reset";
-  } catch (err) {
-    showAlert(err.message, "error");
-  }
-});
+}

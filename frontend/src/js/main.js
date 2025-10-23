@@ -1,5 +1,5 @@
 import "../scss/styles.scss";
-import { wait, showAlert } from "./toast.js";
+import { showAlert } from "./toast.js";
 import TaskAPI from "./api/TaskAPI.js";
 import TokenManager from "../../utils/TokenManager.js";
 import {
@@ -16,7 +16,7 @@ import {
   searchSelect,
   saveCancelBtn,
   logoutBtn,
-  clearTask,
+  clearTaskBtn,
 } from "./mainConstants.js";
 
 const api = new TaskAPI();
@@ -26,6 +26,12 @@ const accessToken = localStorage.getItem("accessToken");
 if (!accessToken) {
   window.location.href = `/pages/login`;
 }
+
+sortInput.addEventListener("change", sortTask);
+searchBox.addEventListener("input", searchTask);
+addBtn.addEventListener("click", addTask);
+clearTaskBtn.addEventListener("click", clearTask);
+logoutBtn.addEventListener("click", userLogout);
 
 window.onload = async function () {
   try {
@@ -87,6 +93,93 @@ function displayTask(tasks) {
     newLi.id = t._id;
     ul.appendChild(newLi);
   });
+}
+
+async function addTask() {
+  try {
+    const preferenceInput = preferenceBox.value;
+    const taskInput = taskBox.value.trim();
+    const tagsInput = tagsBox.value;
+    const tagsInputArray = tagsInput ? tagsInput.split(",") : [];
+
+    if (taskInput === "") {
+      showAlert("Please enter the task!", "error");
+      return;
+    }
+
+    if (preferenceInput === "") {
+      showAlert("Please select preference!", "error");
+      return;
+    }
+
+    const taskData = {
+      task: taskInput,
+      preference: preferenceInput,
+      tags: tagsInputArray,
+      isCompleted: false,
+    };
+
+    await api.addTask(taskData);
+    let tasks = await api.getTaskList();
+
+    displayTask(tasks);
+    updateAnalyticBox(tasks);
+
+    showAlert("Task added successfully!", "success");
+
+    restoreInputBoxes();
+    return;
+  } catch (e) {
+    showAlert(e.message, "error");
+  }
+}
+
+async function searchTask() {
+  try {
+    const searchText = searchBox.value.trim();
+    const searchFilter = searchSelect.value;
+
+    if (!searchFilter) {
+      showAlert("Please select filter", "error");
+      return;
+    }
+
+    const filteredTasks = await api.searchTask(searchText, searchFilter);
+    displayTask(filteredTasks);
+  } catch {
+    showAlert("Some error occured while filtering! Please try again", "error");
+  }
+}
+
+async function sortTask() {
+  try {
+    const sortValue = sortInput.value;
+    let sortedTasks = await api.sortTask(sortValue);
+
+    displayTask(sortedTasks);
+  } catch (err) {
+    showAlert(err.message, "error");
+  }
+}
+
+async function userLogout() {
+  try {
+    tokenInstance.clearTokens();
+    window.location.href = "/pages/login";
+  } catch (e) {
+    showAlert("Unable to logout user! Please try after sometime");
+  }
+}
+
+async function clearTask() {
+  try {
+    await api.clearTask();
+    showAlert("Task cleared successfully!");
+
+    displayTask([]);
+  } catch (e) {
+    showAlert(e.message);
+  }
 }
 
 async function createFunctionalBtns() {
@@ -213,25 +306,6 @@ async function createFunctionalBtns() {
   });
 }
 
-async function searching() {
-  try {
-    const searchText = searchBox.value.trim();
-    const searchFilter = searchSelect.value;
-
-    if (!searchFilter) {
-      showAlert("Please select filter", "error");
-      return;
-    }
-
-    const filteredTasks = await api.searchTask(searchText, searchFilter);
-    displayTask(filteredTasks);
-  } catch {
-    showAlert("Some error occured while filtering! Please try again", "error");
-  }
-}
-
-searchBox.addEventListener("input", searching);
-
 function restoreInputBoxes() {
   const btnBox = document.querySelector(".btn-row");
   taskBox.value = "";
@@ -250,65 +324,14 @@ function restoreInputBoxes() {
   if (btnBox) btnBox.remove();
 }
 
-addBtn.addEventListener("click", async () => {
-  try {
-    const preferenceInput = preferenceBox.value;
-    const taskInput = taskBox.value.trim();
-    const tagsInput = tagsBox.value;
-    const tagsInputArray = tagsInput ? tagsInput.split(",") : [];
-
-    if (taskInput === "") {
-      showAlert("Please enter the task!", "error");
-      return;
-    }
-
-    if (preferenceInput === "") {
-      showAlert("Please select preference!", "error");
-      return;
-    }
-
-    const taskData = {
-      task: taskInput,
-      preference: preferenceInput,
-      tags: tagsInputArray,
-      isCompleted: false,
-    };
-
-    await api.addTask(taskData);
-    let tasks = await api.getTaskList();
-
-    displayTask(tasks);
-    updateAnalyticBox(tasks);
-
-    showAlert("Task added successfully!", "success");
-
-    restoreInputBoxes();
-    return;
-  } catch (e) {
-    showAlert(e.message, "error");
-  }
-});
-
-async function sorting() {
-  try {
-    const sortValue = sortInput.value;
-    let sortedTasks = await api.sortTask(sortValue);
-
-    displayTask(sortedTasks);
-  } catch (err) {
-    showAlert(err.message, "error");
-  }
-}
-
-sortInput.addEventListener("change", sorting);
-
 function updateAnalyticBox(tasks) {
   const total = tasks.length;
   const completed = tasks.filter((t) => t.isCompleted === true).length;
   const pending = total - completed;
 
   document.querySelector(".total-tasks .analytic-body").innerText = total;
-  document.querySelector(".completed-tasks .analytic-body").innerText = completed;
+  document.querySelector(".completed-tasks .analytic-body").innerText =
+    completed;
   document.querySelector(".pending-tasks .analytic-body").innerText = pending;
 }
 
@@ -333,23 +356,3 @@ function showConfirmBox(message) {
     };
   });
 }
-
-logoutBtn.addEventListener("click", () => {
-  try {
-    tokenInstance.clearTokens();
-    window.location.href = "/pages/login";
-  } catch (e) {
-    showAlert("Unable to logout user! Please try after sometime");
-  }
-});
-
-clearTask.addEventListener("click", async () => {
-  try {
-    await api.clearTask();
-    showAlert("Task cleared successfully!");
-
-    displayTask([]);
-  } catch (e) {
-    showAlert(e.message);
-  }
-});

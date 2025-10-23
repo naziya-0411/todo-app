@@ -13,8 +13,10 @@ const passwordBox = document.querySelector("#password");
 const confirmPasswordBox = document.querySelector("#confirm-password");
 const email = localStorage.getItem("email");
 
-resetForm.addEventListener("submit", async (e) => {
-  try {
+resetForm.addEventListener("submit", resetPassword);
+
+async function resetPassword(e){
+    try {
     e.preventDefault();
     const password = passwordBox.value;
     const confirmPassword = confirmPasswordBox.value;
@@ -38,4 +40,4 @@ resetForm.addEventListener("submit", async (e) => {
   } catch (err) {
     showAlert(err.message, "error");
   }
-});
+}

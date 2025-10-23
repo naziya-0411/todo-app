@@ -9,11 +9,9 @@ const emailBox = document.querySelector("#email");
 const passwordBox = document.querySelector("#password");
 const usernameBox = document.querySelector("#username");
 
-if (accessToken) {
-  window.location.href = "/";
-}
+registerForm.addEventListener("submit", userRegister);
 
-registerForm.addEventListener("submit", async (e) => {
+async function userRegister(e){
   try {
     e.preventDefault();
     const username = usernameBox.value.trim();
@@ -42,4 +40,6 @@ registerForm.addEventListener("submit", async (e) => {
   } catch (e) {
     showAlert(err.message, "error");
   }
-});
+}
+
+
