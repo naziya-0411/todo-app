@@ -1,15 +1,15 @@
 import nodemailer from 'nodemailer';
-import { MAIL_HOST, MAIL_PASS, MAIL_USER } from '../../constants.js';
+import env from '../../constants.js';
 
 const mailSender = async (email, title, body) => {
   try {
     let transporter = nodemailer.createTransport({
-      host: MAIL_HOST,
+      host: env.MAIL_HOST,
       port: 587,
       secure: false,
       auth: {
-        user: MAIL_USER,
-        pass: MAIL_PASS,
+        user: env.MAIL_USER,
+        pass: env.MAIL_PASS,
       },
     });
 
@@ -19,7 +19,7 @@ const mailSender = async (email, title, body) => {
     });
 
     let info = await transporter.sendMail({
-      from: `"Naziya Begum" <${MAIL_USER}>`,
+      from: `"Naziya Begum" <${env.MAIL_USER}>`,
       to: email,
       subject: title,
       html: body,

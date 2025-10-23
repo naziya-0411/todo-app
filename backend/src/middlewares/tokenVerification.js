@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET_KEY } from '../../constants.js';
+import env from '../../constants.js';
 
-function verifyToken(req, res, next) {
+export default function verifyToken(req, res, next) {
   try {
     const authHeader = req.headers['authorization'];
     const token = authHeader.split(' ')[1];
@@ -10,7 +10,7 @@ function verifyToken(req, res, next) {
       throw new Error('Token not found, access denied', { status: 401 });
     }
 
-    const tokenVerified = jwt.verify(token, JWT_SECRET_KEY);
+    const tokenVerified = jwt.verify(token, env.JWT_SECRET_KEY);
     req.user = tokenVerified.userId;
 
     next();
@@ -21,4 +21,3 @@ function verifyToken(req, res, next) {
   }
 }
 
-export default verifyToken;

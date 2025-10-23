@@ -1,15 +1,15 @@
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET_KEY, JWT_REFRESH_KEY } from '../../constants.js';
+import env from '../../constants.js';
 
 const getAccessToken = async (user) => {
-  const token = jwt.sign({ userId: user._id }, JWT_SECRET_KEY, {
+  const token = jwt.sign({ userId: user._id }, env.JWT_SECRET_KEY, {
     expiresIn: '6h',
   });
   return token;
 };
 
 const getRefreshToken = async (user) => {
-  const token = jwt.sign({ userId: user._id }, JWT_REFRESH_KEY, {
+  const token = jwt.sign({ userId: user._id }, env.JWT_REFRESH_KEY, {
     expiresIn: '90d',
   });
 
@@ -22,7 +22,7 @@ const verifyRefreshToken = async (refreshToken) => {
       throw new Error('No access token provided');
     }
 
-    const decoded = jwt.verify(refreshToken, JWT_REFRESH_KEY);
+    const decoded = jwt.verify(refreshToken, env.JWT_REFRESH_KEY);
 
     return decoded;
   } catch {
@@ -36,7 +36,7 @@ const verifyAccessToken = (accessToken) => {
       throw new Error('No access token provided');
     }
 
-    const decoded = jwt.verify(accessToken, JWT_SECRET_KEY);
+    const decoded = jwt.verify(accessToken, env.JWT_SECRET_KEY);
 
     return decoded;
   } catch {

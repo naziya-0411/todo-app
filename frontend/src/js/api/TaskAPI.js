@@ -1,4 +1,4 @@
-import { DOMAIN, PORT } from "../../../constants.js";
+import {DOMAIN, PORT} from "../../../constants.js";
 import fetchAuth from "./interceptor.js";
 
 const BASE_URL = `${DOMAIN}:${PORT}`;
