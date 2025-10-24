@@ -211,5 +211,5 @@ export default class UserController {
     } catch (e) {
       next(e);
     }
-  }
+  };
 }

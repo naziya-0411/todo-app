@@ -3,15 +3,14 @@ import { wait, showAlert } from "../toast.js";
 
 const api = new AuthAPI();
 const accessToken = localStorage.getItem("accessToken");
-
-if (accessToken) {
-  window.location.href = "/";
-}
-
 const otpBox = document.querySelector(".otp-input");
 const verifyBtn = document.querySelector(".verify-btn");
 const resendBtn = document.querySelector(".resend-btn");
 const email = localStorage.getItem("email");
+
+if (accessToken) {
+  window.location.href = "/";
+}
 
 verifyBtn.addEventListener("click", verifyOtp);
 resendBtn.addEventListener("click", resendOtp);

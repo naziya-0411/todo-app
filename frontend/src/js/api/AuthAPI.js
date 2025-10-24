@@ -1,4 +1,4 @@
-import {DOMAIN, PORT} from "../../../constants.js";
+import { DOMAIN, PORT } from "../../../constants.js";
 import TokenManager from "../../../utils/TokenManager.js";
 
 const tokenInstance = new TokenManager();
@@ -59,7 +59,6 @@ export default class AuthAPI {
       } else {
         throw new Error(data.error || "OTP verification failed!");
       }
-
     } catch (err) {
       throw err;
     }
@@ -92,7 +91,10 @@ export default class AuthAPI {
 
       const res = await fetch(`${BASE_URL}/user/auth/reset-password`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}`},
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ email, password }),
       });
 
@@ -100,7 +102,6 @@ export default class AuthAPI {
         const errorData = await res.json();
         throw new Error(errorData.error || "Failed to Reset Password!");
       }
-
     } catch (err) {
       throw err;
     }
@@ -130,10 +131,24 @@ export default class AuthAPI {
       const data = await res.json();
       tokenInstance.setTokens(data.accessToken, data.refreshToken);
       return data;
-
     } catch (err) {
       tokenInstance.clearTokens();
       throw err;
     }
+  };
+
+  updateUser= async (form) => {
+    const formData = new FormData(form);
+
+    const res = await fetch(`${BASE_URL}/user/auth/update-user`, formData, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    const user = res.data.result;
+    return user;
   };
 }

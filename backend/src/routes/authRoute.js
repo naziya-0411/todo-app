@@ -13,5 +13,6 @@ userRouter.post('/refresh-token', userInstance.refreshToken);
 userRouter.post('/reset-password', verifyToken, userInstance.resetPassword);
 userRouter.post('/send-otp', userInstance.sendOtp);
 userRouter.post('/verify-otp', userInstance.verifyOtp);
+userRouter.post('/update-user', userInstance.updateUser);
 
 export default userRouter;

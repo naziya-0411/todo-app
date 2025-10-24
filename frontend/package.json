@@ -18,7 +18,8 @@
   "dependencies": {
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.8",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "format": "^0.2.2"
   },
   "description": "",
   "main": "vite.config.js",
