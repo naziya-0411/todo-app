@@ -139,6 +139,7 @@ export default class AuthAPI {
 
   updateProfile = async (form) => {
     const formData = new FormData(form);
+    console.log(formData);
 
     const res = await fetch(`${BASE_URL}/user/auth/update-profile`, formData, {
       method: "POST",

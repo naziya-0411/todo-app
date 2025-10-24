@@ -28,11 +28,11 @@
             class="profile-img"
           />
 
-          <form action="/" class="profile-img-form">
+          <form action="/" id="profile-img-form">
             <div class="mt-2">
               <label class="edit-btn">
                 <i class="fa-solid fa-camera"></i> Select
-                <input type="file" name="image" accept="image/*" required />
+                <input type="file" name="image" class="profile-input" accept="image/*" required />
               </label>
             </div>
 
@@ -60,6 +60,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script type="module" src="../js/profile/profile.js"></script>
   </body>
 </html>
