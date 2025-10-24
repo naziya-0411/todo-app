@@ -13,6 +13,8 @@ const env = {
   MAIL_HOST: process.env.MAIL_HOST,
   MAIL_PASS: process.env.MAIL_PASS,
   MAIL_USER: process.env.MAIL_USER,
+  REFRESH_TOKEN_TIME: process.env.REFRESH_TOKEN_TIME,
+  ACCESS_TOKEN_TIME: process.env.ACCESS_TOKEN_TIME,
 };
 
 export default env;

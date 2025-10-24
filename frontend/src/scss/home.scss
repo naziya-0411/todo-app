@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Fuzzy+Bubbles:wght@400;700&display=swap');
+
+$primary-light: #682d92;
+$primary-dark: #04294f;
+$gradient: linear-gradient(135deg, $primary-dark, $primary-light);
+
+*{  
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    font-family: "Fuzzy Bubbles", sans-serif;
+    color: white;
+}
+body{
+    background: linear-gradient(135deg, #682d92, #04294f, #FF69B4);
+    height: 100vh;
+    width: 100vw;
+}
+
+.hero-section{
+    .container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        
+    }
+}

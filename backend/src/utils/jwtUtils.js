@@ -3,14 +3,14 @@ import env from '../../constants.js';
 
 const getAccessToken = async (user) => {
   const token = jwt.sign({ userId: user._id }, env.JWT_SECRET_KEY, {
-    expiresIn: '5s',
+    expiresIn: env.ACCESS_TOKEN_TIME,
   });
   return token;
 };
 
 const getRefreshToken = async (user) => {
   const token = jwt.sign({ userId: user._id }, env.JWT_REFRESH_KEY, {
-    expiresIn: '90d',
+    expiresIn: env.REFRESH_TOKEN_TIME,
   });
 
   return token;
