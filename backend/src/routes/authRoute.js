@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 import UserController from '../controllers/AuthController.js';
 import verifyToken from '../middlewares/tokenVerification.js';
 import UserValidation from '../validations/middlewares/userValidation.js';
@@ -7,7 +8,13 @@ const userRouter = express.Router();
 const userInstance = new UserController();
 const validationInstance = new UserValidation();
 
-const upload = Multer({})
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage });
 
 userRouter.post('/login', userInstance.loginUser);
 userRouter.post('/register', validationInstance.validateUser, userInstance.registerUser);

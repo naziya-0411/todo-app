@@ -137,19 +137,20 @@ export default class AuthAPI {
     }
   };
 
-  updateProfile= async (form) => {
+  updateProfile = async (form) => {
     const formData = new FormData(form);
 
     const res = await fetch(`${BASE_URL}/user/auth/update-profile`, formData, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        "Content-Type": "multipart/form-data",
       },
     });
-    
-    //remaining part
-    // const user = res.data.result;
-    // return user;
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || "unable to upload profile image!");
+    }
   };
 }

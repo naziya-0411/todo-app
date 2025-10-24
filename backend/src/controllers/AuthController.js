@@ -212,4 +212,28 @@ export default class UserController {
       next(e);
     }
   };
+
+  updateProfile = async (req, res, next) => {
+    try {
+      const { email } = req.body;
+      const user = await userModel.findOne({ email }); 
+
+      if (!user) {
+        res.status(404)
+        return next(new Error(`no user found!`));
+      }
+
+      const profileImage = req.file ? req.file.filename : null;
+
+      if (profileImage) {
+        user.avatar = profileImage;
+      }
+
+      await user.save();
+
+      res.json({ success: true, message: 'File updated successfully!' });
+    } catch (err) {
+      next(err);
+    }
+  };
 }
