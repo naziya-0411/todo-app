@@ -7,12 +7,14 @@ const userRouter = express.Router();
 const userInstance = new UserController();
 const validationInstance = new UserValidation();
 
+const upload = Multer({})
+
 userRouter.post('/login', userInstance.loginUser);
 userRouter.post('/register', validationInstance.validateUser, userInstance.registerUser);
 userRouter.post('/refresh-token', userInstance.refreshToken);
 userRouter.post('/reset-password', verifyToken, userInstance.resetPassword);
 userRouter.post('/send-otp', userInstance.sendOtp);
 userRouter.post('/verify-otp', userInstance.verifyOtp);
-userRouter.post('/update-user', userInstance.updateUser);
+userRouter.post('/update-profile', upload.single('avatar'), userInstance.updateProfile)
 
 export default userRouter;

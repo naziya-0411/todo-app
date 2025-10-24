@@ -137,18 +137,19 @@ export default class AuthAPI {
     }
   };
 
-  updateUser= async (form) => {
+  updateProfile= async (form) => {
     const formData = new FormData(form);
 
-    const res = await fetch(`${BASE_URL}/user/auth/update-user`, formData, {
+    const res = await fetch(`${BASE_URL}/user/auth/update-profile`, formData, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         'Content-Type': 'multipart/form-data',
       },
     });
-
-    const user = res.data.result;
-    return user;
+    
+    //remaining part
+    // const user = res.data.result;
+    // return user;
   };
 }

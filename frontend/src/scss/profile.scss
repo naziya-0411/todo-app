@@ -18,81 +18,81 @@ body {
   justify-content: center;
   align-items: center;
   color: white;
-}
 
-.profile-container {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  padding: 40px;
-  max-width: 700px;
-  width: 90%;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-}
+  .profile-container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 700px;
+    width: 90%;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 
-.profile-img-box {
-  text-align: center;
+    .profile-img-box {
+      text-align: center;
 
-  .profile-img {
-    width: 140px;
-    height: 140px;
-    border-radius: 50%;
-    border: 4px solid $accent;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-    &:hover {
-      transform: scale(1.05);
+      .profile-img {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        border: 4px solid $accent;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+
+      .edit-btn {
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: $accent;
+        cursor: pointer;
+
+        input {
+          display: none;
+        }
+
+        i {
+          margin-right: 5px;
+        }
+
+        &:hover {
+          color: lighten($accent, 10%);
+        }
+      }
     }
-  }
 
-  .edit-btn {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 0.9rem;
-    color: $accent;
-    cursor: pointer;
+    .profile-info-box {
+      h4 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
 
-    input {
-      display: none;
-    }
+      p {
+        font-size: 1rem;
+        opacity: 0.8;
+      }
 
-    i {
-      margin-right: 5px;
-    }
+      .btn {
+        margin-top: 20px;
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 600;
+        color: $accent;
+        border: 2px solid $accent;
+        background: transparent;
+        transition: all 0.3s ease;
 
-    &:hover {
-      color: lighten($accent, 10%);
-    }
-  }
-}
-
-.profile-info-box {
-  h4 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-
-  p {
-    font-size: 1rem;
-    opacity: 0.8;
-  }
-
-  .btn {
-    margin-top: 20px;
-    border-radius: 50px;
-    padding: 10px 25px;
-    font-weight: 600;
-    color: $accent;
-    border: 2px solid $accent;
-    background: transparent;
-    transition: all 0.3s ease;
-
-    &:hover {
-      background: $accent;
-      color: white;
-      transform: translateY(-3px);
+        &:hover {
+          background: $accent;
+          color: white;
+          transform: translateY(-3px);
+        }
+      }
     }
   }
 }

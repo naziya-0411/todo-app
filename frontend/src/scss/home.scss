@@ -11,18 +11,18 @@ $gradient: linear-gradient(135deg, $primary-dark, $primary-light);
     font-family: "Fuzzy Bubbles", sans-serif;
     color: white;
 }
+
 body{
     background: linear-gradient(135deg, #682d92, #04294f, #FF69B4);
     height: 100vh;
     width: 100vw;
-}
-
-.hero-section{
-    .container{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        
+    
+    .hero-section{
+        .container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
     }
 }
