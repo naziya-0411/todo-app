@@ -17,6 +17,7 @@ export default function verifyToken(req, res, next) {
     next();
     
   } catch (e) {
+    
     res.status(401);
     next(e);
   }

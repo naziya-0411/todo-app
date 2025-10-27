@@ -138,20 +138,28 @@ export default class AuthAPI {
   };
 
   updateProfile = async (form) => {
-    const formData = new FormData(form);
-    console.log(formData);
+    try {
+      const formData = new FormData(form);
 
-    const res = await fetch(`${BASE_URL}/user/auth/update-profile`, formData, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+      const res = await fetch(
+        `${BASE_URL}/user/auth/update-profile`,
+        formData,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.error || "unable to upload profile image!");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "unable to upload profile image!");
+      }
+
+    } catch (err) {
+      throw err;
     }
   };
 
@@ -163,13 +171,13 @@ export default class AuthAPI {
       },
     });
 
-    if(!res.ok){
-      const errorData = await res.json();
-    }
-
     const data = await res.json();
 
-    if (!data.success)
-      throw new Error(data.message || "Failed to load profile");
+    if (!res.ok) {
+      throw new Error(data.error || "Unable to load user details!");
+    }
+
+    console.log("THIS IS OUTPUT in FETCH USER DETAIL", data);
+    return data.userData;
   };
 }
