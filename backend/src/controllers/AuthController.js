@@ -216,6 +216,7 @@ export default class UserController {
   updateProfile = async (req, res, next) => {
     try {
       const userId = req.user;
+      console.log("this is userID in the updateProfile", userId);
 
       const user = await userModel.findById(userId);
 

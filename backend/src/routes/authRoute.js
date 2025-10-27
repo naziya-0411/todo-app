@@ -23,7 +23,7 @@ userRouter.post('/reset-password', verifyToken, userInstance.resetPassword);
 userRouter.post('/send-otp', userInstance.sendOtp);
 userRouter.post('/verify-otp', userInstance.verifyOtp);
 
-userRouter.post('/update-profile', upload.single('avatar'), userInstance.updateProfile);
+userRouter.post('/update-profile', verifyToken, upload.single('avatar'), userInstance.updateProfile);
 userRouter.get('/profile', verifyToken, userInstance.fetchUserDetail);
 
 export default userRouter;

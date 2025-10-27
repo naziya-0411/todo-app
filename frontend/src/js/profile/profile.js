@@ -11,12 +11,12 @@ const emailEl = document.querySelector(".profile-info-box p");
 const profileImg = document.querySelector(".profile-img");
 
 profileForm.addEventListener("submit", updateProfile);
+
 document.addEventListener("DOMContentLoaded", fetchUserProfile);
 
 async function fetchUserProfile() {
   try {
     const user = await api.fetchUserDetail();
-    console.log(user);
 
     nameEl.textContent = `Name: ${user.username || "N/A"}`;
     emailEl.innerHTML = `Email ID: <i class="fa-solid fa-envelope me-2"></i> ${
@@ -38,6 +38,8 @@ async function fetchUserProfile() {
 async function updateProfile(e) {
   try {
     e.preventDefault();
+
+    console.log("inside updateProfile");
 
     const profileInput = document.querySelector(".profile-input");
     console.log("this is ", profileInput);
