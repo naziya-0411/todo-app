@@ -154,4 +154,22 @@ export default class AuthAPI {
       throw new Error(errorData.error || "unable to upload profile image!");
     }
   };
+
+  fetchUserDetail = async () => {
+    const res = await fetch(`${BASE_URL}/user/auth/profile`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    });
+
+    if(!res.ok){
+      const errorData = await res.json();
+    }
+
+    const data = await res.json();
+
+    if (!data.success)
+      throw new Error(data.message || "Failed to load profile");
+  };
 }

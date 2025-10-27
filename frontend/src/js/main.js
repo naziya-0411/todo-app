@@ -17,6 +17,7 @@ import {
   saveCancelBtn,
   logoutBtn,
   clearTaskBtn,
+  profileIcon
 } from "./mainConstants.js";
 
 const api = new TaskAPI();
@@ -32,6 +33,9 @@ searchBox.addEventListener("input", searchTask);
 addBtn.addEventListener("click", addTask);
 clearTaskBtn.addEventListener("click", clearTask);
 logoutBtn.addEventListener("click", userLogout);
+profileIcon.addEventListener("click", ()=>{
+  window.location.href = '/pages/profile'
+})
 
 window.onload = async function () {
   try {

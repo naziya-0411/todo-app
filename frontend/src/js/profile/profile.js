@@ -4,9 +4,36 @@ import { showAlert } from "../toast";
 const api = new AuthAPI();
 
 const profileForm = document.querySelector("#profile-img-form");
-console.log(profileForm);
+const nameEl = document.querySelector(".profile-info-box h5");
+const emailEl = document.querySelector(".profile-info-box p");
+const profileImg = document.querySelector(".profile-img");
+
 
 profileForm.addEventListener("submit", updateProfile);
+document.addEventListener("DOMContentLoaded", fetchUserProfile);
+
+async function fetchUserProfile() {
+  try {
+
+    
+ 
+
+    const user = data.user;
+
+    nameEl.textContent = `Name: ${user.username || "N/A"}`;
+    emailEl.innerHTML = `Email ID: <i class="fa-solid fa-envelope me-2"></i> ${
+      user.email || "N/A"
+    }`;
+
+    if (user.avatar) {
+      profileImg.src = `${BASE_URL}/uploads/${user.avatar}`;
+    } else {
+      profileImg.src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+    }
+  } catch (err) {
+    console.error("Error loading profile:", err);
+  }
+}
 
 async function updateProfile(e) {
   try {
@@ -18,10 +45,7 @@ async function updateProfile(e) {
       showAlert("Please upload image!", "error");
     }
 
-    console.log(profileInput);
-
     await api.updateProfile(profileInput[0]);
-
 
     showAlert("file uploaded successfully!");
 
