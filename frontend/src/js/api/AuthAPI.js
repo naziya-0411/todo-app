@@ -1,5 +1,5 @@
 import { DOMAIN, PORT } from "../../../constants.js";
-import TokenManager from "../../../utils/TokenManager.js";
+import TokenManager from "../../utils/TokenManager.js";
 
 const tokenInstance = new TokenManager();
 const BASE_URL = `${DOMAIN}:${PORT}`;

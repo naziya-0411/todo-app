@@ -1,6 +1,6 @@
 import AuthAPI from "../api/AuthAPI.js";
-import TokenManager from "../../../utils/TokenManager.js";
-import { wait, showAlert } from "../toast.js";
+import TokenManager from "../../utils/TokenManager.js";
+import { wait, showAlert } from "../common/toast.js";
 
 const api = new AuthAPI();
 const tokenInstance = new TokenManager();

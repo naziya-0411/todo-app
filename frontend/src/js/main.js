@@ -1,5 +1,5 @@
 import "../scss/styles.scss";
-import { showAlert } from "./toast.js";
+import { showAlert } from "./common/toast.js";
 import TaskAPI from "./api/TaskAPI.js";
 import TokenManager from "../../utils/TokenManager.js";
 import {
@@ -17,7 +17,7 @@ import {
   saveCancelBtn,
   logoutBtn,
   clearTaskBtn,
-  profileIcon
+  profileIcon,
 } from "./mainConstants.js";
 
 const api = new TaskAPI();
@@ -33,9 +33,9 @@ searchBox.addEventListener("input", searchTask);
 addBtn.addEventListener("click", addTask);
 clearTaskBtn.addEventListener("click", clearTask);
 logoutBtn.addEventListener("click", userLogout);
-profileIcon.addEventListener("click", ()=>{
-  window.location.href = '/pages/profile'
-})
+profileIcon.addEventListener("click", () => {
+  window.location.href = "/pages/profile";
+});
 
 window.onload = async function () {
   try {
@@ -166,7 +166,7 @@ async function sortTask() {
   }
 }
 
-async function userLogout() {
+function userLogout() {
   try {
     tokenInstance.clearTokens();
     window.location.href = "/pages/login";

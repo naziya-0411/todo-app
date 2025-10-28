@@ -1,8 +1,9 @@
 import AuthAPI from "../api/AuthAPI";
-import { showAlert } from "../toast";
+import { showAlert } from "../common/toast.js";
+import TokenManager from '../../utils/TokenManager.js'
 
 const BASE_URL = "http://localhost:8000";
-
+const tokenInstance = new TokenManager();
 const api = new AuthAPI();
 
 const profileForm = document.querySelector("#profile-img-form");
@@ -10,15 +11,18 @@ const nameEl = document.querySelector(".profile-info-box h5");
 const emailEl = document.querySelector(".profile-info-box p");
 const profileImg = document.querySelector(".profile-img");
 const profileInput = document.querySelector(".profile-input");
-const imageUrlField = document.querySelector('#profile-img-form h5');
+const imageUrlField = document.querySelector("#profile-img-form h5");
+const logoutBtn = document.querySelector(".logout-btn")
 
-profileInput.addEventListener("change", ()=>{
-  imageUrlField.innerText = profileInput.files[0].name;
-})
+window.onload = async function(){
+  fetchUserProfile();
+}
 
 profileForm.addEventListener("submit", updateProfile);
-document.addEventListener("DOMContentLoaded", fetchUserProfile);
-
+logoutBtn.addEventListener('click', userLogout);
+profileInput.addEventListener("change", () => {
+  imageUrlField.innerText = profileInput.files[0].name;
+});
 
 async function fetchUserProfile() {
   try {
@@ -35,7 +39,6 @@ async function fetchUserProfile() {
       profileImg.src =
         "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
     }
-
   } catch (err) {
     showAlert(err.message, "error");
   }
@@ -49,7 +52,7 @@ async function updateProfile(e) {
 
     if (!profileInput.files || !profileInput.files[0]) {
       showAlert("Please upload an image!", "error");
-      return; 
+      return;
     }
 
     await api.updateProfileApi(profileInput.files[0]);
@@ -57,9 +60,17 @@ async function updateProfile(e) {
     imageUrlField.innerText = "";
     showAlert("File uploaded successfully!");
 
-    await api.fetchUserDetail();
-    
+    fetchUserProfile();
   } catch (err) {
     showAlert(err.message, "error");
+  }
+}
+
+function userLogout() {
+  try {
+    tokenInstance.clearTokens();
+    window.location.href = "/pages/login";
+  } catch (e) {
+    showAlert("Unable to logout user! Please try after sometime");
   }
 }
