@@ -18,6 +18,7 @@ import {
   logoutBtn,
   clearTaskBtn,
   profileIcon,
+  usernameText,
 } from "./mainConstants.js";
 import AuthApi from "./api/AuthApi.js";
 
@@ -46,15 +47,22 @@ window.onload = async function () {
     createFunctionalBtns();
     updateAnalyticBox(tasks);
     displayTask(tasks);
-    // fetchUserDetail();
+    fetchUserDetail();
   } catch (err) {
     showAlert(err.message, "error");
   }
 };
 
-// function fetchUserDetail(){
-//   const user = await api.fetchUserDetail();
-// }
+async function fetchUserDetail() {
+  try {
+    const user = await authApi.fetchUserDetail();
+
+    usernameText.innerText = `${user.username}`;
+
+  } catch (err) {
+    showAlert(e.message, "error");
+  }
+}
 
 function displayTask(tasks) {
   const ul = document.querySelector("#taskList");
@@ -161,8 +169,8 @@ async function addTask() {
 
     restoreInputBoxes();
     return;
-  } catch (e) {
-    showAlert(e.message, "error");
+  } catch (err) {
+    showAlert(err.message, "error");
   }
 }
 

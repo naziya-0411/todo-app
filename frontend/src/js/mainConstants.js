@@ -27,6 +27,7 @@ const searchSelect = document.querySelector("#search-select");
 const logoutBtn = document.querySelector(".logout-btn");
 const clearTaskBtn = document.querySelector(".clear-task");
 const profileIcon = document.querySelector(".profile-icon");
+const usernameText = document.querySelector('.username-text');
 
 export {
     addBtn,
@@ -44,4 +45,5 @@ export {
     logoutBtn,
     clearTaskBtn,
     profileIcon,
+    usernameText,
 }
