@@ -1,10 +1,10 @@
-import AuthAPI from "../api/AuthAPI";
+import AuthApi from "../api/AuthApi.js";
 import { showAlert } from "../common/toast.js";
 import TokenManager from '../../utils/TokenManager.js'
 
 const BASE_URL = "http://localhost:8000";
 const tokenInstance = new TokenManager();
-const api = new AuthAPI();
+const api = new AuthApi();
 
 const profileForm = document.querySelector("#profile-img-form");
 const nameEl = document.querySelector(".profile-info-box h5");

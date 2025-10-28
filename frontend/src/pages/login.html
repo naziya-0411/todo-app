@@ -5,22 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
     <link rel="stylesheet" href="../scss/login.scss" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
   </head>
   <body>
-    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer"></div>
+    <div
+      class="toast-container position-fixed bottom-0 end-0 p-3"
+      id="toastContainer"
+    ></div>
 
     <div class="auth-container">
-      <div class="login-container"></div>
       <form class="login-form">
-        <h1>Welcome Back</h1>
+        <h1>Login</h1>
+
         <input type="email" placeholder="Email" id="email" required />
+
         <input type="password" placeholder="Password" id="password" required />
+
         <button type="submit login-btn">Login</button>
+
         <p>Don’t have an account? <a href="register">Sign Up</a></p>
-        <p>forgot password? <a class="reset-password-link" href="/pages/otp">click here</a> to reset password</p>
+        <p>
+          forgot password?
+          <a class="reset-password-link" href="/pages/otp">click here</a> to
+          reset password
+        </p>
       </form>
     </div>
-    
   </body>
   <script type="module" src="../js/login/login.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,7 +1,7 @@
-import AuthAPI from "../api/AuthAPI.js";
-import {wait, showAlert} from "../toast.js";
+import AuthApi from "../api/AuthApi.js";
+import {wait, showAlert} from "../common/toast.js";
 
-const api = new AuthAPI();
+const api = new AuthApi();
 const accessToken = localStorage.getItem("accessToken");
 
 const registerForm = document.querySelector(".register-form");

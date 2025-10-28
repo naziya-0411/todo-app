@@ -1,7 +1,7 @@
 import "../scss/styles.scss";
 import { showAlert } from "./common/toast.js";
-import TaskAPI from "./api/TaskAPI.js";
-import TokenManager from "../../utils/TokenManager.js";
+import TaskApi from "./api/TaskApi.js";
+import TokenManager from "../utils/TokenManager.js";
 import {
   addBtn,
   functionalBtns,
@@ -19,8 +19,10 @@ import {
   clearTaskBtn,
   profileIcon,
 } from "./mainConstants.js";
+import AuthApi from "./api/AuthApi.js";
 
-const api = new TaskAPI();
+const api = new TaskApi();
+const authApi = new AuthApi();
 const tokenInstance = new TokenManager();
 const accessToken = localStorage.getItem("accessToken");
 
@@ -44,59 +46,85 @@ window.onload = async function () {
     createFunctionalBtns();
     updateAnalyticBox(tasks);
     displayTask(tasks);
+    // fetchUserDetail();
   } catch (err) {
     showAlert(err.message, "error");
   }
 };
 
+// function fetchUserDetail(){
+//   const user = await api.fetchUserDetail();
+// }
+
 function displayTask(tasks) {
   const ul = document.querySelector("#taskList");
   ul.innerHTML = "";
 
-  tasks.forEach((t) => {
-    const newLi = document.createElement("li");
-    let textStyle = "none";
+  if (tasks.length === 0) {
+    ul.innerHTML = `
+    <h2 class="empty-text text-center text-white w-600 opacity-50">
+      NO TASK IN THE LIST!!
+    </h2>
+  `;
+    const text = document.querySelector(".empty-text");
 
-    if (t.isCompleted === true) {
-      textStyle = "line-through";
-    }
+    ul.style.display = "flex";
+    ul.style.justifyContent = "center";
+    ul.style.alignItems = "center";
+    ul.style.flexDirection = "column";
+    text.style.transform = "rotate(-15deg)";
+  } else {
+    ul.style.display = "";
+    ul.style.justifyContent = "";
+    ul.style.alignItems = "";
+    ul.style.flexDirection = "";
+    tasks.forEach((t) => {
+      const newLi = document.createElement("li");
+      let textStyle = "none";
 
-    let preferenceColor = "black";
+      if (t.isCompleted === true) {
+        textStyle = "line-through";
+      }
 
-    if (t.preference.toLowerCase() === "high") {
-      preferenceColor = " linear-gradient(135deg, #3e0791ff, #563190ff);";
-    } else if (t.preference.toLowerCase() === "medium") {
-      preferenceColor = "linear-gradient(135deg, #5537aeff, #a75ee8ff);";
-    } else if (t.preference.toLowerCase() === "low") {
-      preferenceColor = "linear-gradient(135deg, #7C3AED, #A78BFA);";
-    }
+      let preferenceColor = "black";
 
-    newLi.innerHTML = `
-      <div class="list-container row d-flex align-items-center p-2">
-        <div class="col-12 col-md-9 data-container d-flex flex-wrap gap-2 align-items-center">
-          <div class="preference-container p-1 px-2 rounded-5" style="background:${preferenceColor}">${
-      t.preference
-    }</div>
-        </div>
+      if (t.preference.toLowerCase() === "high") {
+        preferenceColor = " linear-gradient(135deg, #3e0791ff, #563190ff);";
+      } else if (t.preference.toLowerCase() === "medium") {
+        preferenceColor = "linear-gradient(135deg, #5537aeff, #a75ee8ff);";
+      } else if (t.preference.toLowerCase() === "low") {
+        preferenceColor = "linear-gradient(135deg, #7C3AED, #A78BFA);";
+      }
 
-        <div class="d-flex align-items-center text-container py-3 px-3 gap-2">
-          <p class="m-0 text-break" style="text-decoration: ${textStyle}">${
-      t.task
-    }</p>
-          <div class="tags-container small text-muted">${t.tags.join(" ")}</div>
-        </div>
+      newLi.innerHTML = `
+          <div class="list-container row d-flex align-items-center p-2">
+            <div class="col-12 col-md-9 data-container d-flex flex-wrap gap-2 align-items-center">
+              <div class="preference-container p-1 px-2 rounded-5" style="background:${preferenceColor}">${
+        t.preference
+      }</div>
+            </div>
+    
+            <div class="d-flex align-items-center text-container py-3 px-3 gap-2">
+              <p class="m-0 text-break" style="text-decoration: ${textStyle}">${
+        t.task
+      }</p>
+              <div class="tags-container small text-muted">${t.tags.join(
+                " "
+              )}</div>
+            </div>
+    
+            <div class="btn-container col-12 d-flex">
+              <button class="btn primary-btn done-btn">
+                ${t.isCompleted === true ? "Undone" : "Done"}
+              </button>
+              ${functionalBtns}
+            </div>
+          </div>`;
 
-        <div class="btn-container col-12 d-flex">
-          <button class="btn primary-btn done-btn">
-            ${t.isCompleted === true ? "Undone" : "Done"}
-          </button>
-          ${functionalBtns}
-        </div>
-      </div>`;
-
-    newLi.id = t._id;
-    ul.appendChild(newLi);
-  });
+      newLi.id = t._id;
+      ul.appendChild(newLi);
+    });
+  }
 }
 
 async function addTask() {
