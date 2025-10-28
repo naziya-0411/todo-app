@@ -9,9 +9,16 @@ const profileForm = document.querySelector("#profile-img-form");
 const nameEl = document.querySelector(".profile-info-box h5");
 const emailEl = document.querySelector(".profile-info-box p");
 const profileImg = document.querySelector(".profile-img");
+const profileInput = document.querySelector(".profile-input");
+const imageUrlField = document.querySelector('#profile-img-form h5');
+
+profileInput.addEventListener("change", ()=>{
+  imageUrlField.innerText = profileInput.files[0].name;
+})
 
 profileForm.addEventListener("submit", updateProfile);
 document.addEventListener("DOMContentLoaded", fetchUserProfile);
+
 
 async function fetchUserProfile() {
   try {
@@ -28,6 +35,7 @@ async function fetchUserProfile() {
       profileImg.src =
         "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
     }
+
   } catch (err) {
     showAlert(err.message, "error");
   }
@@ -37,22 +45,20 @@ async function updateProfile(e) {
   try {
     e.preventDefault();
 
-    console.log("inside updateProfile");
-
     const profileInput = document.querySelector(".profile-input");
-    console.log("this is profileInput value", profileInput);
 
     if (!profileInput.files || !profileInput.files[0]) {
       showAlert("Please upload an image!", "error");
       return; 
     }
 
-    console.log(profileInput.files[0]);
-
     await api.updateProfileApi(profileInput.files[0]);
 
+    imageUrlField.innerText = "";
     showAlert("File uploaded successfully!");
 
+    await api.fetchUserDetail();
+    
   } catch (err) {
     showAlert(err.message, "error");
   }
