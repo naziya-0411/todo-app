@@ -25,35 +25,36 @@
     <div class="profile-container">
       <div class="row align-items-center justify-content-center">
         <div class="profile-img-box">
-          
           <img
             src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
             alt="Profile"
             class="profile-img"
           />
 
-          <form action="/" id="profile-img-form">
-            <div class="mt-2">
-              <label class="edit-btn">
-                <i class="fa-solid fa-camera"></i> Select
-                <input
-                  type="file"
-                  name="avatar"
-                  class="profile-input"
-                  accept="image/*"
-                  required
-                />
-              </label>
-            </div>
+          <form id="profile-img-form">
+            <!-- <label for="avatar" class="edit-btn">
+              <i class="fa-solid fa-camera"></i> Select Image
+            </label> -->
 
-            <button type="submit" class="profile-img-submit btn">
+            <input
+              type="file"
+              id="avatar"
+              name="avatar"
+              class="profile-input m-2"
+              accept="image/*"
+              required
+            />
+
+            <button
+              type="submit"
+              class="profile-img-submit btn btn-primary m-3"
+            >
               Change Image
             </button>
           </form>
         </div>
 
         <div class="profile-info-box">
-          <h2 class="fw-800">User Information</h2>
 
           <h5>Name:</h5>
           <p>Email ID: <i class="fa-solid fa-envelope me-2"></i></p>

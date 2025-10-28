@@ -257,6 +257,7 @@ export default class UserController {
         message: 'User details fetched successfully',
         userData: user,
       });
+      
     } catch (err) {
       next(err);
     }

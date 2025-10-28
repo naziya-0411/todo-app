@@ -1,7 +1,7 @@
 import AuthAPI from "../api/AuthAPI";
 import { showAlert } from "../toast";
 
-const BASE_URL = "http://localhost:5178";
+const BASE_URL = "http://localhost:8000";
 
 const api = new AuthAPI();
 
@@ -11,7 +11,6 @@ const emailEl = document.querySelector(".profile-info-box p");
 const profileImg = document.querySelector(".profile-img");
 
 profileForm.addEventListener("submit", updateProfile);
-
 document.addEventListener("DOMContentLoaded", fetchUserProfile);
 
 async function fetchUserProfile() {
@@ -19,7 +18,7 @@ async function fetchUserProfile() {
     const user = await api.fetchUserDetail();
 
     nameEl.textContent = `Name: ${user.username || "N/A"}`;
-    emailEl.innerHTML = `Email ID: <i class="fa-solid fa-envelope me-2"></i> ${
+    emailEl.innerHTML = `Email ID: <i class="fa-solid fa-envelope me-2"></i>${
       user.email || "N/A"
     }`;
 
@@ -29,7 +28,6 @@ async function fetchUserProfile() {
       profileImg.src =
         "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
     }
-
   } catch (err) {
     showAlert(err.message, "error");
   }
@@ -42,13 +40,16 @@ async function updateProfile(e) {
     console.log("inside updateProfile");
 
     const profileInput = document.querySelector(".profile-input");
-    console.log("this is ", profileInput);
+    console.log("this is profileInput value", profileInput);
 
-    if (!profileInput[0]) {
-      showAlert("Please upload image!", "error");
+    if (!profileInput.files || !profileInput.files[0]) {
+      showAlert("Please upload an image!", "error");
+      return; 
     }
 
-    await api.updateProfile(profileInput[0]);
+    console.log(profileInput.files[0]);
+
+    await api.updateProfileApi(profileInput.files[0]);
 
     showAlert("File uploaded successfully!");
 

@@ -137,19 +137,19 @@ export default class AuthAPI {
     }
   };
 
-  updateProfile = async (form) => {
+  updateProfileApi = async (image) => {
     try {
-      const formData = new FormData(form);
+      const formData = new FormData();
+      formData.append("avatar", image);
 
       const res = await fetch(
         `${BASE_URL}/user/auth/update-profile`,
-        formData,
         {
           method: "POST",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-            "Content-Type": "multipart/form-data",
           },
+          body: formData
         }
       );
 
