@@ -25,6 +25,7 @@ import AuthApi from "./api/AuthApi.js";
 const api = new TaskApi();
 const authApi = new AuthApi();
 const tokenInstance = new TokenManager();
+const BASE_URL = "http://localhost:8000";
 const accessToken = localStorage.getItem("accessToken");
 
 if (!accessToken) {
@@ -59,6 +60,11 @@ async function fetchUserDetail() {
 
     usernameText.innerText = `${user.username}`;
 
+    if (user.avatar) {
+      profileIcon.innerHTML = `<img src = "${BASE_URL}/uploads/${user.avatar}" alt="profile-img" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">`;
+    } else {
+      profileIcon.innerHTML = `<i class="fa-solid fa-user fs-4 bg-white p-1 rounded"></i>`;
+    }
   } catch (err) {
     showAlert(e.message, "error");
   }
@@ -213,60 +219,70 @@ function userLogout() {
 
 async function clearTask() {
   try {
-    await api.clearTask();
-    showAlert("Task cleared successfully!");
+    const result = await showConfirmBox("Do you want to delete the task?");
+    if (result === "yes") {
+      await api.clearTask();
+      showAlert("Task cleared successfully!");
 
-    displayTask([]);
+      displayTask([]);
+    }
   } catch (e) {
     showAlert(e.message);
   }
 }
 
 async function createFunctionalBtns() {
-  ul.addEventListener("click", async (e) => {
-    try {
-      if (e.target.classList.contains("del-btn")) {
-        const result = await showConfirmBox("Do you want to delete the task?");
+  ul.addEventListener("click", deleteTask);
 
-        if (result === "yes") {
-          confirmMsgBox.innerText = "";
-          confirmBox.classList.remove("down");
-          const listItem = e.target.closest("li");
-          const deleteId = listItem.id;
+  ul.addEventListener("click", doneTask);
 
-          await api.deleteTask(deleteId);
+  ul.addEventListener("click", editTask);
+}
 
-          const tasks = await api.getTaskList();
+async function deleteTask(e) {
+  try {
+    if (e.target.classList.contains("del-btn")) {
+      const result = await showConfirmBox("Do you want to delete the task?");
 
-          displayTask(tasks);
-          updateAnalyticBox(tasks);
-          showAlert("Task Deleted Successfully!", "success");
-        }
-      }
-    } catch (e) {
-      showAlert("Error in deleting tasks! Please try again.", "error");
-    }
-  });
-
-  ul.addEventListener("click", async (e) => {
-    try {
-      if (e.target.classList.contains("done-btn")) {
+      if (result === "yes") {
+        confirmMsgBox.innerText = "";
+        confirmBox.classList.remove("down");
         const listItem = e.target.closest("li");
-        const id = listItem.id;
+        const deleteId = listItem.id;
 
-        await api.updateCompletionStatus(id);
+        await api.deleteTask(deleteId);
 
         const tasks = await api.getTaskList();
 
         displayTask(tasks);
         updateAnalyticBox(tasks);
+        showAlert("Task Deleted Successfully!", "success");
       }
-    } catch (e) {
-      showAlert("Unable to mark task as isCompleted", "error");
     }
-  });
+  } catch (e) {
+    showAlert("Error in deleting tasks! Please try again.", "error");
+  }
+}
 
-  ul.addEventListener("click", async (e) => {
+async function doneTask(e) {
+  try {
+    if (e.target.classList.contains("done-btn")) {
+      const listItem = e.target.closest("li");
+      const id = listItem.id;
+
+      await api.updateCompletionStatus(id);
+
+      const tasks = await api.getTaskList();
+
+      displayTask(tasks);
+      updateAnalyticBox(tasks);
+    }
+  } catch (e) {
+    showAlert("Unable to mark task as isCompleted", "error");
+  }
+}
+
+async function editTask(e) {
     if (e.target.classList.contains("edit-btn")) {
       const listItem = e.target.closest("li");
       const id = listItem.id;
@@ -343,7 +359,6 @@ async function createFunctionalBtns() {
         }
       }
     }
-  });
 }
 
 function restoreInputBoxes() {

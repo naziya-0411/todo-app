@@ -14,9 +14,11 @@ const profileInput = document.querySelector(".profile-input");
 const imageUrlField = document.querySelector("#profile-img-form h5");
 const logoutBtn = document.querySelector(".logout-btn")
 
-window.onload = async function(){
-  fetchUserProfile();
-}
+// window.onload = async function(){
+//   fetchUserProfile();
+// }
+
+document.addEventListener("DOMContentLoaded", fetchUserProfile);
 
 profileForm.addEventListener("submit", updateProfile);
 logoutBtn.addEventListener('click', userLogout);

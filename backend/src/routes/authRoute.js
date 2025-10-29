@@ -15,7 +15,8 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + uniqueSuffix);
   },
 });
-const upload = multer({ storage });
+
+const upload = multer({ storage, limits: {filesize: 0.5 * 1024 * 1024} });
 
 userRouter.post('/login', userInstance.loginUser);
 userRouter.post(

@@ -108,11 +108,11 @@ body {
             padding: 5px;
             max-height: 550px;
             min-height: 400px;
-            overflow: auto;
+            overflow-y: auto;
 
             li {
                 margin: 0.3rem;
-                box-shadow: 1px 1px 15px rgba(19, 16, 16, 0.379);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.08);
                 padding: 0.2rem;
                 padding-left: 0.5rem;
                 padding-right: 0.5rem;
